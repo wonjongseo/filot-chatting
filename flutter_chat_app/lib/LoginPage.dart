@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_study_app/FindClientInfo.dart';
-import 'package:flutter_study_app/JoinPage.dart';
+import 'package:flutter_chat_app/FindClientInfo.dart';
+import 'package:flutter_chat_app/JoinPage.dart';
 String icon_path = 'image/teamIcon.png';
 
 class LoginPage extends StatefulWidget{
