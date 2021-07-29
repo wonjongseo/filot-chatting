@@ -66,7 +66,27 @@ class _JoinPage extends State<JoinPage>{
     );
   }
 
-  Future<http.Response> _join() async{
+  void _errorPopup(String str){
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("Error!"),
+          content: new Text(str),
+          actions: <Widget>[
+            ElevatedButton(
+                child: Text("확인"),
+                onPressed: () {
+                  Navigator.pop(context);
+                }),
+          ],
+        );
+      },
+    );
+  }
+
+  void _join() async{
     final response = await http.post(
       Uri.parse(_Join_api),
       body: jsonEncode(
@@ -80,7 +100,14 @@ class _JoinPage extends State<JoinPage>{
       ),
       headers: {'Content-Type': "application/json"},
     );
-    return response;
+    if(response.statusCode == 200) {
+      // check Join Success and return
+      Navigator.of(context).pop();
+      return;
+    }
+
+    // Join failed, and popup Failed
+    _errorPopup("생성 중 에러가 발생했습니다.\n(ID중복 또는 패스워드 불일치)");
   }
 
   @override
@@ -128,8 +155,20 @@ class _JoinPage extends State<JoinPage>{
                 ),
                 onPressed: () {
                   for(var item in values){
-                    _InfoList.add(item.text.toString());
+                    var str = item.text.toString();
+                    if(str.isEmpty) {
+                      _errorPopup("빈 칸이 없어야 합니다!");
+                      return;
+                    }
+                    else
+                      _InfoList.add(str);
                   }
+
+                  if(_InfoList[1] != _InfoList[2]){
+                    _errorPopup("비밀번호가 일치하지 않습니다!");
+                    return;
+                  }
+
                   setState(() {
                     for(var i = 0;i<values.length;i++)
                       values[i].clear();

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -41,10 +42,10 @@ class _LoginPage extends State<LoginPage>{
       onPressed: () {
         if(index.isEven)
           Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => FindClientInfo()));
+              .pushReplacementNamed('/findclientinfo');
         else
           Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => JoinPage()));
+              .pushReplacementNamed('/join');
 
       },
     );
@@ -62,20 +63,6 @@ class _LoginPage extends State<LoginPage>{
           )
       ),
     );
-  }
-
-  Future<http.Response> _login(id, pwd) async{
-    final response = await http.post(
-      Uri.parse(_Login_api),
-      body: jsonEncode(
-        {
-          'id': id,
-          'pwd': pwd,
-        },
-      ),
-      headers: {'Content-Type': "application/json"},
-    );
-    return response;
   }
 
   @override
@@ -127,6 +114,8 @@ class _LoginPage extends State<LoginPage>{
                       value2.clear();
                     });
                     _login(ID, Password);
+                      //login success and page move
+                      //login failed
                   }),
               Padding(padding: EdgeInsets.all(13)),
               _makeTextButton(0),
@@ -137,6 +126,49 @@ class _LoginPage extends State<LoginPage>{
           ),
         ),
       ),
+    );
+  }
+
+  void _login(id, pwd) async{
+    final response = await http.post(
+      Uri.parse(_Login_api),
+      body: jsonEncode(
+        {
+          'id': id,
+          'pwd': pwd,
+        },
+      ),
+      headers: {'Content-Type': "application/json"},
+    );
+
+    if(response.statusCode == 200) {
+      // check Login Success and return
+      Navigator.of(context).pushReplacementNamed('/main');
+      return;
+    }
+
+    // login failed, and popup Failed
+    _errorPopup("아이디 또는 비밀번호를 확인해 주세요", "로그인 실패!");
+  }
+  void _errorPopup(String text, [String? title]){
+    if(title == null)
+      title = "Error!";
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text(title!),
+          content: new Text(text),
+          actions: <Widget>[
+            ElevatedButton(
+                child: Text("확인"),
+                onPressed: () {
+                  Navigator.pop(context);
+                }),
+          ],
+        );
+      },
     );
   }
 }
