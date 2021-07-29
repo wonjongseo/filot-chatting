@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/InfoCheck.dart';
 
 
 import 'package:http/http.dart' as http;
@@ -102,6 +103,7 @@ class _JoinPage extends State<JoinPage>{
     );
     if(response.statusCode == 200) {
       // check Join Success and return
+      //Navigator.of(context).push(MaterialPageRoute(builder: (context) => InfoCheck()));
       Navigator.of(context).pop();
       return;
     }

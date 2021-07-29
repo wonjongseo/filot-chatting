@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/FindClientInfo.dart';
+import 'package:flutter_chat_app/InfoCheck.dart';
 import 'package:flutter_chat_app/JoinPage.dart';
 import 'package:flutter_chat_app/LoginPage.dart';
 import 'package:flutter_chat_app/MainMenu.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         '/main': (context) => MainMenu(),
         '/join': (context) => JoinPage(),
         '/findclientinfo': (context) => FindClientInfo(),
+        '/checkinfo': (context) => InfoCheck(),
 
       },
     );

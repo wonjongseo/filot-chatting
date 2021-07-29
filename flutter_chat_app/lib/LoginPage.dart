@@ -21,7 +21,7 @@ class _LoginPage extends State<LoginPage>{
   String ID='', Password='';
   var sum = '0';
 
-  List _buttonList = ['아이디 또는 비밀번호 찾기','회원가입하기'];
+  List _buttonList = ['아이디 또는 비밀번호 찾기','회원가입하기', '회원 정보 조회'];
   List _TextFormList = ['아이디','비밀번호'];
 
   TextButton _makeTextButton(int index){
@@ -40,13 +40,15 @@ class _LoginPage extends State<LoginPage>{
         ],
       ),
       onPressed: () {
-        if(index.isEven)
+        if(index == 0)
           Navigator.of(context)
               .pushReplacementNamed('/findclientinfo');
-        else
+        else if(index == 1)
           Navigator.of(context)
               .pushReplacementNamed('/join');
-
+        else if(index == 2)
+          Navigator.of(context)
+              .pushReplacementNamed('/checkinfo');
       },
     );
   }
@@ -120,6 +122,7 @@ class _LoginPage extends State<LoginPage>{
               Padding(padding: EdgeInsets.all(13)),
               _makeTextButton(0),
               _makeTextButton(1),
+              _makeTextButton(2),
 
 
             ],

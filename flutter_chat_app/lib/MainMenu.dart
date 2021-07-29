@@ -9,47 +9,52 @@ class MainMenu extends StatefulWidget {
 
 class _MainMenu extends State<MainMenu> with SingleTickerProviderStateMixin{
   late TabController controller;
+  int _selectedIndex = 0;
+  bool mute = false;
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    /*return Scaffold(
-      body: NavigationRail(
-        destinations: [],
-        selectedIndex: ,
-        children: <Widget>[
-          MyProfile(),
-          ChatList(),
-        ],
-        controller: controller,
-      ),
-      bottomNavigationBar: TabBar(
-        tabs: <Tab>[
-          Tab(icon: Icon(Icons.looks_one, color: Colors.blue,),),
-          Tab(icon: Icon(Icons.looks_two, color: Colors.blue,),)
-        ],
-        controller: controller,
-        indicatorColor: Colors.red,
-      ),
-    );*/
     return Scaffold(
-      body: TabBarView(
+      body: Row(
         children: <Widget>[
-          MyProfile(),
-          ChatList(),
-        ],
-        controller: controller,
-      ),
-      bottomNavigationBar: TabBar(
-        tabs: <Tab>[
-          Tab(icon: Icon(Icons.looks_one, color: Colors.blue,),),
-          Tab(icon: Icon(Icons.looks_two, color: Colors.blue,),)
-        ],
-        controller: controller,
-        indicatorColor: Colors.red,
-      ),
+          NavigationRail(
+            selectedIndex: _selectedIndex,
+            onDestinationSelected: (int index){
+              setState(() {
+                if(index == 4)
+                  mute = !mute;
+                else
+                  _selectedIndex = index;
+              });
+            },
+            labelType: NavigationRailLabelType.selected,
+            destinations: <NavigationRailDestination>[
+              NavigationRailDestination(icon: Icon(Icons.looks_one), label: Text("My Profile")),
+              NavigationRailDestination(icon: Icon(Icons.looks_two), label: Text("Friends")),
+              NavigationRailDestination(icon: Icon(Icons.looks_3), label: Text("Chat")),
+              NavigationRailDestination(icon: Icon(Icons.looks_4), label: Text("More")),
+              NavigationRailDestination(icon: Icon(Icons.looks_5), label: Text("Sound")),
+              NavigationRailDestination(icon: Icon(Icons.looks_6), label: Text("Settings")),
+            ],
+          ),
+          const VerticalDivider(thickness: 1, width: 1),
+          Expanded(child: _MenuRoute(_selectedIndex))
+        ]
+      )
     );
   }
+
+  Widget _MenuRoute(int index){
+    switch(index){
+      case 0:
+        return MyProfile();
+      case 1:
+        return ChatList();
+    }
+    return MyProfile();
+  }
+
   @override
   void initState() {
     // TODO: implement initState
