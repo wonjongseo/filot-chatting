@@ -1,5 +1,10 @@
 extends layout
 
-
 block content
-    h1 JOIN
+
+    if errorMessage
+        span #{errorMessage}
+    form(method="POST")
+        input(name="id",placeholder="id", required=true)
+        input(name="password",placeholder="password", type="password" required=true)
+        input(type="submit",value="login")

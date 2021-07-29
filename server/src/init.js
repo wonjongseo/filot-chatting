@@ -6,7 +6,7 @@ import morgan from "morgan";
 import globalRouter from "./router/globalRouter";
 import userRouter from "./router/userRouter";
 
-const PORT = 7777;
+const PORT = 9999;
 
 const app = express();
 
