@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/FindClientInfo.dart';
 import 'package:flutter_chat_app/JoinPage.dart';
+
+import 'package:http/http.dart' as http;
+
 String icon_path = 'image/teamIcon.png';
 
 class LoginPage extends StatefulWidget{
@@ -9,6 +14,7 @@ class LoginPage extends StatefulWidget{
   State<StatefulWidget> createState() => _LoginPage();
 }
 class _LoginPage extends State<LoginPage>{
+  String _Login_api = "https://en5f3ghmodccnhn.m.pipedream.net";
   TextEditingController value1 = TextEditingController();
   TextEditingController value2 = TextEditingController();
   String ID='', Password='';
@@ -58,6 +64,20 @@ class _LoginPage extends State<LoginPage>{
     );
   }
 
+  Future<http.Response> _login(id, pwd) async{
+    final response = await http.post(
+      Uri.parse(_Login_api),
+      body: jsonEncode(
+        {
+          'id': id,
+          'pwd': pwd,
+        },
+      ),
+      headers: {'Content-Type': "application/json"},
+    );
+    return response;
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -87,16 +107,17 @@ class _LoginPage extends State<LoginPage>{
                   ],
                 ),
               ),
-              RaisedButton(
+              ElevatedButton(
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Text("Login")
                     ],
                   ),
-                  color: Colors.white60,
-                  hoverColor: Colors.deepPurpleAccent,
-                  padding: EdgeInsets.fromLTRB(80,0,80,0),
+                  style: ElevatedButton.styleFrom(
+                    onPrimary: Colors.white60,
+                    padding: EdgeInsets.fromLTRB(80,0,80,0),
+                  ),
                   onPressed: () {
                     print('pressed');
                     setState(() {
@@ -105,6 +126,7 @@ class _LoginPage extends State<LoginPage>{
                       value1.clear();
                       value2.clear();
                     });
+                    _login(ID, Password);
                   }),
               Padding(padding: EdgeInsets.all(13)),
               _makeTextButton(0),
@@ -116,6 +138,5 @@ class _LoginPage extends State<LoginPage>{
         ),
       ),
     );
-    throw UnimplementedError();
   }
 }

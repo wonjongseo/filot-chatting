@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_app/FindClientInfo.dart';
-import 'package:flutter_chat_app/JoinPage.dart';
+
+
+import 'package:http/http.dart' as http;
+
+
 String icon_path = 'image/teamIcon.png';
 
 class JoinPage extends StatefulWidget{
@@ -9,9 +14,10 @@ class JoinPage extends StatefulWidget{
   State<StatefulWidget> createState() => _JoinPage();
 }
 class _JoinPage extends State<JoinPage>{
+  String _Join_api = "https://en5f3ghmodccnhn.m.pipedream.net";
   String ID='', Password='';
 
-  List _TextFormList = ['아이디','비밀번호','비밀번호 확인','이름', '닉네임'];
+  List _TextFormList = ['아이디','비밀번호','비밀번호 확인','이름', '닉네임','전화번호'];
   List<String> _InfoList = [];
   List<TextEditingController> values = [];
 
@@ -60,6 +66,23 @@ class _JoinPage extends State<JoinPage>{
     );
   }
 
+  Future<http.Response> _join() async{
+    final response = await http.post(
+      Uri.parse(_Join_api),
+      body: jsonEncode(
+        {
+          'id': _InfoList[0],
+          'pwd': _InfoList[1],
+          'name': _InfoList[3],
+          'nickname': _InfoList[4],
+          'phone': _InfoList[5],
+        },
+      ),
+      headers: {'Content-Type': "application/json"},
+    );
+    return response;
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -88,24 +111,30 @@ class _JoinPage extends State<JoinPage>{
                   _makeTextFormField(2,true),
                   _makeTextFormField(3,false),
                   _makeTextFormField(4,false),
+                  _makeTextFormField(5,false),
                 ],
               ),
             ),
-            RaisedButton(
+            ElevatedButton(
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Text("인증하기")
                   ],
                 ),
-                color: Colors.white60,
-                hoverColor: Colors.deepPurpleAccent,
-                padding: EdgeInsets.fromLTRB(80,0,80,0),
+                style: ElevatedButton.styleFrom(
+                  onPrimary:Colors.white60,
+                  padding: EdgeInsets.fromLTRB(80,0,80,0),
+                ),
                 onPressed: () {
                   for(var item in values){
                     _InfoList.add(item.text.toString());
                   }
-                  setState(() {});
+                  setState(() {
+                    for(var i = 0;i<values.length;i++)
+                      values[i].clear();
+                  });
+                  _join();
                 }),
             Padding(padding: EdgeInsets.all(13)),
 
