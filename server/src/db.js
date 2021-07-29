@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// mongodb 연결
 mongoose.connect("mongodb://127.0.0.1:27017/filot", {
     useNewUrlParser: true,
     useUnifiedTopology: true,

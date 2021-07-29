@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema({
     //Number
 });
 
+// 회원가입하기 전 해쉬화
 userSchema.pre("save", async function () {
     this.password = await bcrypt.hash(this.password, SORT);
 });

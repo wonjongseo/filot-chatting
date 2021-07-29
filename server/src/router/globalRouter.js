@@ -7,6 +7,7 @@ import {
     postLogin,
 } from "../controller/userController";
 
+//라우터
 const globalRouter = express.Router();
 
 globalRouter.get("/", home);
