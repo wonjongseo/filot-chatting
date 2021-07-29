@@ -1,0 +1,24 @@
+{
+    "name": "filot",
+    "version": "1.0.0",
+    "description": "project of filot",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "nodemon --exec babel-node init.js"
+    },
+    "author": "jongseo",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.17.1",
+        "mongoose": "^5.13.3",
+        "pug": "^3.0.2"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.14.8",
+        "@babel/node": "^7.14.7",
+        "@babel/preset-env": "^7.14.8",
+        "morgan": "^1.10.0",
+        "nodemon": "^2.0.12"
+    }
+}
