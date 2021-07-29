@@ -4,6 +4,7 @@ import express from "express";
 import path from "path";
 import morgan from "morgan";
 import globalRouter from "./router/globalRouter";
+import userRouter from "./router/userRouter";
 
 const PORT = 7777;
 
@@ -16,6 +17,7 @@ app.use(express.urlencoded({extended: true}));
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 app.use("/", globalRouter);
+app.use("/user", userRouter);
 
 const handleListen = () =>
     console.log(`Server is Listening on http://localhost:${PORT}`);

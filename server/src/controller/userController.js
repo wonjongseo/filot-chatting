@@ -24,3 +24,11 @@ export const postJoin = async (req, res, next) => {
         res.render("join", {errorMessage: error._message});
     }
 };
+
+export const getFind = async (req, res, next) => {
+    const {nickName} = req.query;
+    console.log(nickName);
+    const user = await User.findOne({nickName});
+    console.log(user);
+    res.render("profile", {user});
+};
