@@ -1,18 +1,20 @@
+import "./db";
+import "./models/User";
 import express from "express";
 import path from "path";
 import morgan from "morgan";
 import globalRouter from "./router/globalRouter";
 
-const PORT = 4000;
+const PORT = 7777;
 
 const app = express();
 
 app.use(morgan("dev"));
+app.use(express.urlencoded({extended: true}));
 
 // pug
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
-
 app.use("/", globalRouter);
 
 const handleListen = () =>

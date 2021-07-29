@@ -1,0 +1,10 @@
+extends layout 
+include mixins/User
+
+block content
+    if errorMessage
+        h1=errorMessage
+    each user in users
+        +users (user)
+    else
+        h1 Can not Find user
