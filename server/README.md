@@ -4,13 +4,21 @@
 
 ## 회원가입 구현
 
--   해쉬화
+-   해쉬화[x]
 
 ## 로그인 구현
 
--   jwt / session 비구현
+-   jwt []
+
+## MongoDB [x]
 
 ## 유저 찾기 구현
+
+## validation
+
+## Authentication
+
+## Configuration
 
 gobel
 

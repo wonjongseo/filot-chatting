@@ -6,14 +6,14 @@ export const home = async (req, res, next) => {
     // db에서 모든 유저 가져옴
     const users = await User.find({});
 
-    // 템플릿은 pug
-    res.render("home", {users});
+    //json
+    res.status(200).json(users);
 };
 
 // get 로그인
-export const getJoin = (req, res, next) => {
-    res.render("join");
-};
+// export const getJoin = (req, res, next) => {
+//     res.json(join);
+// };
 
 // post 로그인
 export const postJoin = async (req, res, next) => {
@@ -21,30 +21,29 @@ export const postJoin = async (req, res, next) => {
     const {id, password, confirmPassword, nickName, introduction} = req.body;
 
     // 입력한 두 비밀번호가 다르면 사용자 에러
-    if (password !== confirmPassword) {
-        res.status(400).render("join", {errorMessage: "Password do not match"});
+    if (password != confirmPassword) {
+        return res.status(409).json({message: "비밀번호가 틀립니다."});
     }
-
     const existUser = await User.exists({$or: [{id}, {nickName}]});
     // 이미 존재하는 id라면 사용자 에러
     if (existUser) {
-        res.status(400).render("join", {
-            errorMessage: "existsUser or nickName is already taken",
-        });
+        return res
+            .status(409)
+            .json({message: "아이디 혹은 닉넴이이 이미 사용중입니다."});
     }
     try {
         // db안에 유저 생성
-        await User.create({
+        const user = await User.create({
             id,
             nickName,
             password,
             introduction,
         });
-        return res.redirect("/login");
+        return res.status(201).json(user.nickName);
     } catch (error) {
         console.error(error);
         // db에러 잡음
-        res.stauts(500).render("join", {errorMessage: error._message});
+        res.json(error);
     }
 };
 
@@ -54,31 +53,33 @@ export const getFind = async (req, res, next) => {
 
     const user = await User.findOne({nickName});
 
-    res.render("profile", {user});
+    return res.status(200).json(user);
+    // res.render("profile", {user});
 };
 
 // get 로그인
-export const getLogin = (req, res, next) => {
-    res.render("login");
-};
+// export const getLogin = (req, res, next) => {
+//     res.render("login");
+// };
 
 // post 로그인
 export const postLogin = async (req, res, next) => {
     const {id, password} = req.body;
     // 입력한 id로 db안 id 찾기
+
     const user = await User.findOne({id});
 
     // 없으면 사용자 에러
     if (!user) {
-        res.status(400).render("join", {errorMessage: "없는 아이디입니다."});
+        return res.status(401).json({errorMessage: "없는 아이디입니다."});
     }
 
     // 비밀번호 확인
     const comfirmed = await bcrypt.compare(password, user.password);
 
     if (!comfirmed) {
-        return res.render("login", {errorMessage: "비밀번호가 틀려요"});
+        return res.status(401).josn({errorMessage: "비밀번호가 틀려요."});
     }
 
-    res.redirect("/");
+    return res.json({message: "로그인 성공!", user});
 };

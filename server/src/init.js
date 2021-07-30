@@ -1,5 +1,6 @@
 import "./db";
 import "./models/User";
+import "express-async-errors";
 import express from "express";
 import path from "path";
 import morgan from "morgan";
@@ -15,6 +16,7 @@ app.use(morgan("dev"));
 
 // html에서 body 받아오는거 가능하게 해줌
 app.use(express.urlencoded({extended: true}));
+app.use(express.json());
 
 // pug
 app.set("view engine", "pug");
@@ -23,6 +25,16 @@ app.set("views", path.join(__dirname, "views"));
 //라우터
 app.use("/", globalRouter);
 app.use("/user", userRouter);
+
+app.use((req, res, next) => {
+    res.status(404).send("NOT available");
+});
+
+//마지노선 에러 처리
+app.use((error, req, res, next) => {
+    console.error(error);
+    res.status(500).send("Sorry Try later");
+});
 
 const handleListen = () =>
     console.log(`Server is Listening on http://localhost:${PORT}`);

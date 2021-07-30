@@ -9,11 +9,26 @@ import 'package:http/http.dart' as http;
 
 String icon_path = 'image/teamIcon.png';
 
+class Post {
+    final String id;
+    final String password;
+
+    Post({this.id, this.password});
+
+    factory Post.fromJson(Map<String dynamic> json) {
+      return Post(
+        id : json['id'],
+        password : json['password'];
+      );
+    }
+  }
 class JoinPage extends StatefulWidget{
   @override
   State<StatefulWidget> createState() => _JoinPage();
 }
+
 class _JoinPage extends State<JoinPage>{
+  
   String _Join_api = "https://en5f3ghmodccnhn.m.pipedream.net";
   String ID='', Password='';
 
