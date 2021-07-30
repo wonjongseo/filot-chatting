@@ -2,6 +2,7 @@ import User from "../models/User";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {config} from "../config";
+import {validateCredential} from "../middleware/validator";
 
 export const home = async (req, res, next) => {
     // db에서 모든 유저 가져옴
@@ -11,12 +12,13 @@ export const home = async (req, res, next) => {
 };
 
 export const postJoin = async (req, res, next) => {
-    const {id, password, confirmPassword, nickName, introduction} = req.body;
+    const {id, password, password2, name, nick_name, phone_number} = req.body;
+
     // 입력한 두 비밀번호가 다르면 사용자 에러
-    if (password != confirmPassword) {
+    if (password != password2) {
         return res.status(409).json({message: "비밀번호가 틀립니다."});
     }
-    const existUser = await User.exists({$or: [{id}, {nickName}]});
+    const existUser = await User.exists({$or: [{id}, {nick_name}]});
     // 이미 존재하는 id라면 사용자 에러
     if (existUser) {
         return res
@@ -27,14 +29,16 @@ export const postJoin = async (req, res, next) => {
         // db안에 유저 생성
         const user = await User.create({
             id,
-            nickName,
             password,
-            introduction,
+            password2,
+            name,
+            nick_name,
+            phone_number,
         });
 
         const token = createJwt(user.id);
 
-        return res.status(201).json({token, nickName});
+        return res.status(201).json({token, nick_name});
     } catch (error) {
         console.error(error);
         // db에러 잡음
@@ -50,30 +54,83 @@ export const postLogin = async (req, res, next) => {
         return res.status(401).json({errorMessage: "없는 아이디입니다."});
     }
     // 비밀번호 확인
-    const comfirmed = await bcrypt.compare(password, user.password);
-    if (!comfirmed) {
-        return res.status(401).josn({errorMessage: "비밀번호가 틀려요."});
+    const match = await bcrypt.compare(password, user.password);
+    console.log(match);
+    if (!match) {
+        return res.status(401).json({errorMessage: "비밀번호가 틀려요."});
     }
     const token = createJwt(user.id);
     return res.json({message: "로그인 성공!", user, token});
 };
 
-export const getFind = async (req, res, next) => {
-    const {nickName} = req.query;
+export const changePassword = async (req, res, next) => {
+    const {id} = req.params; // 없어도 될듯
+    const loggedIn = req.userId;
+    const user = await User.findOne({id: loggedIn});
+    console.log(user);
 
-    const user = await User.findOne({nickName});
+    const {password, new_password} = req.body;
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+        return res.json({message: "비밀번호가 틀립니다"});
+    }
+
+    console.log(`old password : ${user.password}`);
+
+    await User.findByIdAndUpdate(
+        {_id: user._id},
+        {
+            password: await bcrypt.hash(new_password, config.bcrypt.salt),
+        }
+    );
+    console.log(`new password : ${user.password}`);
+    return res.json({message: "비밀번호 변경 완료!"});
+};
+
+export const getFind = async (req, res, next) => {
+    const {nick_name} = req.query;
+
+    const user = await User.findOne({nick_name});
 
     return res.status(200).json(user);
 };
 
+export const putEdit = async (req, res, next) => {
+    const loggedIn = req.userId;
+    const newNickNmae = req.body.nick_name;
+
+    const user = await User.findOne({id: loggedIn});
+
+    if (!user) {
+        return res.status(401).json({message: "없는 아이디 입니다."});
+    }
+    const existNick = await User.exists({nick_name: newNickNmae});
+    if (existNick) {
+        return res.json({message: "중복됩니다."});
+    }
+    try {
+        await User.findByIdAndUpdate(
+            {_id: user._id},
+            {
+                nick_name: newNickNmae,
+            }
+        );
+        return res.json(user.nick_name);
+    } catch (error) {
+        return res.json({messege: error});
+    }
+};
+
+export const deleteUser = (req, res, next) => {};
+
 export const auth = async (req, res, next) => {
     const user = await User.findOne({id: req.userId});
-    console.log("req.userId : ", req.userId);
+
     if (!user) {
         return res.status(404).json({message: "User not found"});
     }
-    // console.log(req.token);
-    return res.status(200).json({token: req.token, username: user.id});
+
+    return res.status(200).json({token: req.token, username: user.nick_name});
 };
 
 const createJwt = (id) => {

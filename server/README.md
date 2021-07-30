@@ -24,3 +24,7 @@
 ## Authentication [X]
 
 ## Configuration [X]
+
+## user-change-profile [x]
+
+## user-change-password [x]

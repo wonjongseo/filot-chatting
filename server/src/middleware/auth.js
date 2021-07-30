@@ -16,7 +16,7 @@ export const isAuth = async (req, res, next) => {
         if (error) {
             return res.status(401).json(AUTH_ERROR);
         }
-        console.log(decoded.id);
+
         const user = await User.findOne({id: decoded.id});
 
         if (!user) {

@@ -5,9 +5,9 @@ import {config} from "../config";
 const userSchema = new mongoose.Schema({
     id: {type: String, required: true, unique: true},
     password: {type: String, required: true},
-    nickName: {type: String, required: true, unique: true},
-    introduction: {type: String, default: "Hello"},
-
+    name: {type: String, required: true},
+    nick_name: {type: String, required: true, unique: true},
+    phone_number: {type: String, required: true, unique: true},
     //Number
 });
 

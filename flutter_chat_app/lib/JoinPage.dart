@@ -4,36 +4,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/InfoCheck.dart';
 
-
 import 'package:http/http.dart' as http;
-
 
 String icon_path = 'image/teamIcon.png';
 
-class Post {
-    final String id;
-    final String password;
-
-    Post({this.id, this.password});
-
-    factory Post.fromJson(Map<String dynamic> json) {
-      return Post(
-        id : json['id'],
-        password : json['password'];
-      );
-    }
-  }
-class JoinPage extends StatefulWidget{
+class JoinPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _JoinPage();
 }
 
-class _JoinPage extends State<JoinPage>{
-  
-  String _Join_api = "https://en5f3ghmodccnhn.m.pipedream.net";
-  String ID='', Password='';
+class _JoinPage extends State<JoinPage> {
+  String _Join_api = "http://localhost:9999/join";
+  String ID = '', Password = '';
 
-  List _TextFormList = ['아이디','비밀번호','비밀번호 확인','이름', '닉네임','전화번호'];
+  List _TextFormList = ['아이디', '비밀번호', '비밀번호 확인', '이름', '닉네임', '전화번호'];
   List<String> _InfoList = [];
   List<TextEditingController> values = [];
 
@@ -49,40 +33,39 @@ class _JoinPage extends State<JoinPage>{
     // TODO: implement initState
     super.initState();
 
-    for(var item in _TextFormList) {
+    for (var item in _TextFormList) {
       values.add(TextEditingController());
     }
   }
 
-  Padding _makeTextFormField(int index, bool obscure){
+  Padding _makeTextFormField(int index, bool obscure) {
     return Padding(
-        padding: EdgeInsets.fromLTRB(15,20,15,5),
-        child: Column(
-          children: <Widget>[
-            TextFormField(
-              controller: values[index],
-              keyboardType: TextInputType.text,
-              obscureText: obscure,
-              decoration: InputDecoration(
-                  labelText: _TextFormList[index],
-                  labelStyle: TextStyle(
-                    fontFamily: 'bmjua',
-                    fontSize: 14,
-                  )
-              ),
-              validator: (text) {
-                if (text == null || text.isEmpty) {
-                  return 'Text is empty';
-                }
-                return null;
-              },
-            ),
-          ],
-        ),
+      padding: EdgeInsets.fromLTRB(15, 20, 15, 5),
+      child: Column(
+        children: <Widget>[
+          TextFormField(
+            controller: values[index],
+            keyboardType: TextInputType.text,
+            obscureText: obscure,
+            decoration: InputDecoration(
+                labelText: _TextFormList[index],
+                labelStyle: TextStyle(
+                  fontFamily: 'bmjua',
+                  fontSize: 14,
+                )),
+            validator: (text) {
+              if (text == null || text.isEmpty) {
+                return 'Text is empty';
+              }
+              return null;
+            },
+          ),
+        ],
+      ),
     );
   }
 
-  void _errorPopup(String str){
+  void _errorPopup(String str) {
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -102,13 +85,14 @@ class _JoinPage extends State<JoinPage>{
     );
   }
 
-  void _join() async{
+  void _join() async {
     final response = await http.post(
       Uri.parse(_Join_api),
       body: jsonEncode(
         {
           'id': _InfoList[0],
           'pwd': _InfoList[1],
+          'pwd2' : _InfoList[2],
           'name': _InfoList[3],
           'nickname': _InfoList[4],
           'phone': _InfoList[5],
@@ -116,7 +100,7 @@ class _JoinPage extends State<JoinPage>{
       ),
       headers: {'Content-Type': "application/json"},
     );
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       // check Join Success and return
       //Navigator.of(context).push(MaterialPageRoute(builder: (context) => InfoCheck()));
       Navigator.of(context).pop();
@@ -134,12 +118,11 @@ class _JoinPage extends State<JoinPage>{
       appBar: AppBar(
         title: Text("Join Page"),
       ),
-
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget> [
-            Padding(padding: EdgeInsets.fromLTRB(0,30,0,30)),
+          children: <Widget>[
+            Padding(padding: EdgeInsets.fromLTRB(0, 30, 0, 30)),
             Text("FILOT",
                 style: TextStyle(
                   fontFamily: 'bmjua',
@@ -150,51 +133,45 @@ class _JoinPage extends State<JoinPage>{
               padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
               child: Column(
                 children: <Widget>[
-                  _makeTextFormField(0,false),
-                  _makeTextFormField(1,true),
-                  _makeTextFormField(2,true),
-                  _makeTextFormField(3,false),
-                  _makeTextFormField(4,false),
-                  _makeTextFormField(5,false),
+                  _makeTextFormField(0, false),
+                  _makeTextFormField(1, true),
+                  _makeTextFormField(2, true),
+                  _makeTextFormField(3, false),
+                  _makeTextFormField(4, false),
+                  _makeTextFormField(5, false),
                 ],
               ),
             ),
             ElevatedButton(
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text("인증하기")
-                  ],
+                  children: <Widget>[Text("인증하기")],
                 ),
                 style: ElevatedButton.styleFrom(
-                  onPrimary:Colors.white60,
-                  padding: EdgeInsets.fromLTRB(80,0,80,0),
+                  onPrimary: Colors.white60,
+                  padding: EdgeInsets.fromLTRB(80, 0, 80, 0),
                 ),
                 onPressed: () {
-                  for(var item in values){
+                  for (var item in values) {
                     var str = item.text.toString();
-                    if(str.isEmpty) {
+                    if (str.isEmpty) {
                       _errorPopup("빈 칸이 없어야 합니다!");
                       return;
-                    }
-                    else
+                    } else
                       _InfoList.add(str);
                   }
 
-                  if(_InfoList[1] != _InfoList[2]){
+                  if (_InfoList[1] != _InfoList[2]) {
                     _errorPopup("비밀번호가 일치하지 않습니다!");
                     return;
                   }
 
                   setState(() {
-                    for(var i = 0;i<values.length;i++)
-                      values[i].clear();
+                    for (var i = 0; i < values.length; i++) values[i].clear();
                   });
                   _join();
                 }),
             Padding(padding: EdgeInsets.all(13)),
-
-
           ],
         ),
       ),

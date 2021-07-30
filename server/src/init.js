@@ -9,7 +9,7 @@ import morgan from "morgan";
 import globalRouter from "./router/globalRouter";
 import userRouter from "./router/userRouter";
 import {config} from "./config";
-import {auth} from "./controller/userController";
+import {auth, putEdit} from "./controller/userController";
 import {isAuth} from "./middleware/auth";
 
 const app = express();
