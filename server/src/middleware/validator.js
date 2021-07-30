@@ -1,6 +1,6 @@
 import {validationResult, body} from "express-validator";
 
-export const validator = (req, res, next) => {
+const validator = (req, res, next) => {
     const error = validationResult(req);
 
     if (error.isEmpty()) {
@@ -10,7 +10,7 @@ export const validator = (req, res, next) => {
 };
 
 export const validateCredential = [
-    body("identification")
+    body("id")
         .trim()
         .notEmpty()
         .isLength({min: 5})
@@ -19,13 +19,15 @@ export const validateCredential = [
         .trim()
         .isLength({min: 5})
         .withMessage("5글자 이상 입력해주세요"),
+    validator,
 ];
 
 export const validateSignup = [
     ...validateCredential,
     body("nickName").trim().notEmpty().withMessage("닉네임을 적어주세요"),
-    body("phoneNumber")
-        .trim()
-        .isMobilePhone()
-        .withMessage("전화번호를 입력해주세요"),
+    // body("phoneNumber")
+    //     .trim()
+    //     .isMobilePhone()
+    //     .withMessage("전화번호를 입력해주세요"),
+    validator,
 ];

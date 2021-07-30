@@ -1,6 +1,6 @@
 # FILOT
 
-### 7/4
+### 7/29
 
 ## 회원가입 구현
 
@@ -8,31 +8,19 @@
 
 ## 로그인 구현
 
--   jwt []
+-   jwt [X]
 
-## MongoDB [x]
+## MongoDB
+
+-   Users [x]
+-   Chats []
 
 ## 유저 찾기 구현
 
-## validation
+### 7/30
 
-## Authentication
+## validation [x]
 
-## Configuration
+## Authentication [X]
 
-gobel
-
-GET
-/
-
-GET
-/join
-
-POST
-/join
-
-GET
-/login
-
-POST
-/login
+## Configuration [X]

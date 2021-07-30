@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
+import {config} from "./config";
 
 // mongodb 연결
-mongoose.connect("mongodb://127.0.0.1:27017/filot", {
+mongoose.connect(config.database.url, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     createIndexes: true,

@@ -1,18 +1,11 @@
 import express from "express";
-import {
-    getJoin,
-    getLogin,
-    home,
-    postJoin,
-    postLogin,
-} from "../controller/userController";
-
+import {home, postJoin, postLogin} from "../controller/userController";
+import {validateCredential} from "../middleware/validator";
 //라우터
 const globalRouter = express.Router();
 
 globalRouter.get("/", home);
-globalRouter.route("/login").get(getLogin).post(postLogin);
-globalRouter.route("/join").get(getJoin).post(postJoin);
-// globalRouter.post("/join", postJoin);
+globalRouter.post("/login", validateCredential, postLogin);
+globalRouter.post("/join", validateSignup, postJoin);
 
 export default globalRouter;

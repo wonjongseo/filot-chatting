@@ -1,25 +1,17 @@
 import User from "../models/User";
 import bcrypt from "bcrypt";
-import jwt from "express-jwt";
-// 작업용 홈페이지에 모든 유저 출력
+import jwt from "jsonwebtoken";
+import {config} from "../config";
+
 export const home = async (req, res, next) => {
     // db에서 모든 유저 가져옴
     const users = await User.find({});
 
-    //json
     res.status(200).json(users);
 };
 
-// get 로그인
-// export const getJoin = (req, res, next) => {
-//     res.json(join);
-// };
-
-// post 로그인
 export const postJoin = async (req, res, next) => {
-    // body에서 읽어옴
     const {id, password, confirmPassword, nickName, introduction} = req.body;
-
     // 입력한 두 비밀번호가 다르면 사용자 에러
     if (password != confirmPassword) {
         return res.status(409).json({message: "비밀번호가 틀립니다."});
@@ -39,7 +31,10 @@ export const postJoin = async (req, res, next) => {
             password,
             introduction,
         });
-        return res.status(201).json(user.nickName);
+
+        const token = createJwt(user.id);
+
+        return res.status(201).json({token, nickName});
     } catch (error) {
         console.error(error);
         // db에러 잡음
@@ -47,39 +42,42 @@ export const postJoin = async (req, res, next) => {
     }
 };
 
-// 유저 닉네임으로 유저 찾기
+export const postLogin = async (req, res, next) => {
+    const {id, password} = req.body;
+    const user = await User.findOne({id});
+    // 없으면 사용자 에러
+    if (!user) {
+        return res.status(401).json({errorMessage: "없는 아이디입니다."});
+    }
+    // 비밀번호 확인
+    const comfirmed = await bcrypt.compare(password, user.password);
+    if (!comfirmed) {
+        return res.status(401).josn({errorMessage: "비밀번호가 틀려요."});
+    }
+    const token = createJwt(user.id);
+    return res.json({message: "로그인 성공!", user, token});
+};
+
 export const getFind = async (req, res, next) => {
     const {nickName} = req.query;
 
     const user = await User.findOne({nickName});
 
     return res.status(200).json(user);
-    // res.render("profile", {user});
 };
 
-// get 로그인
-// export const getLogin = (req, res, next) => {
-//     res.render("login");
-// };
-
-// post 로그인
-export const postLogin = async (req, res, next) => {
-    const {id, password} = req.body;
-    // 입력한 id로 db안 id 찾기
-
-    const user = await User.findOne({id});
-
-    // 없으면 사용자 에러
+export const auth = async (req, res, next) => {
+    const user = await User.findOne({id: req.userId});
+    console.log("req.userId : ", req.userId);
     if (!user) {
-        return res.status(401).json({errorMessage: "없는 아이디입니다."});
+        return res.status(404).json({message: "User not found"});
     }
+    // console.log(req.token);
+    return res.status(200).json({token: req.token, username: user.id});
+};
 
-    // 비밀번호 확인
-    const comfirmed = await bcrypt.compare(password, user.password);
-
-    if (!comfirmed) {
-        return res.status(401).josn({errorMessage: "비밀번호가 틀려요."});
-    }
-
-    return res.json({message: "로그인 성공!", user});
+const createJwt = (id) => {
+    return jwt.sign({id}, config.jwt.secretKey, {
+        expiresIn: config.jwt.expireInSec,
+    });
 };
