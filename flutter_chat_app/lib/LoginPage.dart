@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class _LoginPage extends State<LoginPage>{
   String ID='', Password='';
   var sum = '0';
 
-  List _buttonList = ['아이디 또는 비밀번호 찾기','회원가입하기'];
+  List _buttonList = ['아이디 또는 비밀번호 찾기','회원가입하기', '회원 정보 조회'];
   List _TextFormList = ['아이디','비밀번호'];
 
   TextButton _makeTextButton(int index){
@@ -39,13 +40,15 @@ class _LoginPage extends State<LoginPage>{
         ],
       ),
       onPressed: () {
-        if(index.isEven)
+        if(index == 0)
           Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => FindClientInfo()));
-        else
+              .pushReplacementNamed('/findclientinfo');
+        else if(index == 1)
           Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => JoinPage()));
-
+              .pushReplacementNamed('/join');
+        else if(index == 2)
+          Navigator.of(context)
+              .pushReplacementNamed('/checkinfo');
       },
     );
   }
@@ -62,20 +65,6 @@ class _LoginPage extends State<LoginPage>{
           )
       ),
     );
-  }
-
-  Future<http.Response> _login(id, pwd) async{
-    final response = await http.post(
-      Uri.parse(_Login_api),
-      body: jsonEncode(
-        {
-          'id': id,
-          'pwd': pwd,
-        },
-      ),
-      headers: {'Content-Type': "application/json"},
-    );
-    return response;
   }
 
   @override
@@ -127,16 +116,62 @@ class _LoginPage extends State<LoginPage>{
                       value2.clear();
                     });
                     _login(ID, Password);
+                      //login success and page move
+                      //login failed
                   }),
               Padding(padding: EdgeInsets.all(13)),
               _makeTextButton(0),
               _makeTextButton(1),
+              _makeTextButton(2),
 
 
             ],
           ),
         ),
       ),
+    );
+  }
+
+  void _login(id, pwd) async{
+    final response = await http.post(
+      Uri.parse(_Login_api),
+      body: jsonEncode(
+        {
+          'id': id,
+          'pwd': pwd,
+        },
+      ),
+      headers: {'Content-Type': "application/json"},
+    );
+
+    if(response.statusCode == 200) {
+      // check Login Success and return
+      Navigator.of(context).pushReplacementNamed('/main');
+      return;
+    }
+
+    // login failed, and popup Failed
+    _errorPopup("아이디 또는 비밀번호를 확인해 주세요", "로그인 실패!");
+  }
+  void _errorPopup(String text, [String? title]){
+    if(title == null)
+      title = "Error!";
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text(title!),
+          content: new Text(text),
+          actions: <Widget>[
+            ElevatedButton(
+                child: Text("확인"),
+                onPressed: () {
+                  Navigator.pop(context);
+                }),
+          ],
+        );
+      },
     );
   }
 }

@@ -20,7 +20,7 @@ class _FindClientInfo extends State<FindClientInfo>{
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text("Calculator"),
+        title: Text("Find ID and Password"),
       ),
       body: Center(
         child: Column(

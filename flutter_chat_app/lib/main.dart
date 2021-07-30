@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/FindClientInfo.dart';
+import 'package:flutter_chat_app/InfoCheck.dart';
+import 'package:flutter_chat_app/JoinPage.dart';
 import 'package:flutter_chat_app/LoginPage.dart';
+import 'package:flutter_chat_app/MainMenu.dart';
+import 'package:flutter_chat_app/MyProfile.dart';
 
 void main() {
   runApp(MyApp());
@@ -23,7 +28,15 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: LoginPage()//MyHomePage(title: 'Flutter Demo Home Page'),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => LoginPage(),
+        '/main': (context) => MainMenu(),
+        '/join': (context) => JoinPage(),
+        '/findclientinfo': (context) => FindClientInfo(),
+        '/checkinfo': (context) => InfoCheck(),
+
+      },
     );
   }
 }
