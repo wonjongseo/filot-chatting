@@ -5,7 +5,7 @@ import {config} from "./config";
 mongoose.connect(config.database.url, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    createIndexes: true,
+
     useFindAndModify: false,
 });
 

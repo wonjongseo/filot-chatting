@@ -36,9 +36,9 @@ export const postJoin = async (req, res, next) => {
             phone_number,
         });
 
-        const token = createJwt(user.id);
+        const token = createJwt(user);
 
-        return res.status(201).json({token, nick_name});
+        return res.status(201).json(token);
     } catch (error) {
         console.error(error);
         // db에러 잡음
@@ -55,19 +55,18 @@ export const postLogin = async (req, res, next) => {
     }
     // 비밀번호 확인
     const match = await bcrypt.compare(password, user.password);
-    console.log(match);
+
     if (!match) {
         return res.status(401).json({errorMessage: "비밀번호가 틀려요."});
     }
-    const token = createJwt(user.id);
+    const token = createJwt(user);
     return res.json({message: "로그인 성공!", user, token});
 };
 
 export const changePassword = async (req, res, next) => {
     const {id} = req.params; // 없어도 될듯
-    const loggedIn = req.userId;
-    const user = await User.findOne({id: loggedIn});
-    console.log(user);
+    const user = req.user;
+    // const user = await User.findOne({id: loggedIn});
 
     const {password, new_password} = req.body;
     const match = await bcrypt.compare(password, user.password);
@@ -75,15 +74,13 @@ export const changePassword = async (req, res, next) => {
         return res.json({message: "비밀번호가 틀립니다"});
     }
 
-    console.log(`old password : ${user.password}`);
-
     await User.findByIdAndUpdate(
         {_id: user._id},
         {
             password: await bcrypt.hash(new_password, config.bcrypt.salt),
         }
     );
-    console.log(`new password : ${user.password}`);
+
     return res.json({message: "비밀번호 변경 완료!"});
 };
 
@@ -92,19 +89,21 @@ export const getFind = async (req, res, next) => {
 
     const user = await User.findOne({nick_name});
 
+    if (!user) {
+        return res
+            .status(401)
+            .json({message: "해당 유저를 찾을 수 없습니다ㅜ"});
+    }
+
     return res.status(200).json(user);
 };
 
 export const putEdit = async (req, res, next) => {
-    const loggedIn = req.userId;
+    const user = req.user;
     const newNickNmae = req.body.nick_name;
 
-    const user = await User.findOne({id: loggedIn});
-
-    if (!user) {
-        return res.status(401).json({message: "없는 아이디 입니다."});
-    }
     const existNick = await User.exists({nick_name: newNickNmae});
+
     if (existNick) {
         return res.json({message: "중복됩니다."});
     }
@@ -121,20 +120,34 @@ export const putEdit = async (req, res, next) => {
     }
 };
 
-export const deleteUser = (req, res, next) => {};
+export const deleteUser = async (req, res, next) => {
+    const {id} = req.params;
+
+    const user = req.user;
+    console.log(req.user);
+    if (id !== user.id) {
+        return res
+            .status(401)
+            .json({message: "계정을 삭제할 권리가 없습니다."});
+    }
+
+    await User.findByIdAndRemove(user._id);
+
+    return res.status(200).json({message: "삭제되었습니다 "});
+};
 
 export const auth = async (req, res, next) => {
-    const user = await User.findOne({id: req.userId});
+    const user = await User.findOne({id: req.user.id});
 
     if (!user) {
         return res.status(404).json({message: "User not found"});
     }
 
-    return res.status(200).json({token: req.token, username: user.nick_name});
+    return res.status(200).json({token: req.token, user: user});
 };
 
-const createJwt = (id) => {
-    return jwt.sign({id}, config.jwt.secretKey, {
+const createJwt = (user) => {
+    return jwt.sign({user}, config.jwt.secretKey, {
         expiresIn: config.jwt.expireInSec,
     });
 };

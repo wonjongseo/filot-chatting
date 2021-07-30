@@ -1,10 +1,14 @@
 # FILOT
 
+# TODO
+
+1.  status code
+
 ### 7/29
 
-## 회원가입 구현
+## join
 
--   해쉬화[x]
+-   hash[x]
 
 ## 로그인 구현
 
@@ -15,7 +19,7 @@
 -   Users [x]
 -   Chats []
 
-## 유저 찾기 구현
+## find user
 
 ### 7/30
 
@@ -28,3 +32,7 @@
 ## user-change-profile [x]
 
 ## user-change-password [x]
+
+## jwt id -> user [x]
+
+## delete user [x]

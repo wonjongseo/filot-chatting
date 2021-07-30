@@ -17,13 +17,14 @@ export const isAuth = async (req, res, next) => {
             return res.status(401).json(AUTH_ERROR);
         }
 
-        const user = await User.findOne({id: decoded.id});
+        const user = await User.findOne({id: decoded.user.id});
 
         if (!user) {
             return res.status(401).json(AUTH_ERROR);
         }
-        req.userId = user.id; // req.customData
+        req.user = user; // req.customData
         req.token = token;
+
         next();
     });
 };
