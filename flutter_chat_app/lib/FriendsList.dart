@@ -235,6 +235,7 @@ class FriendsList extends StatefulWidget {
 }
 
 class _FriendsList extends State<FriendsList> {
+  ScrollController _scrollController = new ScrollController();
   List<Object> Users = [1,2,3,4,5,6,7,8,9,10];
   var deviceHeight, deviceWidth;
 
@@ -403,8 +404,8 @@ class _FriendsList extends State<FriendsList> {
     var FriendProfileWidget_width, FriendProfileWidget_height;
     // TODO: implement build
     return Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
+        body: //SingleChildScrollView( child:
+        Column(
             children: <Widget> [
               Container(
                 child: Center(
@@ -437,34 +438,38 @@ class _FriendsList extends State<FriendsList> {
                 height: rateHeight*20,
               ),
               Container(height: 20,width: double.infinity, child: Center(child: Container( height: 1, width: rateWidth*80, color: Colors.black12),)),
-              SingleChildScrollView(
-                child: Column(
-                  children: [
-                    for(var item in Users)
-                      Container(
-                        height: (FriendProfileWidget_height = rateHeight * 15),
-                        width: (FriendProfileWidget_width = rateWidth * 100),
-                        decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                  color: Colors.black12,
-                                  width: 1
-                              ),
-                            )
+              Flexible(
+                child: ListView(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    controller: _scrollController,
+                    children: [
+                      for(var item in Users)
+                        Container(
+                          height: (FriendProfileWidget_height = rateHeight * 15),
+                          width: (FriendProfileWidget_width = rateWidth * 100),
+                          decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                    color: Colors.black12,
+                                    width: 1
+                                ),
+                              )
+                          ),
+                          child: GestureDetector(
+                            onTap: () {_frinedPopup("hi");},
+                            child: Center(child: _ProfileCardeView(
+                                FriendProfileWidget_width,
+                                FriendProfileWidget_height)),
+                          ),
                         ),
-                        child: GestureDetector(
-                          onTap: () {_frinedPopup("hi");},
-                          child: Center(child: _ProfileCardeView(
-                              FriendProfileWidget_width,
-                              FriendProfileWidget_height)),
-                        ),
-                      ),
-                  ],
+                    ]
+                  //Column(children: [],),
                 ),
               )
             ],
           ),
-        )
+        //)
     );
   }
 }
