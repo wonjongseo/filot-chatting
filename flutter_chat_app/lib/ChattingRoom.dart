@@ -20,7 +20,7 @@ class _Chatting extends State<Chatting>{
         title: Text("Name"),
         primary: true,
         actions: <Widget>[
-          IconButton(onPressed: (){Navigator.of(context).pushReplacementNamed('/main');}, icon: Icon(Icons.home,size: 30,))
+          IconButton(onPressed: (){Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);}, icon: Icon(Icons.home,size: 30,))
         ],
       ),
       backgroundColor: Colors.white,

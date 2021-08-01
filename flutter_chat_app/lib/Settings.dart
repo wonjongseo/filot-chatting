@@ -19,7 +19,7 @@ class _Settings extends State<Settings>{
         title: Text("Settings"),
         primary: true,
         actions: <Widget>[
-          IconButton(onPressed: (){Navigator.of(context).pushReplacementNamed('/main');}, icon: Icon(Icons.home,size: 30,))
+          IconButton(onPressed: (){Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);}, icon: Icon(Icons.home,size: 30,))
         ],
         backgroundColor: Colors.grey,
         foregroundColor: Colors.blue,
@@ -61,7 +61,8 @@ class _Settings extends State<Settings>{
             ElevatedButton(
               onPressed: (){
                 // Logout function and releas token
-                Navigator.of(context).pushReplacementNamed('/');
+                //Navigator.of(context).popAndPushNamed('/');
+                Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
               },
               child: Row(
                 children: [
