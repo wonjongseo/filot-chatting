@@ -79,7 +79,6 @@ class _FindClientInfo extends State<FindClientInfo>{
   void initState() {
     // TODO: implement initState
     super.initState();
-    print("hello");
     for(var item in _buttonList){
       _dropDownMenuItems.add(DropdownMenuItem(value: item, child: Text(item)));
     }
