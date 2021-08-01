@@ -61,7 +61,7 @@ class _Settings extends State<Settings>{
             ElevatedButton(
               onPressed: (){
                 // Logout function and releas token
-                setState(() {});
+                Navigator.of(context).pushReplacementNamed('/');
               },
               child: Row(
                 children: [

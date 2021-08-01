@@ -7,6 +7,7 @@ class Chatting extends StatefulWidget{
 }
 class _Chatting extends State<Chatting>{
   TextEditingController _textController = new TextEditingController();
+  ScrollController _scrollController = new ScrollController();
   String _sendText = '';
   var _rateHeight,_rateWidth;
   @override
@@ -22,17 +23,19 @@ class _Chatting extends State<Chatting>{
           IconButton(onPressed: (){Navigator.of(context).pushReplacementNamed('/main');}, icon: Icon(Icons.home,size: 30,))
         ],
       ),
-      bottomNavigationBar: _SendTextForm(),
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-
-        ),
+      body: Column(
+        children: [
+          Flexible(
+            child: ListView(
+              controller: _scrollController,
+              children: [],
+            ),
+          ),
+          _SendTextForm(),
+        ],
       ),
-
-
     );
-    throw UnimplementedError();
   }
 
   Widget _SendTextForm([str]) {
