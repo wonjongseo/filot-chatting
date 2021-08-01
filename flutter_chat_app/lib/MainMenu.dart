@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/ChatList.dart';
 import 'package:flutter_chat_app/FriendsList.dart';
+import 'package:flutter_chat_app/MorePage.dart';
 import 'package:flutter_chat_app/MyProfile.dart';
 import 'package:flutter_chat_app/Settings.dart';
 
@@ -74,7 +75,7 @@ class _MainMenu extends State<MainMenu> with SingleTickerProviderStateMixin{
       case 2:
         return ChatList();
       case 3:
-        return ChatList();
+        return Mores();
     }
     return MyProfile();
   }

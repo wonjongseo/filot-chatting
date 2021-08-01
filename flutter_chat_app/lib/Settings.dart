@@ -55,7 +55,7 @@ class _Settings extends State<Settings>{
             )
         ),
         width: _rateWidth*100,
-        height: 45,
+        height: 50,
         child: Wrap(
           children: [
             ElevatedButton(
@@ -65,14 +65,14 @@ class _Settings extends State<Settings>{
               },
               child: Row(
                 children: [
-                  Icon(Icons.logout,color: Colors.black54,),
-                  Text("Logout",style: TextStyle(color: Colors.black54, fontSize: 14),),
+                  Icon(Icons.logout,color: Colors.black54,size: 20,),
+                  Text(" Logout",style: TextStyle(color: Colors.black54, fontSize: 14),),
                 ],
               ),
               style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
                   shadowColor: MaterialStateProperty.all<Color>(Colors.white),
-                  fixedSize: MaterialStateProperty.all<Size>(Size(90, 40)),
+                  fixedSize: MaterialStateProperty.all<Size>(Size(100, 40)),
                   shape: MaterialStateProperty.all<OutlinedBorder>(StadiumBorder(side: BorderSide.none) )
               ),
             ),
