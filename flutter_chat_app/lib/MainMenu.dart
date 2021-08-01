@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/ChatList.dart';
 import 'package:flutter_chat_app/FriendsList.dart';
 import 'package:flutter_chat_app/MyProfile.dart';
+import 'package:flutter_chat_app/Settings.dart';
 
 class MainMenu extends StatefulWidget {
   @override
@@ -38,6 +39,7 @@ class _MainMenu extends State<MainMenu> with SingleTickerProviderStateMixin{
                     onPressed: () {
                       setState(() {
                         // go to settings
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => Settings(),));
                       });
                     })
               ],
