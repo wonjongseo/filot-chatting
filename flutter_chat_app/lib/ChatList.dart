@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_chat_app/ChattingRoom.dart';
 import 'package:url_launcher/url_launcher.dart';
 String icon_path = 'image/teamIcon.png';
 String github_outline_path = 'image/github_outline.png';
@@ -52,11 +53,11 @@ class _ChatList extends State<ChatList> {
                   child: Row(
                     children: [
                       Text("FILOT 전체 톡방",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
-                      Padding(padding: EdgeInsets.all(_widthRate*6)),
+                      Padding(padding: EdgeInsets.all(_widthRate*4)),
 
                       Container(
-                        width: _widthRate*8,
-                        height: _hegihtRate*14,
+                        width: _widthRate*6,
+                        height: _hegihtRate*10,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
                             color: Colors.green,
@@ -93,7 +94,9 @@ class _ChatList extends State<ChatList> {
     );
   }
 
-  void _goToChatting(){}
+  void _goToChatting(){
+    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Chatting()));
+  }
 
   @override
   Widget build(BuildContext context) {
