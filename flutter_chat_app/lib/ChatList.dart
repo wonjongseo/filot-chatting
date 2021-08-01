@@ -112,7 +112,12 @@ class _ChatList extends State<ChatList> {
             child: Center(
               child: Column(
                 children: [
-                  Padding(padding: EdgeInsets.all(rateHeight*2.5)),
+                  Container(
+                    width: double.infinity,
+                    height: rateHeight*5,
+                    alignment: Alignment.bottomLeft,
+                    child: Icon(Icons.star,size: 40,color: Colors.yellow,),
+                  ),
                   Container(
                     decoration: BoxDecoration(),
                     width: (MyProfileWidget_width=rateWidth * 100),
