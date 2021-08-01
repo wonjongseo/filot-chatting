@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/FindClientInfo.dart';
+import 'package:flutter_chat_app/InfoCheck.dart';
 import 'package:flutter_chat_app/JoinPage.dart';
 
 import 'package:http/http.dart' as http;
@@ -42,13 +43,13 @@ class _LoginPage extends State<LoginPage>{
       onPressed: () {
         if(index == 0)
           Navigator.of(context)
-              .pushReplacementNamed('/findclientinfo');
+              .push(MaterialPageRoute(builder: (context) => FindClientInfo()));
         else if(index == 1)
           Navigator.of(context)
-              .pushReplacementNamed('/join');
+              .push(MaterialPageRoute(builder: (context) => JoinPage()));
         else if(index == 2)
           Navigator.of(context)
-              .pushReplacementNamed('/checkinfo');
+              .push(MaterialPageRoute(builder: (context) => InfoCheck()));
       },
     );
   }
