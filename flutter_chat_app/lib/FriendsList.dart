@@ -221,8 +221,10 @@ class _FriendsList extends State<FriendsList> {
   }
 }*/
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_chat_app/ChattingRoom.dart';
 import 'package:url_launcher/url_launcher.dart';
 String icon_path = 'image/teamIcon.png';
 String github_outline_path = 'image/github_outline.png';
@@ -235,9 +237,16 @@ class FriendsList extends StatefulWidget {
 }
 
 class _FriendsList extends State<FriendsList> {
+  Map<String,Widget> _IconList = {
+    "Github":FittedBox(child: Image.asset(github_path,fit: BoxFit.fitHeight,color: Colors.white,),fit: BoxFit.fill,),
+    "Email":Icon(Icons.mail,color: Colors.white,),
+    "Phone":Icon(Icons.smartphone,color: Colors.white,),
+    "Chat":Icon(Icons.chat_bubble,color: Colors.white,),
+  };
   ScrollController _scrollController = new ScrollController();
   List<Object> Users = [1,2,3,4,5,6,7,8,9,10];
   var deviceHeight, deviceWidth;
+  var rateWidth, rateHeight;
 
   _launchURL(url) async {
     try {
@@ -366,28 +375,123 @@ class _FriendsList extends State<FriendsList> {
     );
   }
 
-  void _frinedPopup(String text, [String? title]){
-    if(title == null)
-      title = "Error!";
+  void _frinedPopup([String? text]){
+    double _nameSize;
+    double _paddingSize,_iconSize;
     showDialog(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
+          title: Container(child: IconButton(icon: Icon(Icons.clear), onPressed: () { Navigator.of(context).pop(); },color: Colors.white,), alignment: Alignment.topLeft,),
           content: Container(
-            width: 300,
-            height: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.red,
+            width: deviceWidth,
+            height: rateHeight*90,
+            alignment: Alignment.topCenter,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Container(
+                    width: rateWidth*30,
+                    height: rateWidth*30,
+                    child: Image.asset(icon_path, fit: BoxFit.fill,),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        color: Colors.black12,
+                        width: 1,
+                      ),
+                      borderRadius: const BorderRadius.all(const Radius.circular(100)),
+                    )
+                ),
+                Padding(padding: EdgeInsets.all(8),),
+                Container(
+                  child: Center(child: Text("이주호",style: TextStyle(color: Colors.white,fontSize: (_nameSize = 17),fontWeight: FontWeight.bold),),),
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  height: _nameSize*2,
+                  width: _nameSize*5,
+                ),
+                Padding(padding: EdgeInsets.all(5),),
+                Text("Front End",style: TextStyle(color: Colors.white,fontSize: (_nameSize = 15),),),
+                Divider(color: Colors.white.withOpacity(1),thickness: 1,height: 50,),
+                Container(
+                    width: double.infinity,
+                    height: 70,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Container(
+                            height: 70,
+                            child: GestureDetector(
+                              child: Center(child: Column(
+                                children: [
+                                  Container(child: _IconList["Github"], height: (_iconSize=50),),
+                                  Text("Github",style: TextStyle(color: Colors.white),),
+                                ],
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                              ),),
+                              onTap: (){_launchURL("www.google.com");},
+                            ),
+                          ),
+                        Padding(padding: EdgeInsets.all((_paddingSize=rateWidth*5)),),
+                        Container(
+                          height: 70,
+                          child: GestureDetector(
+                            child: Center(child: Column(
+                              children: [
+                                Container(child: _IconList["Email"], height: _iconSize,),
+                                Text("Email",style: TextStyle(color: Colors.white),),
+                              ],
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                            ),),
+                            onTap: (){_launchMail('test@gmail.com');},
+                          ),
+                        ),
+                        Padding(padding: EdgeInsets.all(_paddingSize),),
+                        Container(
+                          height: 70,
+                          child: GestureDetector(
+                            child: Center(child: Column(
+                              children: [
+                                Container(child: _IconList["Phone"], height: _iconSize,),
+                                Text("Phone",style: TextStyle(color: Colors.white),),
+                              ],
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                            ),),
+                            onTap: (){_launchPhone("01076687785");},
+                          ),
+                        ),
+                        Padding(padding: EdgeInsets.all(_paddingSize),),
+                        Container(
+                          height: 70,
+                          child: GestureDetector(
+                            child: Center(child: Column(
+                              children: [
+                                Container(child: _IconList["Chat"], height: _iconSize,),
+                                Text("Talk",style: TextStyle(color: Colors.white),),
+                              ],
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                            ),),
+                            onTap: (){Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>Chatting()));},
+                          ),
+                        ),
+                      ],
+                    ),
+                ),
+                Padding(padding: EdgeInsets.all(10),),
+              ],
             ),
           ),
-          actions: <Widget>[
-            /*ElevatedButton(
-                child: Text("확인"),
-                onPressed: () {
-                  Navigator.pop(context);
-                }),*/
-          ],
+          backgroundColor: Colors.transparent.withOpacity(0),
+
         );
       },
     );
@@ -398,8 +502,9 @@ class _FriendsList extends State<FriendsList> {
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
 
-    final rateWidth = (deviceWidth - 80)/100;
-    final rateHeight = (deviceHeight)/100;
+    rateWidth = (deviceWidth - 80)/100;
+    rateHeight = (deviceHeight)/100;
+
     var MyProfileWidget_width, MyProfileWidget_height;
     var FriendProfileWidget_width, FriendProfileWidget_height;
     // TODO: implement build
@@ -457,7 +562,7 @@ class _FriendsList extends State<FriendsList> {
                               )
                           ),
                           child: GestureDetector(
-                            onTap: () {_frinedPopup("hi");},
+                            onTap: () {_frinedPopup();},
                             child: Center(child: _ProfileCardeView(
                                 FriendProfileWidget_width,
                                 FriendProfileWidget_height)),
