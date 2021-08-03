@@ -14,11 +14,26 @@ class JoinPage extends StatefulWidget{
   State<StatefulWidget> createState() => _JoinPage();
 }
 class _JoinPage extends State<JoinPage>{
-  String _Join_api = "https://en5f3ghmodccnhn.m.pipedream.net";
+
+  /**수정 사항**/
+  String _Join_api = "https://en5f3ghmodccnhn.m.pipedream.net";//"여기에 api";
+  Map<String,String> _KeyList = // <My Use Key, value of api key>
+    {
+      'id' : 'id',
+      'pwd' : 'password',
+      'checkpwd' : 'confirmPassword',
+      'name' : 'name',
+      'nick' : 'nickName',
+      'phone' : 'phoneNumber',
+      'msg' : 'message'
+    };
+  /**수정 사항**/
+
   String ID='', Password='';
 
   List _TextFormList = ['아이디','비밀번호','비밀번호 확인','이름', '닉네임','전화번호'];
-  List<String> _InfoList = [];
+  Map<String,String> _InfoList = {};
+  List _InfoLists = ['id','pwd','checkpwd','name', 'nick','phone'];
   List<TextEditingController> values = [];
 
   String? validatePassword(String value) {
@@ -91,24 +106,20 @@ class _JoinPage extends State<JoinPage>{
       Uri.parse(_Join_api),
       body: jsonEncode(
         {
-          'id': _InfoList[0],
-          'pwd': _InfoList[1],
-          'name': _InfoList[3],
-          'nickname': _InfoList[4],
-          'phone': _InfoList[5],
+          for(var item in _InfoList.entries)
+            _KeyList[item.key] : item.value,
         },
       ),
       headers: {'Content-Type': "application/json"},
     );
     if(response.statusCode == 200) {
       // check Join Success and return
-      //Navigator.of(context).push(MaterialPageRoute(builder: (context) => InfoCheck()));
       Navigator.of(context).pop();
       return;
     }
 
     // Join failed, and popup Failed
-    _errorPopup("생성 중 에러가 발생했습니다.\n(ID중복 또는 패스워드 불일치)");
+    _errorPopup(jsonDecode(response.body)[_KeyList!['msg']].toString());
   }
 
   @override
@@ -155,14 +166,14 @@ class _JoinPage extends State<JoinPage>{
                   padding: EdgeInsets.fromLTRB(80,0,80,0),
                 ),
                 onPressed: () {
-                  for(var item in values){
-                    var str = item.text.toString();
+                  for(int index = 0; index<values.length;index++){
+                    var str = values[index].text.toString();
                     if(str.isEmpty) {
                       _errorPopup("빈 칸이 없어야 합니다!");
                       return;
                     }
                     else
-                      _InfoList.add(str);
+                      _InfoList.addAll({_InfoLists[index]: str});
                   }
 
                   if(_InfoList[1] != _InfoList[2]){

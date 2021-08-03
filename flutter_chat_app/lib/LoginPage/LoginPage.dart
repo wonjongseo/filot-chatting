@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/LoginPage/FindClientInfo.dart';
 import 'package:flutter_chat_app/LoginPage/InfoCheck.dart';
 import 'package:flutter_chat_app/LoginPage/JoinPage.dart';
+import "package:flutter_secure_storage/flutter_secure_storage.dart";
 
 import 'package:http/http.dart' as http;
 
@@ -15,11 +16,22 @@ class LoginPage extends StatefulWidget{
   State<StatefulWidget> createState() => _LoginPage();
 }
 class _LoginPage extends State<LoginPage>{
-  String _Login_api = "https://en5f3ghmodccnhn.m.pipedream.net";
+  final storage = new FlutterSecureStorage();
+  
+  /**수정 사항**/
+  String _Login_api = "https://en5f3ghmodccnhn.m.pipedream.net";//"여기에 api";
+  Map<String,String> _KeyList = // <My Use Key, value of api key>
+  {
+    'id' : 'id',
+    'pwd' : 'password',
+    'jwt' : 'jwt key',
+    'msg' : 'message'
+  };
+  /**수정 사항**/
+
   TextEditingController value1 = TextEditingController();
   TextEditingController value2 = TextEditingController();
   String ID='', Password='';
-  var sum = '0';
 
   List _buttonList = ['아이디 또는 비밀번호 찾기','회원가입하기', '회원 정보 조회'];
   List _TextFormList = ['아이디','비밀번호'];
@@ -137,8 +149,8 @@ class _LoginPage extends State<LoginPage>{
       Uri.parse(_Login_api),
       body: jsonEncode(
         {
-          'id': id,
-          'pwd': pwd,
+          _KeyList['id']: id,
+          _KeyList['pwd']: pwd,
         },
       ),
       headers: {'Content-Type': "application/json"},
@@ -146,12 +158,18 @@ class _LoginPage extends State<LoginPage>{
 
     if(response.statusCode == 200) {
       // check Login Success and return
+      try {
+        storage.write(key: 'jwt', value: jsonDecode(response.body)['jwt']);
+      }
+      catch(e){
+        _errorPopup(e.toString());
+      }
       Navigator.of(context).pushReplacementNamed('/main');
       return;
     }
 
     // login failed, and popup Failed
-    _errorPopup("아이디 또는 비밀번호를 확인해 주세요", "로그인 실패!");
+    _errorPopup(jsonDecode(response.body)[_KeyList!['msg']].toString());
   }
   void _errorPopup(String text, [String? title]){
     if(title == null)
@@ -174,6 +192,7 @@ class _LoginPage extends State<LoginPage>{
       },
     );
   }
+
   @override
   bool get wantKeepAlive => true;
 
