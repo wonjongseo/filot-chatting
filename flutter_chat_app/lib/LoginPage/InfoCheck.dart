@@ -122,8 +122,8 @@ class _InfoCheck extends State<InfoCheck>{
   }
   void _checking() async{
     final response = await http.get(
-      Uri.parse(_Check_api),
-      headers: {'Content-Type': "application/json",'id': ID},
+      Uri.parse(_Check_api+"?id="+ID),
+      headers: {'Content-Type': "application/json"},
     );
     if(response.statusCode == 200) {
       _InfoList.clear();

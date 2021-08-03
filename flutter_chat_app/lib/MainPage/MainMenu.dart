@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_app/ChatList.dart';
-import 'package:flutter_chat_app/FriendsList.dart';
-import 'package:flutter_chat_app/MorePage.dart';
-import 'package:flutter_chat_app/MyProfile.dart';
-import 'package:flutter_chat_app/Settings.dart';
+import 'package:flutter_chat_app/MainPage/Chatting/ChatList.dart';
+import 'package:flutter_chat_app/MainPage/Friends/FriendsList.dart';
+import 'package:flutter_chat_app/MainPage/Mores/MorePage.dart';
+import 'package:flutter_chat_app/MainPage/MyProfile/MyProfile.dart';
+import 'package:flutter_chat_app/MainPage/Settings/Settings.dart';
 
 class MainMenu extends StatefulWidget {
   @override

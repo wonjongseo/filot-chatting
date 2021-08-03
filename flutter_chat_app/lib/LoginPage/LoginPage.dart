@@ -1,11 +1,10 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_app/FindClientInfo.dart';
-import 'package:flutter_chat_app/InfoCheck.dart';
-import 'package:flutter_chat_app/JoinPage.dart';
+import 'package:flutter_chat_app/LoginPage/FindClientInfo.dart';
+import 'package:flutter_chat_app/LoginPage/InfoCheck.dart';
+import 'package:flutter_chat_app/LoginPage/JoinPage.dart';
 
 import 'package:http/http.dart' as http;
 

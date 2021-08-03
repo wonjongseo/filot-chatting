@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_chat_app/ChattingRoom.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_chat_app/MainPage/Chatting/ChattingRoom.dart';
+
 String icon_path = 'image/teamIcon.png';
 String github_outline_path = 'image/github_outline.png';
 String github_path = 'image/github_outline.png';
