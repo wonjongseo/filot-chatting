@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_chat_app/data/MyData.dart';
 import 'package:flutter_chat_app/data/ServerData.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 
@@ -184,11 +185,28 @@ class _MyProfile extends State<MyProfile> {
 
   }
   void _getData() async{
+
+    try {
+      // chrome 브라우저에서는 불가, android sdk 버전이 안돼서 불가
+      // 대안으로 token 값을 객체에 저장하고 필요 시 반환
+      await storage.write(key: 'token', value: 'testing1234');
+    }catch (e){
+      print(e.toString());
+    }
+
     // 모든 정보를 업데이트 한다.
+    var _tokenValue;
+    try {
+      _tokenValue = (await storage.read(key: 'token'))!;
+    }catch (e){
+      print(e.toString());
+    }
+
     final response = await http.get(
         Uri.parse(GET_MyProfile_api),
         headers: {'Content-Type': "application/json",
-          (ServerData.KeyList['token'] as String) : (storage.read(key: 'token') as String)}
+          ServerData.KeyList['token'] as String : _tokenValue,
+        }
     );
     if(response.statusCode != 200){
       return;
