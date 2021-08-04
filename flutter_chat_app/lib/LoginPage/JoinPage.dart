@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/data/ServerData.dart';
 
 
 import 'package:http/http.dart' as http;
@@ -16,17 +17,7 @@ class JoinPage extends StatefulWidget{
 class _JoinPage extends State<JoinPage>{
 
   /**수정 사항**/
-  String _Join_api = "https://en5f3ghmodccnhn.m.pipedream.net";//"여기에 api";
-  Map<String,String> _KeyList = // <My Use Key, value of api key>
-    {
-      'id' : 'id',
-      'pwd' : 'password',
-      'checkpwd' : 'confirmPassword',
-      'name' : 'name',
-      'nick' : 'nickName',
-      'phone' : 'phoneNumber',
-      'msg' : 'message'
-    };
+  String _Join_api = ServerData.api+"";//"여기에 api";
   /**수정 사항**/
 
   String ID='', Password='';
@@ -107,7 +98,7 @@ class _JoinPage extends State<JoinPage>{
       body: jsonEncode(
         {
           for(var item in _InfoList.entries)
-            _KeyList[item.key] : item.value,
+            ServerData.KeyList[item.key] : item.value,
         },
       ),
       headers: {'Content-Type': "application/json"},
@@ -119,7 +110,7 @@ class _JoinPage extends State<JoinPage>{
     }
 
     // Join failed, and popup Failed
-    _errorPopup(jsonDecode(response.body)[_KeyList!['msg']].toString());
+    _errorPopup(jsonDecode(response.body)[ServerData.KeyList!['msg']].toString());
   }
 
   @override

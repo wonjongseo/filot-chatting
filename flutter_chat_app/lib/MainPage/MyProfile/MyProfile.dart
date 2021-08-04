@@ -6,7 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_chat_app/data/MyData.dart';
-import 'package:flutter_chat_app/data/ProfileData.dart';
+import 'package:flutter_chat_app/data/ServerData.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 
@@ -22,8 +22,7 @@ class MyProfile extends StatefulWidget {
 }
 
 class _MyProfile extends State<MyProfile> {
-  final GET_MyProfile_api = 'https://en5f3ghmodccnhn.m.pipedream.net';
-  final formKey = GlobalKey<FormState>();
+  final GET_MyProfile_api = ServerData.api + '';
 
   String strs = '';
   List _NoticeList = [];
@@ -186,10 +185,10 @@ class _MyProfile extends State<MyProfile> {
   }
   void _getData() async{
     // 모든 정보를 업데이트 한다.
-    //String temp = storage.read(key: 'jwt') as String;
     final response = await http.get(
         Uri.parse(GET_MyProfile_api),
-        headers: {'Content-Type': "application/json"}
+        headers: {'Content-Type': "application/json",
+          (ServerData.KeyList['token'] as String) : (storage.read(key: 'token') as String)}
     );
     if(response.statusCode != 200){
       return;
@@ -197,11 +196,11 @@ class _MyProfile extends State<MyProfile> {
 
     var data = jsonDecode(response.body);
 
-    _myData = new MyData(data['name']);
-    _myData.setRole(data['role']);
-    _myData.setPhone(data['phone']);
-    _myData.setEmail(data['email']);
-    _myData.setGithub(data['github']);
+    _myData = new MyData(data[ServerData.KeyList['name']]);
+    _myData.setRole(data[ServerData.KeyList['role']]);
+    _myData.setPhone(data[ServerData.KeyList['phone']]);
+    _myData.setEmail(data[ServerData.KeyList['email']]);
+    _myData.setGithub(data[ServerData.KeyList['github']]);
 
     /** 화면에 뿌리기 **/
     _TextEditController["Role"]!.text =  _myData.getRole();
@@ -209,7 +208,7 @@ class _MyProfile extends State<MyProfile> {
     _TextEditController["Email"]!.text =  _myData.getEmail();
     _TextEditController["Phone"]!.text =  _myData.getPhone();
   }
-  void _updateData() async{
+  void _updateData() async {
     print(await _myData.UpdateData());
   }
 
@@ -321,7 +320,6 @@ class _MyProfile extends State<MyProfile> {
     }
   }
 
-  
   Widget _EditTextForm(TextEditingController? controller,[str]){
 
     final _rateWidth = deviceWidth / 100;

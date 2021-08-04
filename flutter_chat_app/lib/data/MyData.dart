@@ -1,21 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter_chat_app/data/ProfileData.dart';
+import 'package:flutter_chat_app/data/ServerData.dart';
 import 'package:http/http.dart' as http;
 
 class MyData extends UserData{
   /** 수정 사항 **/
-  final _user_data_update_api = 'https://en5f3ghmodccnhn.m.pipedream.net';
-  Map<String,String> _KeyList = // <My Use Key, value of api key>
-  {
-    'name' : 'name',
-    'phone' : 'phoneNumber',
-    'email' : 'nickName',
-    'github' : 'github',
-    'role' : 'role',
-    'state' : 'state',
-    'msg' : 'message'
-  };
+  final _user_data_update_api = ServerData.api + '';
   /** 수정 사항 **/
 
 
@@ -28,17 +19,17 @@ class MyData extends UserData{
         Uri.parse(_user_data_update_api),
         body: jsonEncode(
           {
-            _KeyList['name']: super.getName(),
-            _KeyList['github']: super.getGithub(),
-            _KeyList['email']: super.getEmail(),
-            _KeyList['phone']: super.getPhone(),
-            _KeyList['role']: super.getRole(),
-            _KeyList['state']: super.getState(),
+            ServerData.KeyList['name']: super.getName(),
+            ServerData.KeyList['github']: super.getGithub(),
+            ServerData.KeyList['email']: super.getEmail(),
+            ServerData.KeyList['phone']: super.getPhone(),
+            ServerData.KeyList['role']: super.getRole(),
+            ServerData.KeyList['state']: super.getState(),
           },
         ),
         headers: {'Content-Type': "application/json"},
       );
-      msg = jsonDecode(response.body)[_KeyList['msg']].toString();
+      msg = jsonDecode(response.body)[ServerData.KeyList['msg']].toString();
     }
     catch (e) {
       msg = e.toString();
@@ -55,7 +46,7 @@ class MyData extends UserData{
       ),
       headers: {'Content-Type': "application/json"},
     );
-    String msg = jsonDecode(response.body)[_KeyList!['msg']].toString();
+    String msg = jsonDecode(response.body)[ServerData.KeyList!['msg']].toString();
 
     return msg;
   }
