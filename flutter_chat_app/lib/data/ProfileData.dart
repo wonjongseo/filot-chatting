@@ -4,6 +4,7 @@ class UserData {
   String _email = '';
   String _github = '';
   String _role = '';
+  String _imgPath = '';
   var _state;
 
   UserData(name){
@@ -20,7 +21,9 @@ class UserData {
   String getRole() => _role;
   void setRole(String role) => this._role = role;
   dynamic getState() => _state;
-  void setState(role) => this._role = role;
+  void setState(state) => this._state = state;
+  String getImage() => _imgPath;
+  void setImage(String imgPath) => this._imgPath = (imgPath.isEmpty ? 'image/teamIcon.png' : imgPath);
 
 /*Future<String> GetData() async{
     String msg;
