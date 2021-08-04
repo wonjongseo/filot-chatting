@@ -1,8 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_chat_app/data/MyData.dart';
+import 'package:flutter_chat_app/data/ProfileData.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:http/http.dart' as http;
+
 String icon_path = 'image/teamIcon.png';
 String github_outline_path = 'image/github_outline.png';
 String github_path = 'image/github.png';
@@ -15,6 +22,7 @@ class MyProfile extends StatefulWidget {
 }
 
 class _MyProfile extends State<MyProfile> {
+  final GET_MyProfile_api = 'https://en5f3ghmodccnhn.m.pipedream.net';
   final formKey = GlobalKey<FormState>();
 
   String strs = '';
@@ -27,14 +35,183 @@ class _MyProfile extends State<MyProfile> {
     "Phone":Icon(Icons.smartphone,size: 40,color: Colors.black,),
   };
   List<bool> _currentStates = [true,false,false];
-  List<TextEditingController> _TextEdit = [];
   Map<String,TextEditingController> _TextEditController = {
     "Role":new TextEditingController(),
     "Github":new TextEditingController(),
     "Email":new TextEditingController(),
     "Phone":new TextEditingController(),
   };
+
+  late MyData _myData;
+
   var deviceHeight, deviceWidth;
+
+  @override
+  Widget build(BuildContext context) {
+    deviceHeight = MediaQuery.of(context).size.height;
+    deviceWidth = MediaQuery.of(context).size.width;
+
+    final rateWidth = (deviceWidth - 80)/100;
+    final rateHeight = (deviceHeight)/100;
+
+    var MyProfileWidgetWidth, MyProfileWidgetHeight;
+    // TODO: implement build
+    return Scaffold(
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget> [
+              /** 내 현재 프로필 상태 Container**/
+              Container(
+                child: Center(
+                  child: Column(
+                    children: [
+                      Padding(padding: EdgeInsets.all(rateHeight*3)),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                            color: Colors.black12,
+                            width: 1,
+                          ),
+                          borderRadius: const BorderRadius.all(const Radius.circular(8)),
+                          boxShadow: [BoxShadow(
+                            color: Colors.grey.withOpacity(0.2),
+                            spreadRadius: 3,
+                            blurRadius: 7,
+                            offset: Offset(2, 3),
+                          )],
+
+                        ),
+                        width: (MyProfileWidgetWidth=rateWidth * 90),
+                        height: (MyProfileWidgetHeight=100.0),
+                        child: Center(child: _ProfileCardeView(MyProfileWidgetWidth,MyProfileWidgetHeight)),
+                      ),
+
+                    ],
+                  ),
+
+                ),
+                height: rateHeight*20,
+              ),
+
+              /** 공지사항 Container**/
+              Container(
+                height: rateHeight*30,
+                child: Column(
+                  children: [
+                    Container(
+                      height: rateHeight*6.5,
+                      width: rateWidth*85,
+                      alignment: Alignment.bottomLeft,
+                      child: Container(
+                        height: rateHeight*5.0,
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: Colors.black12,
+                              width: 1,
+                            ),
+                          ),
+                        ),
+                        child: Wrap(
+                          alignment: WrapAlignment.end,
+                          direction: Axis.vertical,
+                          children: [
+                            Icon(Icons.star,color: Colors.yellow,),
+                            Text("공지사항",style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.all(3),),
+                    Expanded(child: Container(
+                      alignment: Alignment.topCenter,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          color: Colors.black12,
+                          width: 1,
+                        ),
+                        boxShadow: [BoxShadow(
+                          color: Colors.grey.withOpacity(0.1),
+                          spreadRadius: 3,
+                          blurRadius: 10,
+                          offset: Offset(2, 3),
+                        )],
+                        borderRadius: const BorderRadius.all(const Radius.circular(5)),
+                      ),
+                      height: double.infinity,
+                      width: rateWidth*80,
+                      child: Column(
+                        children: [
+                          _Notice(),
+                          for(var item in _NoticeList)
+                            _Notice(),
+                        ],
+                      ),
+                    ))
+
+                  ],
+                ),
+              ),
+
+              /** 내 프로필 수정 Container**/
+              Container(
+                height: rateHeight*50,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _makeProfileState("State"),
+                      _makeProfileState("Role"),
+                      _makeProfileState("Github"),
+                      _makeProfileState("Email"),
+                      _makeProfileState("Phone"),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        )
+    );
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getData();
+
+  }
+  void _getData() async{
+    // 모든 정보를 업데이트 한다.
+    //String temp = storage.read(key: 'jwt') as String;
+    final response = await http.get(
+        Uri.parse(GET_MyProfile_api),
+        headers: {'Content-Type': "application/json"}
+    );
+    if(response.statusCode != 200){
+      return;
+    }
+
+    var data = jsonDecode(response.body);
+
+    _myData = new MyData(data['name']);
+    _myData.setRole(data['role']);
+    _myData.setPhone(data['phone']);
+    _myData.setEmail(data['email']);
+    _myData.setGithub(data['github']);
+
+    /** 화면에 뿌리기 **/
+    _TextEditController["Role"]!.text =  _myData.getRole();
+    _TextEditController["Github"]!.text =  _myData.getGithub();
+    _TextEditController["Email"]!.text =  _myData.getEmail();
+    _TextEditController["Phone"]!.text =  _myData.getPhone();
+  }
+  void _updateData() async{
+    print(await _myData.UpdateData());
+  }
 
   Widget _makeProfileState(String type){
     final rateWidth = deviceWidth/100;
@@ -67,7 +244,8 @@ class _MyProfile extends State<MyProfile> {
               _currentStates[0] = true;
               _currentStates[1] = false;
               _currentStates[2] = false;
-              _updateState();
+              _updateData();
+              _getData();
             });
           },
         ),
@@ -83,7 +261,8 @@ class _MyProfile extends State<MyProfile> {
               _currentStates[0] = false;
               _currentStates[1] = true;
               _currentStates[2] = false;
-              _updateState();
+              _updateData();
+              _getData();
             });
           },
         ),
@@ -99,7 +278,8 @@ class _MyProfile extends State<MyProfile> {
               _currentStates[0] = false;
               _currentStates[1] = false;
               _currentStates[2] = true;
-              _updateState();
+              _updateData();
+              _getData();
 
             });
           },
@@ -140,9 +320,7 @@ class _MyProfile extends State<MyProfile> {
       );
     }
   }
-  void _updateState(){
-    // 모든 정보를 업데이트 한다.
-  }
+
   
   Widget _EditTextForm(TextEditingController? controller,[str]){
 
@@ -173,153 +351,12 @@ class _MyProfile extends State<MyProfile> {
         textInputAction: TextInputAction.go,
         onFieldSubmitted: (value)async{
           print(value.toString());
-          _updateState();
+          _updateData();
+          _getData();
         },
       ),
 
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    deviceHeight = MediaQuery.of(context).size.height;
-    deviceWidth = MediaQuery.of(context).size.width;
-
-    final rateWidth = (deviceWidth - 80)/100;
-    final rateHeight = (deviceHeight)/100;
-
-    var MyProfileWidgetWidth, MyProfileWidgetHeight;
-    // TODO: implement build
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget> [
-            /** 내 현재 프로필 상태 Container**/
-            Container(
-              child: Center(
-                child: Column(
-                  children: [
-                    Padding(padding: EdgeInsets.all(rateHeight*3)),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(
-                          color: Colors.black12,
-                          width: 1,
-                        ),
-                        borderRadius: const BorderRadius.all(const Radius.circular(8)),
-                        boxShadow: [BoxShadow(
-                          color: Colors.grey.withOpacity(0.2),
-                          spreadRadius: 3,
-                          blurRadius: 7,
-                          offset: Offset(2, 3),
-                        )],
-
-                      ),
-                      width: (MyProfileWidgetWidth=rateWidth * 90),
-                      height: (MyProfileWidgetHeight=100.0),
-                      child: Center(child: _ProfileCardeView(MyProfileWidgetWidth,MyProfileWidgetHeight)),
-                    ),
-
-                  ],
-                ),
-
-              ),
-              height: rateHeight*20,
-            ),
-
-            /** 공지사항 Container**/
-            Container(
-              height: rateHeight*30,
-              child: Column(
-                children: [
-                  Container(
-                    height: rateHeight*6.5,
-                    width: rateWidth*85,
-                    alignment: Alignment.bottomLeft,
-                    child: Container(
-                      height: rateHeight*5.0,
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Colors.black12,
-                            width: 1,
-                          ),
-                        ),
-                      ),
-                      child: Wrap(
-                        alignment: WrapAlignment.end,
-                        direction: Axis.vertical,
-                        children: [
-                          Icon(Icons.star,color: Colors.yellow,),
-                          Text("공지사항",style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(padding: EdgeInsets.all(3),),
-                  Expanded(child: Container(
-                    alignment: Alignment.topCenter,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(
-                        color: Colors.black12,
-                        width: 1,
-                      ),
-                      boxShadow: [BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 3,
-                        blurRadius: 10,
-                        offset: Offset(2, 3),
-                      )],
-                      borderRadius: const BorderRadius.all(const Radius.circular(5)),
-                    ),
-                    height: double.infinity,
-                    width: rateWidth*80,
-                    child: Column(
-                      children: [
-                        _Notice(),
-                        for(var item in _NoticeList)
-                          _Notice(),
-                      ],
-                    ),
-                  ))
-
-                ],
-              ),
-            ),
-
-            /** 내 프로필 수정 Container**/
-            Container(
-              height: rateHeight*50,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _makeProfileState("State"),
-                    _makeProfileState("Role"),
-                    _makeProfileState("Github"),
-                    _makeProfileState("Email"),
-                    _makeProfileState("Phone"),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      )
-    );
-  }
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _TextEditController["Role"]!.text =  "";
-    _TextEditController["Github"]!.text =  "";
-    _TextEditController["Email"]!.text =  "";
-    _TextEditController["Phone"]!.text =  "";
-
   }
 
   _launchURL(url) async {
