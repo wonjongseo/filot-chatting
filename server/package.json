@@ -5,7 +5,8 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "nodemon --exec babel-node src/init.js"
+        "start": "nodemon --exec babel-node src/init.js --delay 2s",
+        "start2": "nodemon --exec babel-node connection/dd.js --delay 2s"
     },
     "author": "jongseo",
     "license": "ISC",
@@ -20,7 +21,9 @@
         "helmet": "^4.6.0",
         "jsonwebtoken": "^8.5.1",
         "mongoose": "^5.13.3",
-        "pug": "^3.0.2"
+        "pug": "^3.0.2",
+        "socket.io": "^4.1.3",
+        "socket.io-client": "^4.1.3"
     },
     "devDependencies": {
         "@babel/core": "^7.14.8",

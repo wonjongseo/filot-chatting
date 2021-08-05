@@ -11,6 +11,8 @@ import userRouter from "./router/userRouter";
 import {config} from "./config";
 import {auth, putEdit} from "./controller/userController";
 import {isAuth} from "./middleware/auth";
+import {initSocket} from "../connection/socket";
+import chatRouter from "./router/chatRouter";
 
 const app = express();
 
@@ -21,7 +23,8 @@ app.use(morgan("dev"));
 
 //라우터
 app.use("/", globalRouter);
-app.use("/user", userRouter);
+app.use("/users", userRouter);
+app.use("/chats", chatRouter);
 app.use("/auth", isAuth, auth);
 
 app.use((req, res, next) => {
@@ -37,5 +40,4 @@ app.use((error, req, res, next) => {
 const handleListen = () =>
     console.log(`Server is Listening on http://localhost:${config.host.port}`);
 
-//서버 구동
-app.listen(config.host.port, handleListen);
+const server = app.listen(config.host.port, handleListen);

@@ -36,3 +36,7 @@
 ## jwt id -> user [x]
 
 ## delete user [x]
+
+### 7/31
+
+## socket.io []

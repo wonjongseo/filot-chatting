@@ -2,16 +2,14 @@ import User from "../models/User";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {config} from "../config";
-import {validateCredential} from "../middleware/validator";
 
-export const home = async (req, res, next) => {
+export const home = async (req, res) => {
     // db에서 모든 유저 가져옴
     const users = await User.find({});
-
     res.status(200).json(users);
 };
 
-export const postJoin = async (req, res, next) => {
+export const postJoin = async (req, res) => {
     const {id, password, password2, name, nick_name, phone_number} = req.body;
 
     // 입력한 두 비밀번호가 다르면 사용자 에러
@@ -48,6 +46,7 @@ export const postJoin = async (req, res, next) => {
 
 export const postLogin = async (req, res, next) => {
     const {id, password} = req.body;
+
     const user = await User.findOne({id});
     // 없으면 사용자 에러
     if (!user) {
@@ -64,14 +63,19 @@ export const postLogin = async (req, res, next) => {
 };
 
 export const changePassword = async (req, res, next) => {
-    const {id} = req.params; // 없어도 될듯
-    const user = req.user;
+    const {
+        user: {user},
+        body: {password, new_password, new_password_confirmation},
+    } = req;
     // const user = await User.findOne({id: loggedIn});
-
-    const {password, new_password} = req.body;
     const match = await bcrypt.compare(password, user.password);
+
     if (!match) {
-        return res.json({message: "비밀번호가 틀립니다"});
+        return res.status(400).json({message: "비밀번호가 틀립니다"});
+    }
+
+    if (new_password_confirmation !== new_password) {
+        return res.status(400).json({message: "두 비밀번호가 틀립니다"});
     }
 
     await User.findByIdAndUpdate(
@@ -90,11 +94,9 @@ export const getFind = async (req, res, next) => {
     const user = await User.findOne({nick_name});
 
     if (!user) {
-        return res
-            .status(401)
-            .json({message: "해당 유저를 찾을 수 없습니다ㅜ"});
+        console.log("asdad");
+        return res.json({error: "User not found"});
     }
-
     return res.status(200).json(user);
 };
 
@@ -138,7 +140,7 @@ export const deleteUser = async (req, res, next) => {
 
 export const auth = async (req, res, next) => {
     const user = await User.findOne({id: req.user.id});
-
+    console.log(req.user.id);
     if (!user) {
         return res.status(404).json({message: "User not found"});
     }
