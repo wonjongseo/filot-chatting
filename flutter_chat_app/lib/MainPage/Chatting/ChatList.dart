@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_chat_app/MainPage/Chatting/ChattingRoom.dart';
+import 'package:flutter_chat_app/data/ProfileData.dart';
 
 String icon_path = 'image/teamIcon.png';
 String github_outline_path = 'image/github_outline.png';
@@ -95,7 +96,7 @@ class _ChatList extends State<ChatList> {
   }
 
   void _goToChatting(){
-    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Chatting()));
+    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Chatting(userObj: new UserData('jh'))));
   }
 
   @override

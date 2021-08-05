@@ -1,11 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/data/ProfileData.dart';
 
 class Chatting extends StatefulWidget{
+
+  UserData  userObj;
+  Chatting({Key? key,required this.userObj}) : super(key: key);
+
   @override
-  State<StatefulWidget> createState() => _Chatting();
+  State<StatefulWidget> createState() => _Chatting(userObj);
 }
 class _Chatting extends State<Chatting>{
+  UserData  friendObj;
+  _Chatting(this.friendObj);
+
   TextEditingController _textController = new TextEditingController();
   ScrollController _scrollController = new ScrollController();
   String _sendText = '';
@@ -17,7 +25,7 @@ class _Chatting extends State<Chatting>{
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text("Name"),
+        title: Text(friendObj.getName()),
         primary: true,
         actions: <Widget>[
           IconButton(onPressed: (){Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);}, icon: Icon(Icons.home,size: 30,))
@@ -93,5 +101,4 @@ class _Chatting extends State<Chatting>{
       )
     );
   }
-
 }
