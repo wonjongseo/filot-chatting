@@ -8,18 +8,14 @@ export const getChatByUser = (req, res, next) => {
 
 export const postChatByUser = async (req, res, next) => {
     const {text} = req.body;
-
     const user = req.user;
-
     if (!user) {
         return res.json({message: "로그인을 먼저 해주세요"});
     }
-
     const chat = await Chat.create({
         text,
         userId: user._id,
     });
-
     return res.json(chat);
 };
 
