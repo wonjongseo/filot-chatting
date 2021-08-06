@@ -18,7 +18,7 @@ class ServerData {
     'image' : 'img', // 이미지 정보 key값
     'token' : 'token',
     'msg' : 'message',
+    'user' : 'user',
   };
   static final api = 'https://en5f3ghmodccnhn.m.pipedream.net';
-
 }

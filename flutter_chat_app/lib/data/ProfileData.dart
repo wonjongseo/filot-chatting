@@ -4,12 +4,20 @@ class UserData {
   String _email = '';
   String _github = '';
   String _role = '';
-  String _imgPath = '';
+  String _imgPath = 'image/teamIcon.png';
   var _state;
+  var _userObj;
 
-  UserData(name){
+  UserData(name,[userObj]){
     this._name = name;
+    if(userObj != null)
+      this._userObj = userObj;
   }
+
+  set userObj(value) {
+    _userObj = value;
+  }
+  get userObj => _userObj;
   String getName() => _name;
   void setName(String name) => this._name = name;
   String getPhone() => _phone;
@@ -24,31 +32,4 @@ class UserData {
   void setState(state) => this._state = state;
   String getImage() => _imgPath;
   void setImage(String imgPath) => this._imgPath = (imgPath.isEmpty ? 'image/teamIcon.png' : imgPath);
-
-/*Future<String> GetData() async{
-    String msg;
-    try {
-      final response = await http.get(
-        Uri.parse(_user_data_update_api),
-
-        headers: {'Content-Type': "application/json"},
-      );
-      msg = jsonDecode(response.body)[_KeyList['msg']].toString();
-
-      body: jsonEncode(
-        {
-          _KeyList['name']: getName(),
-          _KeyList['github']: getGithub(),
-          _KeyList['email']: getEmail(),
-          _KeyList['phone']: getPhone(),
-          _KeyList['role']: getRole(),
-          _KeyList['state']: getState(),
-        },
-      );
-    }
-    catch (e) {
-      msg = e.toString();
-    }
-    return msg;
-  }*/
 }

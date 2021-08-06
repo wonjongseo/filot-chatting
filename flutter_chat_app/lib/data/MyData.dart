@@ -10,7 +10,7 @@ class MyData extends UserData{
   /** 수정 사항 **/
 
 
-  MyData(name) : super(name);
+  MyData(name,[data]) : super(name,[data]);
 
   Future<String> UpdateData() async{
     String msg;
