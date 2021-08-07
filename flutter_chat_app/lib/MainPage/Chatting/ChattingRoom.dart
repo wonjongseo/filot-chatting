@@ -21,7 +21,7 @@ class _Chatting extends State<Chatting>{
   late IO.Socket socket;
 
   UserData friendObj;
-  MyData _myData = new MyData('jh');
+  MyData _myData = myData;
   _Chatting(this.friendObj);
 
   List _messageList = [];

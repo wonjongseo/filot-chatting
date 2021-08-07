@@ -33,7 +33,7 @@ class _FriendsList extends State<FriendsList> {
   ScrollController _scrollController = new ScrollController();
 
   List<FrinedsData> _friends = [new FrinedsData('testing')];
-  MyData _mydata = new MyData('juho');
+  MyData _mydata = myData;
 
   var deviceHeight, deviceWidth;
   var rateWidth, rateHeight;
