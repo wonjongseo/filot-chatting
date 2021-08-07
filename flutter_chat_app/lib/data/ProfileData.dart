@@ -21,15 +21,15 @@ class UserData {
   String getName() => _name;
   void setName(String name) => this._name = name;
   String getPhone() => _phone;
-  void setPhone(String phone) => this._phone = phone;
+  void setPhone(String? phone) => this._phone = phone!;
   String getEmail() => _email;
-  void setEmail(String email) => this._email = email;
+  void setEmail(String? email) => this._email = email!;
   String getGithub()=> _github;
-  void setGithub(String github) => this._github = github;
+  void setGithub(String? github) => this._github = github!;
   String getRole() => _role;
-  void setRole(String role) => this._role = role;
+  void setRole(String? role) => this._role = role!;
   dynamic getState() => _state;
-  void setState(state) => this._state = state;
+  void setState(String state) => this._state = state!;
   String getImage() => _imgPath;
-  void setImage(String imgPath) => this._imgPath = (imgPath.isEmpty ? 'image/teamIcon.png' : imgPath);
+  void setImage(String? imgPath) => this._imgPath = (imgPath!.isEmpty ? 'image/teamIcon.png' : imgPath)!;
 }

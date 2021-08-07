@@ -32,7 +32,7 @@ class _FriendsList extends State<FriendsList> {
   };
   ScrollController _scrollController = new ScrollController();
 
-  List<FrinedsData> _friends = [];
+  List<FrinedsData> _friends = [new FrinedsData('testing')];
   MyData _mydata = new MyData('juho');
 
   var deviceHeight, deviceWidth;
@@ -378,10 +378,6 @@ class _FriendsList extends State<FriendsList> {
 
   void _getData() async{
 
-    /** 임시로 data를 생성한다. **/
-    _friends.add(new FrinedsData('chanyang'));
-    return;
-    
     // 모든 정보를 업데이트 한다.
     var _tokenValue;
     try {
@@ -399,8 +395,27 @@ class _FriendsList extends State<FriendsList> {
     if(response.statusCode != 200){
       return;
     }
-
-    var data = jsonDecode(response.body);
+    var data;
+    try {
+      data = jsonDecode(response.body);
+    }catch(e){
+      print(e.toString());
+    }
+    try {
+      print(data);
+      for (var item in data) {
+        FrinedsData _item = new FrinedsData(item[ServerData.KeyList['name']]);
+        _item.setGithub(item[ServerData.KeyList['github']]);
+        _item.setEmail(item[ServerData.KeyList['email']]);
+        _item.setImage(item[ServerData.KeyList['image']]);
+        _item.setPhone(item[ServerData.KeyList['phone']]);
+        _item.setState(item[ServerData.KeyList['state']]);
+        _item.userObj = item[ServerData.KeyList['user']];
+        _friends.add(_item);
+      }
+    } catch (e) {
+      print(e.toString());
+    }
 
   }
   void _updateData() async {}
