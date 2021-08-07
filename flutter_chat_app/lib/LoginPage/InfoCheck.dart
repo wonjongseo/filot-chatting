@@ -13,7 +13,7 @@ class InfoCheck extends StatefulWidget{
 }
 class _InfoCheck extends State<InfoCheck>{
   /*******이부분 수정하면 됩니당********/
-  String _Check_api = "여기에 api";
+  String _Check_api = "http://localhost:3002";
   List<String> _KeyList = ['id','password', 'confirmPassword','nickName','introduction'];
   /*******이부분 수정하면 됩니당********/
 

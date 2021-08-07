@@ -7,10 +7,10 @@ class ServerData {
   {
     'id' : 'id',
     'pwd' : 'password',
-    'checkpwd' : 'confirmPassword',
-    'nick' : 'nickName',
+    'checkpwd' : 'password2',
+    'nick' : 'nick_name',
     'name' : 'name',
-    'phone' : 'phoneNumber',
+    'phone' : 'phone_number',
     'email' : 'email',
     'github' : 'github',
     'role' : 'role',
@@ -20,5 +20,5 @@ class ServerData {
     'msg' : 'message',
     'user' : 'user',
   };
-  static final api = 'https://en5f3ghmodccnhn.m.pipedream.net';
+  static final api = 'http://localhost:3002';
 }

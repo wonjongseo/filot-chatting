@@ -31,9 +31,6 @@ app.get("/def", (req, res) => {
     return res.sendFile(__dirname + "/index.html");
 });
 
-app.use("/", function (req, res, next) {
-    res.sendFile(__dirname + "/filot.html");
-});
 app.use("/", globalRouter);
 app.use("/users", userRouter);
 app.use("/chats", chatRouter);
