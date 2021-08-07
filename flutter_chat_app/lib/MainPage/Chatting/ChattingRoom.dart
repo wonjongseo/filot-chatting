@@ -17,7 +17,6 @@ class Chatting extends StatefulWidget{
 }
 class _Chatting extends State<Chatting>{
   final _socket_api = 'http://localhost:3000' + (ServerData.ApiList['/chat'] as String); //ServerData.api + '/see'; //10.0.2.2
-
   late IO.Socket socket;
 
   UserData friendObj;
@@ -41,14 +40,29 @@ class _Chatting extends State<Chatting>{
     super.initState();
   }
   _LinkSocket() async {
+
+    var item;
+    List<String> _tempList = [_myData.uuid,friendObj.uuid];
+    _tempList.sort();
+    String roomNum = '';
+    for(var i in _tempList)
+      roomNum = roomNum + i;
+
+    item = jsonEncode({
+      'user1': _myData.userObj,
+      'user2': friendObj.userObj,
+      'roomNum': roomNum,
+    });
+
     socket = await IO.io(_socket_api, <String, dynamic>{
       'transports': ['websocket'],
     });
 
     socket.onConnect((_) {
       print('connect');
-      socket.emit('msg', 'test');
+      socket.emit('enter-room', item); // chatting room
     });
+    socket.on('msglist', (str) => print(str)); // 처음 진입 시
     socket.onDisconnect((_) => print('disconnect'));
     socket.on('fromServer', (str) => print(str));
     socket.on(ServerData.KeyList['msg'] as String, (msg)  {
