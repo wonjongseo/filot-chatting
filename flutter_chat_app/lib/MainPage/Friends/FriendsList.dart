@@ -392,7 +392,7 @@ class _FriendsList extends State<FriendsList> {
           ServerData.KeyList['token'] as String : _tokenValue,
         }
     );
-    if(response.statusCode != 200){
+    if(response.statusCode < 200 || response.statusCode >= 300){
       return;
     }
     var data;

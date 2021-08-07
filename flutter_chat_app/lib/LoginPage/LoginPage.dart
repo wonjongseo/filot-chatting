@@ -148,7 +148,7 @@ class _LoginPage extends State<LoginPage>{
       headers: {'Content-Type': "application/json"},
     );
 
-    if(response.statusCode == 200) {
+    if(response.statusCode >= 200 && response.statusCode < 300) {
       // check Login Success and return
       try {
         storage.write(key: 'token', value: response.headers[ServerData.KeyList['token']]);

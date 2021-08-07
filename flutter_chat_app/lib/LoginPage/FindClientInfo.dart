@@ -126,7 +126,7 @@ class _FindClientInfo extends State<FindClientInfo>{
       Uri.parse(_Check_api+"?id="+ID),
       headers: {'Content-Type': "application/json"},
     );
-    if(response.statusCode == 200) {
+    if(response.statusCode >= 200 && response.statusCode < 300) {
       _InfoList.clear();
       var dataConvertedToJSON = json.decode(response.body);
 

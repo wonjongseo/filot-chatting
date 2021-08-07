@@ -103,7 +103,7 @@ class _JoinPage extends State<JoinPage>{
       ),
       headers: {'Content-Type': "application/json"},
     );
-    if(response.statusCode == 200) {
+    if(response.statusCode >= 200 && response.statusCode < 300) {
       // check Join Success and return
       Navigator.of(context).pop();
       return;
