@@ -1,10 +1,11 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_app/FindClientInfo.dart';
-import 'package:flutter_chat_app/JoinPage.dart';
+import 'package:flutter_chat_app/LoginPage/FindClientInfo.dart';
+import 'package:flutter_chat_app/LoginPage/InfoCheck.dart';
+import 'package:flutter_chat_app/LoginPage/JoinPage.dart';
+import 'package:flutter_chat_app/data/ServerData.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -14,13 +15,15 @@ class LoginPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _LoginPage();
 }
+class _LoginPage extends State<LoginPage>{
 
-class _LoginPage extends State<LoginPage> {
-  String _Login_api = "http://localhost:9999/login";
+  /**수정 사항**/
+  String _Login_api = ServerData.api + "";//"여기에 api";
+  /**수정 사항**/
+
   TextEditingController value1 = TextEditingController();
   TextEditingController value2 = TextEditingController();
-  String ID = '', Password = '';
-  var sum = '0';
+  String ID='', Password='';
 
   List _buttonList = ['아이디 또는 비밀번호 찾기', '회원가입하기', '회원 정보 조회'];
   List _TextFormList = ['아이디', '비밀번호'];
@@ -41,12 +44,15 @@ class _LoginPage extends State<LoginPage> {
         ],
       ),
       onPressed: () {
-        if (index == 0)
-          Navigator.of(context).pushReplacementNamed('/findclientinfo');
-        else if (index == 1)
-          Navigator.of(context).pushReplacementNamed('/join');
-        else if (index == 2)
-          Navigator.of(context).pushReplacementNamed('/checkinfo');
+        if(index == 0)
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => FindClientInfo()));
+        else if(index == 1)
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => JoinPage()));
+        else if(index == 2)
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => InfoCheck()));
       },
     );
   }
@@ -130,8 +136,8 @@ class _LoginPage extends State<LoginPage> {
       Uri.parse(_Login_api),
       body: jsonEncode(
         {
-          'id': id,
-          'pwd': pwd,
+          ServerData.KeyList['id']: id,
+          ServerData.KeyList['pwd']: pwd,
         },
       ),
       headers: {'Content-Type': "application/json"},
@@ -139,12 +145,18 @@ class _LoginPage extends State<LoginPage> {
 
     if (response.statusCode == 200) {
       // check Login Success and return
+      try {
+        storage.write(key: 'token', value: response.headers[ServerData.KeyList['token']]);
+      }
+      catch(e){
+        _errorPopup(e.toString());
+      }
       Navigator.of(context).pushReplacementNamed('/main');
       return;
     }
 
     // login failed, and popup Failed
-    _errorPopup("아이디 또는 비밀번호를 확인해 주세요", "로그인 실패!");
+    _errorPopup(jsonDecode(response.body)[ServerData.KeyList!['msg']].toString());
   }
 
   void _errorPopup(String text, [String? title]) {
@@ -167,4 +179,7 @@ class _LoginPage extends State<LoginPage> {
       },
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

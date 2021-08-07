@@ -2,17 +2,16 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_app/LoginPage.dart';
 
 import 'package:http/http.dart' as http;
 
-class InfoCheck extends StatefulWidget{
-  InfoCheck({Key? key}) : super(key: key);
+class FindClientInfo extends StatefulWidget{
+  FindClientInfo({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _InfoCheck();
+  State<StatefulWidget> createState() => _FindClientInfo();
 }
-class _InfoCheck extends State<InfoCheck>{
+class _FindClientInfo extends State<FindClientInfo>{
   /*******이부분 수정하면 됩니당********/
   String _Check_api = "여기에 api";
   List<String> _KeyList = ['id','password', 'confirmPassword','nickName','introduction'];
@@ -40,18 +39,22 @@ class _InfoCheck extends State<InfoCheck>{
       values.add(TextEditingController());
     }
   }
-  Container _makeText(str, [fontSize]){
-
-    if(fontSize == null)
-      fontSize = 16;
-
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Padding(padding: EdgeInsets.fromLTRB(10, 30,10,0),
-              child: Text(
+  Container _makeText(String str, [fontSize]){
+    try {
+      if (fontSize == null)
+        fontSize = 16.0;
+    }
+    catch(e){
+      print("hello" + e.toString());
+    }
+    try {
+      return Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Padding(padding: EdgeInsets.fromLTRB(10, 30, 10, 0),
+                child: Text(
                   str,
                   style: TextStyle(
                       fontFamily: 'bmjua',
@@ -59,13 +62,16 @@ class _InfoCheck extends State<InfoCheck>{
                       fontWeight: FontWeight.normal,
                       color: Colors.black87
                   ),
-              )
-
-          ),
-        ],
-      ),
-
-    );
+                )
+            ),
+          ],
+        ),
+      );
+    }
+    catch(e){
+      print("World " + e.toString());
+    }
+    return Container();
   }
   Padding _makeTextFormField(int index, bool obscure){
     return Padding(
@@ -116,15 +122,15 @@ class _InfoCheck extends State<InfoCheck>{
   }
   void _checking() async{
     final response = await http.get(
-      Uri.parse(_Check_api),
-      headers: {'Content-Type': "application/json",'id': ID},
+      Uri.parse(_Check_api+"?id="+ID),
+      headers: {'Content-Type': "application/json"},
     );
     if(response.statusCode == 200) {
       _InfoList.clear();
       var dataConvertedToJSON = json.decode(response.body);
 
       for(var index = 0; index<_KeyList.length; index++)
-        _InfoList.add(dataConvertedToJSON[_KeyList[index]].toString());
+        _InfoList.add("${dataConvertedToJSON[_KeyList[index]].toString()}");
 
       return;
     }
@@ -138,7 +144,7 @@ class _InfoCheck extends State<InfoCheck>{
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text("Check Information of Clients"),
+        title: Text("Modify Password"),
       ),
 
       body: SingleChildScrollView(
@@ -189,8 +195,8 @@ class _InfoCheck extends State<InfoCheck>{
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Padding(padding: EdgeInsets.all(15)),
-                  _makeText(_TextFormList[i], 15),
-                  _makeText(_InfoList[i],15),
+                  _makeText(_TextFormList[i], 15.0),
+                  _makeText(_InfoList[i],15.0),
                 ],
               )
                   : Padding(padding: EdgeInsets.zero),
