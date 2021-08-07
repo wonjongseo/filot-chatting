@@ -18,7 +18,7 @@ class LoginPage extends StatefulWidget{
 class _LoginPage extends State<LoginPage>{
 
   /**수정 사항**/
-  String _Login_api = ServerData.api + "";//"여기에 api";
+  String _Login_api = ServerData.api + (ServerData.ApiList['/login'] as String);//"여기에 api";
   /**수정 사항**/
 
   TextEditingController value1 = TextEditingController();

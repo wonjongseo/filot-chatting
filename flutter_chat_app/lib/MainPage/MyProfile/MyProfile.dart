@@ -23,7 +23,7 @@ class MyProfile extends StatefulWidget {
 }
 
 class _MyProfile extends State<MyProfile> {
-  final GET_MyProfile_api = ServerData.api + '';
+  final GET_MyProfile_api = ServerData.api + (ServerData.ApiList['/myprofile'] as String);
 
   String strs = '';
   List _NoticeList = [];

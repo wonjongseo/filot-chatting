@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/data/ServerData.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -13,7 +14,7 @@ class InfoCheck extends StatefulWidget{
 }
 class _InfoCheck extends State<InfoCheck>{
   /*******이부분 수정하면 됩니당********/
-  String _Check_api = "여기에 api";
+  String _Check_api = ServerData.api + (ServerData.ApiList['/check'] as String);
   List<String> _KeyList = ['id','password', 'confirmPassword','nickName','introduction'];
   /*******이부분 수정하면 됩니당********/
 

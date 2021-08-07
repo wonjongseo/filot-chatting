@@ -22,7 +22,7 @@ class FriendsList extends StatefulWidget {
 }
 
 class _FriendsList extends State<FriendsList> {
-  final _getUsersData_api = ServerData.api + '';
+  final _getUsersData_api = ServerData.api + (ServerData.ApiList['/friends'] as String);
 
   Map<String,Widget> _IconList = {
     "Github":FittedBox(child: Image.asset(github_path,fit: BoxFit.fitHeight,color: Colors.white,),fit: BoxFit.fill,),

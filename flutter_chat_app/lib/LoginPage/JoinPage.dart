@@ -17,7 +17,7 @@ class JoinPage extends StatefulWidget{
 class _JoinPage extends State<JoinPage>{
 
   /**수정 사항**/
-  String _Join_api = ServerData.api+"";//"여기에 api";
+  String _Join_api = ServerData.api+(ServerData.ApiList['/join'] as String);//"여기에 api";
   /**수정 사항**/
 
   String ID='', Password='';

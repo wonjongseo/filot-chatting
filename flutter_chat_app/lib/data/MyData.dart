@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 class MyData extends UserData{
   /** 수정 사항 **/
-  final _user_data_update_api = ServerData.api + '';
+  final _user_data_update_api = ServerData.api + (ServerData.ApiList['/userupdate'] as String);
   /** 수정 사항 **/
 
 

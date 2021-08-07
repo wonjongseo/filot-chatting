@@ -16,7 +16,7 @@ class Chatting extends StatefulWidget{
   State<StatefulWidget> createState() => _Chatting(userObj);
 }
 class _Chatting extends State<Chatting>{
-  final _socket_api = 'http://localhost:3000' + '/chat'; //ServerData.api + '/see'; //10.0.2.2
+  final _socket_api = 'http://localhost:3000' + (ServerData.ApiList['/chat'] as String); //ServerData.api + '/see'; //10.0.2.2
 
   late IO.Socket socket;
 
