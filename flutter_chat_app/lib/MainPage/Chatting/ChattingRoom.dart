@@ -16,7 +16,7 @@ class Chatting extends StatefulWidget{
   State<StatefulWidget> createState() => _Chatting(userObj);
 }
 class _Chatting extends State<Chatting>{
-  final _socket_api = 'http://localhost:3000' + '/chat'; //ServerData.api + '/see';
+  final _socket_api = 'http://localhost:3000' + '/chat'; //ServerData.api + '/see'; //10.0.2.2
 
   late IO.Socket socket;
 
@@ -37,7 +37,13 @@ class _Chatting extends State<Chatting>{
     _myData.userObj = _myData.getName();
 
     // TODO: implement initState
-    socket = IO.io(_socket_api);
+    _LinkSocket();
+    super.initState();
+  }
+  _LinkSocket() async {
+    socket = await IO.io(_socket_api, <String, dynamic>{
+      'transports': ['websocket'],
+    });
 
     socket.onConnect((_) {
       print('connect');
@@ -51,8 +57,7 @@ class _Chatting extends State<Chatting>{
         _messageList.add(msg);
       });
     });
-    
-    super.initState();
+
   }
 
   @override
@@ -153,8 +158,7 @@ class _Chatting extends State<Chatting>{
     }
   }
 
-  Widget _SendTextForm([str]) {
-    return Container(
+  Widget _SendTextForm([str]) => Container(
       alignment: Alignment.topCenter,
       decoration: BoxDecoration(
           border: Border(
@@ -197,22 +201,13 @@ class _Chatting extends State<Chatting>{
                 _sendText = _textController.text.toString();
                 if (_sendText.isEmpty) return;
                 var item;
-                try {
-                  item = jsonEncode({
-                    ServerData.KeyList['msg']: _sendText,
-                    ServerData.KeyList['user']: _myData
-                  });
-                } catch (e) {
-                  print(e.toString());
-                  item = jsonEncode({
-                    ServerData.KeyList['msg']: _sendText,
-                    ServerData.KeyList['user']: _myData.userObj
-                  });
-                }
+                item = jsonEncode({
+                  ServerData.KeyList['msg']: _sendText,
+                  ServerData.KeyList['user']: _myData.userObj
+                });
                 socket.emit(ServerData.KeyList['msg'] as String, item);
                 setState(() {
                   _textController.clear();
-                  //_messageList.add(item);
                   _sendText = '';
                 });
               },
@@ -224,12 +219,4 @@ class _Chatting extends State<Chatting>{
         ),
       )
     );
-  }
-}
-
-class _messageObject{
-  String msg = '';
-  bool isMe = false;
-
-  _messageObject(this.msg, this.isMe);
 }
