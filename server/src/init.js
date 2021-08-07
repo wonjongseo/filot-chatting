@@ -11,12 +11,13 @@ import userRouter from "./router/userRouter";
 import {config} from "./config";
 import {auth, putEdit} from "./controller/userController";
 import {isAuth} from "./middleware/auth";
-import {initSocket} from "../connection/socket";
-import chatRouter from "./router/chatRouter";
-// import {Server} from "socket.io";
-var socketio = require("socket.io");
-const app = express();
+import Chat from "./models/Chat";
 
+import chatRouter from "./router/chatRouter";
+
+import {Server} from "socket.io";
+const app = express();
+const httpServer = http.createServer(app);
 app.use(express.json());
 app.use(helmet());
 app.use(cors());
@@ -24,12 +25,6 @@ app.use(morgan("dev"));
 app.set("view engine", "pug");
 app.set("views", process.cwd() + "/src/views");
 //라우터
-app.get("/abc", (req, res) => {
-    return res.render("chat");
-});
-app.get("/def", (req, res) => {
-    return res.sendFile(__dirname + "/index.html");
-});
 
 app.use("/", globalRouter);
 app.use("/users", userRouter);
@@ -45,39 +40,55 @@ app.use((error, req, res, next) => {
     console.error(error);
     res.status(500).json({massage: "Sorry try later :("});
 });
-
-const server = http.createServer(app);
-server.listen(config.host.port, () => {
+const server = app.listen(config.host.port, () => {
     console.log(`Server is Listening on http://localhost:${config.host.port}`);
 });
 
-const io = socketio(server);
+const io = new Server(server, {
+    cors: {
+        origin: "*",
+    },
+    allowEIO3: true,
 
-io.sockets.on("connection", function (socket) {
-    console.log("id");
-    // receives message from DB
-    Chat.find(function (err, result) {
-        for (var i = 0; i < result.length; i++) {
-            var dbData = {
-                name: result[i].username,
-                message: result[i].text,
-            };
-            io.emit("preload", dbData);
-        }
+    requestCert: true,
+    secure: true,
+    rejectUnauthorized: false,
+    transports: ["websocket"],
+});
+
+const chat = io.of("/chat");
+// io.connect("http://localhost:3002");
+
+chat.on("connection", (socket) => {
+    const headers = socket.handshake["headers"];
+
+    console.log(headers);
+    console.log("connection /chat");
+
+    socket.on("message", async (data) => {
+        // console.log(`data from /chat => ${data}`);
+        const existChat = Chat.find({});
+        console.log(existChat[0].message);
+
+        chat.emit("message", data);
+        const dataObj = JSON.parse(data);
+        const {message, user} = dataObj;
+
+        const dbChat = await Chat.create({
+            message,
+            username: user,
+        });
+        // console.log(dbChat);
+        // console.log(message, user);
     });
+    io.on("connection", (socket) => {
+        const headers = socket.handshake["headers"];
+        console.log(headers);
 
-    // sends message to other users + stores data(username + message) into DB
-    socket.on("message", function (data) {
-        io.sockets.emit("message", data);
-        // add chat into the model
-        var chat = new Chat({username: data.name, text: data.message});
-
-        chat.save(function (err, data) {
-            if (err) {
-                // TODO handle the error
-                console.log("error");
-            }
-            console.log("message is inserted");
+        console.log("connection default namespace");
+        socket.on("message", (data) => {
+            console.log(`data from default => ${data}`);
+            socket.emit("fromServer", "ok");
         });
     });
 });

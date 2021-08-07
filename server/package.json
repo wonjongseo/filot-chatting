@@ -6,7 +6,7 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "nodemon --exec babel-node src/init.js --delay 2s",
-        "start2": "nodemon --exec babel-node connection/dd.js --delay 2s"
+        "start2": "nodemon --exec babel-node connection/dd.js --delay 1s"
     },
     "author": "jongseo",
     "license": "ISC",

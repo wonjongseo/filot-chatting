@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     nick_name: {type: String, default: "a", unique: true},
     phone_number: {type: String, default: "1234", unique: true},
     chats: [{type: mongoose.Schema.Types.ObjectId, ref: "Chat"}],
-    // friends: [{type: mongoose.Schema.Types.ObjectId, ref: "User"}],
+    roomNum: Number,
 });
 // userSchema.virtual('id').get(function(){
 //     return this._id.toString()

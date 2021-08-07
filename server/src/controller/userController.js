@@ -2,6 +2,7 @@ import User from "../models/User";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {config} from "../config";
+import {use} from "express/lib/router";
 
 export const home = async (req, res) => {
     // db에서 모든 유저 가져옴
@@ -36,11 +37,11 @@ export const postJoin = async (req, res) => {
 
         const token = createJwt(user);
 
-        return res.status(201).json(token);
+        return res.status(200).json(token);
     } catch (error) {
         console.error(error);
         // db에러 잡음
-        res.json(error);
+        res.json({message: error});
     }
 };
 
@@ -97,7 +98,7 @@ export const getFind = async (req, res, next) => {
         console.log("asdad");
         return res.json({error: "User not found"});
     }
-    return res.status(200).json(user);
+    return res.status(200).json({usename: user.name});
 };
 
 export const putEdit = async (req, res, next) => {

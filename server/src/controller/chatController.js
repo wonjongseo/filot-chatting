@@ -7,14 +7,15 @@ export const getChatByUser = (req, res, next) => {
 };
 
 export const postChatByUser = async (req, res, next) => {
-    const {text} = req.body;
+    const {message} = req.body;
     const user = req.user;
+
     if (!user) {
         return res.json({message: "로그인을 먼저 해주세요"});
     }
     const chat = await Chat.create({
-        text,
-        userId: user._id,
+        message,
+        username: user.name,
     });
     return res.json(chat);
 };
@@ -38,3 +39,30 @@ export const findChatByUser = (req, res, next) => {
 export const createChatRoom = (req, res, next) => {
     res.sendFile(__dirname + "/kokoatalk.html");
 };
+
+// main() {
+//   // Dart server
+//   var io = new Server();
+//    nsp = io.of('/chat');
+//   nsp.on('connection', (client) {
+//     const headers = client.handshake['headers'];
+//     headers.forEach((k, v) => print('$k => $v'));
+
+//     console.log('connection /chat');
+//     client.on('message', (data) {
+//       console.log('data from /chat => $data');
+//       nsp.emit('message', '$data');
+//     });
+//   });
+//   io.on('connection', (client) {
+//     const headers = client.handshake['headers'];
+//     headers.forEach((k, v) => print('$k => $v'));
+
+//     console.log('connection default namespace');
+//     client.on('message', (data) {
+//         console.log'data from default => $data');
+//       client.emit('fromServer', "ok");
+//     });
+//   });
+//   io.listen(3000);
+// }
