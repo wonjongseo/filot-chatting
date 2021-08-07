@@ -2,7 +2,7 @@ import 'package:flutter_chat_app/data/MyData.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 final storage = new FlutterSecureStorage();
-MyData myData = new MyData('jh');
+late MyData myData;// = new MyData('jh');
 
 class ServerData {
   static bool JHtest = true;

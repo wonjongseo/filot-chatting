@@ -192,8 +192,8 @@ class _MyProfile extends State<MyProfile> {
       _tokenValue = (await storage.read(key: 'token'))!;
     }catch (e){
       print(e.toString());
+      _tokenValue = "temp";
     }
-
     final response = await http.get(
         Uri.parse(GET_MyProfile_api),
         headers: {'Content-Type': "application/json",
@@ -205,11 +205,23 @@ class _MyProfile extends State<MyProfile> {
     }
 
     var data = jsonDecode(response.body);
-    myData = new MyData(data[ServerData.KeyList['name']]);
-    myData.setRole(data[ServerData.KeyList['role']]);
-    myData.setPhone(data[ServerData.KeyList['phone']]);
-    myData.setEmail(data[ServerData.KeyList['email']]);
-    myData.setGithub(data[ServerData.KeyList['github']]);
+    print(data);
+    try {
+      myData = new MyData(
+          data[ServerData.KeyList['name']], data[ServerData.KeyList['user']]);
+      myData.setRole(data[ServerData.KeyList['role']]);
+      myData.setPhone(data[ServerData.KeyList['phone']]);
+      myData.setEmail(data[ServerData.KeyList['email']]);
+      myData.setGithub(data[ServerData.KeyList['github']]);
+    } catch (e){
+      var _data = jsonDecode(data[ServerData.KeyList['user']]);
+      myData = new MyData(
+          _data[ServerData.KeyList['name']], data[ServerData.KeyList['user']]);
+      myData.setRole(_data[ServerData.KeyList['role']]);
+      myData.setPhone(_data[ServerData.KeyList['phone']]);
+      myData.setEmail(_data[ServerData.KeyList['email']]);
+      myData.setGithub(_data[ServerData.KeyList['github']]);
+    }
 
     _myData = myData;
 
