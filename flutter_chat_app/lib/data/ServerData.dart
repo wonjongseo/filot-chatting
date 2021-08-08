@@ -33,6 +33,8 @@ class ServerData {
     'token' : 'token',
     'msg' : 'message',
     'user' : 'user',
+    'enter-room' : 'enter-room',
+    'load-message' : 'load-message',
   };
   static final api = (JHtest ? 'https://en5f3ghmodccnhn.m.pipedream.net' : '형의 api 메인 주소');
 }

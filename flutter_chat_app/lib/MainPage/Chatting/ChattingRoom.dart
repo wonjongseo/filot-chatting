@@ -60,16 +60,25 @@ class _Chatting extends State<Chatting>{
 
     socket.onConnect((str) {
       print(str);
-      socket.emit('enter-room', item); // chatting room
+      _messageList.clear();
+      socket.emit(ServerData.KeyList['enter-room'] as String, item); // chatting room
     });
-    socket.on('msglist', (str) => print(str)); // 처음 진입 시
+    socket.on(ServerData.KeyList['load-message'] as String, (data) {
+      var _preMessageList = jsonDecode(data);
+      for(var item in _preMessageList)
+        _messageList.add(item);
+      setState(() {});
+    }); // 처음 진입 시
     socket.onDisconnect((_) => print('disconnect'));
-    socket.on('fromServer', (str) => print(str));
     socket.on(ServerData.KeyList['msg'] as String, (msg)  {
       print('server send msg: ${msg}');
       setState(() {
         _messageList.add(msg);
       });
+    });
+    socket.onDisconnect((data) {
+      print('disconnect');
+      _messageList.clear();
     });
 
   }
