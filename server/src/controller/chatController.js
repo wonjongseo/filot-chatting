@@ -1,4 +1,6 @@
 import Chat from "../models/Chat";
+import ChatsRoom from "../models/ChatingRoom";
+import User from "../models/User";
 
 export const getChatByUser = (req, res, next) => {
     const chats = Chat.find({});
@@ -23,22 +25,6 @@ export const postChatByUser = async (req, res, next) => {
 export const findChatByUser = (req, res, next) => {
     const {user} = req.user;
 };
-// const socket = new Socket(server);
-// const chat = io.of("/chat").on("connection", function (socket) {
-//     socket.on("chat message", function (data) {
-//         console.log("message from client ", data);
-
-//         const name = (socket.name = data.name);
-//         const room = (socket.room = data.room);
-
-//         socket.join(room);
-
-//         chat.to(room).emit("chat message", data.msg);
-//     });
-// });
-export const createChatRoom = (req, res, next) => {
-    res.sendFile(__dirname + "/kokoatalk.html");
-};
 
 export const seeAllChat = async (req, res, next) => {
     const chats = await Chat.find({});
@@ -46,29 +32,51 @@ export const seeAllChat = async (req, res, next) => {
     return res.json(chats);
 };
 
-// main() {
-//   // Dart server
-//   var io = new Server();
-//    nsp = io.of('/chat');
-//   nsp.on('connection', (client) {
-//     const headers = client.handshake['headers'];
-//     headers.forEach((k, v) => print('$k => $v'));
+export const createChattingRoom = async (data) => {
+    const objData = JSON.parse(data);
+    const {user1, user2} = objData;
+    const roomNum = objData.roomNum;
+    let createRoom = await ChatsRoom.findOne({roomNum});
+    const ChatUser1 = await User.findOne({id: user1});
+    const ChatUser2 = await User.findOne({id: user2});
+    if (!createRoom) {
+        createRoom = await ChatsRoom.create({
+            roomNum,
+            user: ChatUser1._id,
+        });
+        createRoom.user.push(ChatUser2._id);
+        createRoom.save();
 
-//     console.log('connection /chat');
-//     client.on('message', (data) {
-//       console.log('data from /chat => $data');
-//       nsp.emit('message', '$data');
-//     });
-//   });
-//   io.on('connection', (client) {
-//     const headers = client.handshake['headers'];
-//     headers.forEach((k, v) => print('$k => $v'));
+        ChatUser1.rooms.push(createRoom._id);
+        ChatUser2.rooms.push(createRoom._id);
+        ChatUser1.save();
+        ChatUser2.save();
+    }
+    return {roomNum, ChatUser1, ChatUser2, createRoom};
+};
+export const findChattingRoom = async (ChatUser, createRoom) => {
+    return ChatsRoom.find({
+        user: ChatUser._id,
+        roomNum: createRoom.roomNum,
+    }).populate("chats");
+};
 
-//     console.log('connection default namespace');
-//     client.on('message', (data) {
-//         console.log'data from default => $data');
-//       client.emit('fromServer', "ok");
-//     });
-//   });
-//   io.listen(3000);
-// }
+export const existingChat = (chat) => {
+    const user = chat.username;
+    const message = chat.message;
+    const dataObj = {message, user};
+    const data = JSON.stringify(dataObj, data);
+    return data;
+};
+
+export const createChat = async (data, createRoom) => {
+    const dataObj = JSON.parse(data);
+    const {message, user} = dataObj;
+    const dbChat = await Chat.create({
+        chatRoom: createRoom._id,
+        message,
+        username: user,
+    });
+    createRoom.chats.push(dbChat._id);
+    createRoom.save();
+};

@@ -12,7 +12,7 @@ export const chatRouter = express.Router();
 
 chatRouter.route("/").all(isAuth).get(getChatByUser).post(postChatByUser);
 chatRouter.get("/all", seeAllChat);
-chatRouter.get("/chattig", createChatRoom);
+
 chatRouter.get("/:id", isAuth, findChatByUser);
 
 export default chatRouter;
