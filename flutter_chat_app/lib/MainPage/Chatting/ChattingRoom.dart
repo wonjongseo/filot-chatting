@@ -16,12 +16,16 @@ class Chatting extends StatefulWidget{
   State<StatefulWidget> createState() => _Chatting(userObj);
 }
 class _Chatting extends State<Chatting>{
+<<<<<<< HEAD
   final _socket_api = 'http://localhost:3002' + '/chat'; //ServerData.api + '/see';
 
+=======
+  final _socket_api = 'http://localhost:3000' + (ServerData.ApiList['/chat'] as String); //ServerData.api + '/see'; //10.0.2.2
+>>>>>>> front
   late IO.Socket socket;
 
   UserData friendObj;
-  MyData _myData = new MyData('jh');
+  MyData _myData = myData;
   _Chatting(this.friendObj);
 
   List _messageList = [];
@@ -37,14 +41,37 @@ class _Chatting extends State<Chatting>{
     _myData.userObj = _myData.getName();
 
     // TODO: implement initState
+<<<<<<< HEAD
     socket = IO.io(_socket_api,<String, dynamic>{
+=======
+    _LinkSocket();
+    super.initState();
+  }
+  _LinkSocket() async {
+
+    var item;
+    List<String> _tempList = [_myData.uuid,friendObj.uuid];
+    _tempList.sort();
+    String roomNum = '';
+    for(var i in _tempList)
+      roomNum = roomNum + i;
+
+    item = jsonEncode({
+      'user1': _myData.userObj,
+      'user2': friendObj.userObj,
+      'roomNum': roomNum,
+    });
+
+    socket = await IO.io(_socket_api, <String, dynamic>{
+>>>>>>> front
       'transports': ['websocket'],
     });
 
     socket.onConnect((_) {
       print('connect');
-      socket.emit('msg', 'test');
+      socket.emit('enter-room', item); // chatting room
     });
+    socket.on('msglist', (str) => print(str)); // 처음 진입 시
     socket.onDisconnect((_) => print('disconnect'));
     socket.on('fromServer', (str) => print(str));
     socket.on(ServerData.KeyList['msg'] as String, (msg)  {
@@ -53,8 +80,7 @@ class _Chatting extends State<Chatting>{
         _messageList.add(msg);
       });
     });
-    
-    super.initState();
+
   }
 
   @override
@@ -155,8 +181,7 @@ class _Chatting extends State<Chatting>{
     }
   }
 
-  Widget _SendTextForm([str]) {
-    return Container(
+  Widget _SendTextForm([str]) => Container(
       alignment: Alignment.topCenter,
       decoration: BoxDecoration(
           border: Border(
@@ -199,22 +224,13 @@ class _Chatting extends State<Chatting>{
                 _sendText = _textController.text.toString();
                 if (_sendText.isEmpty) return;
                 var item;
-                try {
-                  item = jsonEncode({
-                    ServerData.KeyList['msg']: _sendText,
-                    ServerData.KeyList['user']: _myData
-                  });
-                } catch (e) {
-                  print(e.toString());
-                  item = jsonEncode({
-                    ServerData.KeyList['msg']: _sendText,
-                    ServerData.KeyList['user']: _myData.userObj
-                  });
-                }
+                item = jsonEncode({
+                  ServerData.KeyList['msg']: _sendText,
+                  ServerData.KeyList['user']: _myData.userObj
+                });
                 socket.emit(ServerData.KeyList['msg'] as String, item);
                 setState(() {
                   _textController.clear();
-                  //_messageList.add(item);
                   _sendText = '';
                 });
               },
@@ -226,12 +242,4 @@ class _Chatting extends State<Chatting>{
         ),
       )
     );
-  }
-}
-
-class _messageObject{
-  String msg = '';
-  bool isMe = false;
-
-  _messageObject(this.msg, this.isMe);
 }

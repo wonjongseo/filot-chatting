@@ -4,9 +4,12 @@ class UserData {
   String _email = '';
   String _github = '';
   String _role = '';
+  String _uuid = ''; //고유 식별번호
   String _imgPath = 'image/teamIcon.png';
+
   var _state;
   var _userObj;
+
 
   UserData(name,[userObj]){
     this._name = name;
@@ -14,6 +17,10 @@ class UserData {
       this._userObj = userObj;
   }
 
+  String get uuid => _uuid;
+  set uuid(String value) {
+    _uuid = value;
+  }
   set userObj(value) {
     _userObj = value;
   }

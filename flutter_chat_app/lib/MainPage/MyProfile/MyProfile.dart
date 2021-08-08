@@ -23,7 +23,7 @@ class MyProfile extends StatefulWidget {
 }
 
 class _MyProfile extends State<MyProfile> {
-  final GET_MyProfile_api = ServerData.api + '';
+  final GET_MyProfile_api = ServerData.api + (ServerData.ApiList['/myprofile'] as String);
 
   String strs = '';
   List _NoticeList = [];
@@ -186,39 +186,44 @@ class _MyProfile extends State<MyProfile> {
   }
   void _getData() async{
 
-    try {
-      // chrome 브라우저에서는 불가, android sdk 버전이 안돼서 불가
-      // 대안으로 token 값을 객체에 저장하고 필요 시 반환
-      await storage.write(key: 'token', value: 'testing1234');
-    }catch (e){
-      print(e.toString());
-    }
-
     // 모든 정보를 업데이트 한다.
     var _tokenValue;
     try {
       _tokenValue = (await storage.read(key: 'token'))!;
     }catch (e){
       print(e.toString());
+      _tokenValue = "temp";
     }
-
     final response = await http.get(
         Uri.parse(GET_MyProfile_api),
         headers: {'Content-Type': "application/json",
           ServerData.KeyList['token'] as String : _tokenValue,
         }
     );
-    if(response.statusCode != 200){
+    if(response.statusCode < 200 || response.statusCode >= 300){
       return;
     }
 
     var data = jsonDecode(response.body);
+    print(data);
+    try {
+      myData = new MyData(
+          data[ServerData.KeyList['name']], data[ServerData.KeyList['user']]);
+      myData.setRole(data[ServerData.KeyList['role']]);
+      myData.setPhone(data[ServerData.KeyList['phone']]);
+      myData.setEmail(data[ServerData.KeyList['email']]);
+      myData.setGithub(data[ServerData.KeyList['github']]);
+    } catch (e){
+      var _data = jsonDecode(data[ServerData.KeyList['user']]);
+      myData = new MyData(
+          _data[ServerData.KeyList['name']], data[ServerData.KeyList['user']]);
+      myData.setRole(_data[ServerData.KeyList['role']]);
+      myData.setPhone(_data[ServerData.KeyList['phone']]);
+      myData.setEmail(_data[ServerData.KeyList['email']]);
+      myData.setGithub(_data[ServerData.KeyList['github']]);
+    }
 
-    _myData = new MyData(data[ServerData.KeyList['name']]);
-    _myData.setRole(data[ServerData.KeyList['role']]);
-    _myData.setPhone(data[ServerData.KeyList['phone']]);
-    _myData.setEmail(data[ServerData.KeyList['email']]);
-    _myData.setGithub(data[ServerData.KeyList['github']]);
+    _myData = myData;
 
     /** 화면에 뿌리기 **/
     _TextEditController["Role"]!.text =  _myData.getRole();

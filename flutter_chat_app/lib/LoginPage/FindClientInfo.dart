@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/data/ServerData.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -13,8 +14,13 @@ class FindClientInfo extends StatefulWidget{
 }
 class _FindClientInfo extends State<FindClientInfo>{
   /*******이부분 수정하면 됩니당********/
+<<<<<<< HEAD
   String _Check_api = "http://localhost:3002";
   List<String> _KeyList = ['id','password', 'confirmPassword','name','nickName','phone'];
+=======
+  String _Check_api = ServerData.api + (ServerData.ApiList['/find'] as String);
+  List<String> _KeyList = ['id','password', 'confirmPassword','nickName','introduction'];
+>>>>>>> front
   /*******이부분 수정하면 됩니당********/
 
   String ID = '';
@@ -125,7 +131,7 @@ class _FindClientInfo extends State<FindClientInfo>{
       Uri.parse(_Check_api+"?id="+ID),
       headers: {'Content-Type': "application/json"},
     );
-    if(response.statusCode == 200) {
+    if(response.statusCode >= 200 && response.statusCode < 300) {
       _InfoList.clear();
       var dataConvertedToJSON = json.decode(response.body);
 

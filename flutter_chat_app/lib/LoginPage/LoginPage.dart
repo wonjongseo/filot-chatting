@@ -18,7 +18,11 @@ class LoginPage extends StatefulWidget {
 class _LoginPage extends State<LoginPage>{
 
   /**수정 사항**/
+<<<<<<< HEAD
   String _Login_api = ServerData.api +"/login" ;//"여기에 api";
+=======
+  String _Login_api = ServerData.api + (ServerData.ApiList['/login'] as String);//"여기에 api";
+>>>>>>> front
   /**수정 사항**/
 
   TextEditingController value1 = TextEditingController();
@@ -143,7 +147,11 @@ class _LoginPage extends State<LoginPage>{
       headers: {'Content-Type': "application/json"},
     );
 
+<<<<<<< HEAD
     if (response.statusCode == 200) {
+=======
+    if(response.statusCode >= 200 && response.statusCode < 300) {
+>>>>>>> front
       // check Login Success and return
       try {
         storage.write(key: 'token', value: response.headers[ServerData.KeyList['token']]);

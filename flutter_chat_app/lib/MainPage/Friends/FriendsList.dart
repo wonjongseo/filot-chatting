@@ -22,7 +22,7 @@ class FriendsList extends StatefulWidget {
 }
 
 class _FriendsList extends State<FriendsList> {
-  final _getUsersData_api = ServerData.api + '';
+  final _getUsersData_api = ServerData.api + (ServerData.ApiList['/friends'] as String);
 
   Map<String,Widget> _IconList = {
     "Github":FittedBox(child: Image.asset(github_path,fit: BoxFit.fitHeight,color: Colors.white,),fit: BoxFit.fill,),
@@ -33,7 +33,7 @@ class _FriendsList extends State<FriendsList> {
   ScrollController _scrollController = new ScrollController();
 
   List<FrinedsData> _friends = [new FrinedsData('testing')];
-  MyData _mydata = new MyData('juho');
+  MyData _mydata = myData;
 
   var deviceHeight, deviceWidth;
   var rateWidth, rateHeight;
@@ -392,7 +392,7 @@ class _FriendsList extends State<FriendsList> {
           ServerData.KeyList['token'] as String : _tokenValue,
         }
     );
-    if(response.statusCode != 200){
+    if(response.statusCode < 200 || response.statusCode >= 300){
       return;
     }
     var data;
