@@ -6,7 +6,7 @@ import {use} from "express/lib/router";
 
 export const home = async (req, res) => {
     // db에서 모든 유저 가져옴
-    const users = await User.find({name: "a", id: "visionwill"});
+    const users = await User.find({});
     res.status(200).json(users);
 };
 
@@ -24,12 +24,12 @@ export const postJoin = async (req, res) => {
             .status(409)
             .json({message: "아이디 혹은 닉넴이이 이미 사용중입니다."});
     }
+    const newPassword = await bcrypt.hash(password, config.bcrypt.salt);
     try {
         // db안에 유저 생성
         const user = await User.create({
             id,
-            password,
-            password2,
+            password: newPassword,
             name,
             nick_name,
             phone_number,

@@ -40,6 +40,12 @@ export const createChatRoom = (req, res, next) => {
     res.sendFile(__dirname + "/kokoatalk.html");
 };
 
+export const seeAllChat = async (req, res, next) => {
+    const chats = await Chat.find({});
+
+    return res.json(chats);
+};
+
 // main() {
 //   // Dart server
 //   var io = new Server();

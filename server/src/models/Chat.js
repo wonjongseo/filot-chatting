@@ -4,12 +4,11 @@ import mongoose from "mongoose";
 const chatSchema = new mongoose.Schema(
     {
         message: {type: String, required: true},
-        // userId: {
-        //     type: mongoose.Schema.Types.ObjectId,
-        //     required: true,
-        //     ref: "User",
-        // },
-        // name: {type: String, required: true},
+        chatRoom: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: "ChatsRoom",
+        },
         username: {type: String, required: true},
     },
     {timestamps: true}
