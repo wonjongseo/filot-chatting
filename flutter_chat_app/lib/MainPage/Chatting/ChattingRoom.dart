@@ -58,8 +58,8 @@ class _Chatting extends State<Chatting>{
       'transports': ['websocket'],
     });
 
-    socket.onConnect((_) {
-      print('connect');
+    socket.onConnect((str) {
+      print(str);
       socket.emit('enter-room', item); // chatting room
     });
     socket.on('msglist', (str) => print(str)); // 처음 진입 시
