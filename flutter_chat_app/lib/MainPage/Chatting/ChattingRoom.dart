@@ -16,7 +16,7 @@ class Chatting extends StatefulWidget{
   State<StatefulWidget> createState() => _Chatting(userObj);
 }
 class _Chatting extends State<Chatting>{
-  final _socket_api = 'http://localhost:3000' + '/chat'; //ServerData.api + '/see';
+  final _socket_api = 'http://localhost:3002' + '/chat'; //ServerData.api + '/see';
 
   late IO.Socket socket;
 
@@ -37,7 +37,9 @@ class _Chatting extends State<Chatting>{
     _myData.userObj = _myData.getName();
 
     // TODO: implement initState
-    socket = IO.io(_socket_api);
+    socket = IO.io(_socket_api,<String, dynamic>{
+      'transports': ['websocket'],
+    });
 
     socket.onConnect((_) {
       print('connect');

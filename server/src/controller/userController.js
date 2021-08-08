@@ -6,7 +6,7 @@ import {use} from "express/lib/router";
 
 export const home = async (req, res) => {
     // db에서 모든 유저 가져옴
-    const users = await User.find({});
+    const users = await User.find({name: "a", id: "visionwill"});
     res.status(200).json(users);
 };
 
