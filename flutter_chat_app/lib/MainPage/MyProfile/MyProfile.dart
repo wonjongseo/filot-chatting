@@ -374,7 +374,15 @@ class _MyProfile extends State<MyProfile> {
       _tokenValue = (await storage.read(key: 'token'))!;
     }catch (e){
       print(e.toString());
-      _tokenValue = "temp";
+      myData = new MyData("administrator");
+      myData.setRole("admin");
+      myData.setPhone("00011112222");
+      myData.setEmail("admin@gmail.com");
+      myData.setGithub("github.com");
+      _myData = myData;
+      _tokenValue = "admin";
+      _updateData();
+      return;
     }
     final response = await http.get(
         Uri.parse(MyProfile_api),
@@ -416,6 +424,10 @@ class _MyProfile extends State<MyProfile> {
   /// 변경된 내 데이터를 서버에 전송한다.
   void _updateData() async {
     print(await _myData.UpdateData());
+    _TextEditController["Role"]!.text =  _myData.getRole();
+    _TextEditController["Github"]!.text =  _myData.getGithub();
+    _TextEditController["Email"]!.text =  _myData.getEmail();
+    _TextEditController["Phone"]!.text =  _myData.getPhone();
   }
 
   @override /// 실제 화면을 build하는 메소드

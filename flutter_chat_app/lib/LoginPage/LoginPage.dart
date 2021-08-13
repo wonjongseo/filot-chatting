@@ -102,6 +102,17 @@ class _LoginPage extends State<LoginPage>{
       Navigator.of(context).pushReplacementNamed('/main');
       return;
     }
+    else if(id == "admin" && pwd == "admin") {
+      // check Login Administrator
+      try {
+        storage.write(key: 'token', value: "admin");
+      }
+      catch(e){
+        _errorPopup(e.toString());
+      }
+      Navigator.of(context).pushReplacementNamed('/main');
+      return;
+    }
 
     // login failed, and popup Failed
     _errorPopup(jsonDecode(response.body)[ServerData.KeyList!['msg']].toString());
