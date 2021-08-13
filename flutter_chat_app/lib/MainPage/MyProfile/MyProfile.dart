@@ -34,6 +34,7 @@ class _MyProfile extends State<MyProfile> {
     "Email":Icon(Icons.mail,size: 40,color: Colors.black,),
     "Phone":Icon(Icons.smartphone,size: 40,color: Colors.black,),
   };
+
   List<bool> _currentStates = [true,false,false];
   Map<String,TextEditingController> _TextEditController = {
     "Role":new TextEditingController(),
@@ -87,10 +88,8 @@ class _MyProfile extends State<MyProfile> {
                         height: (MyProfileWidgetHeight=100.0),
                         child: Center(child: _ProfileCardeView(MyProfileWidgetWidth,MyProfileWidgetHeight)),
                       ),
-
                     ],
                   ),
-
                 ),
                 height: rateHeight*20,
               ),

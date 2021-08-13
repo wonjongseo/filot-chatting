@@ -11,26 +11,18 @@ import userRouter from "./router/userRouter";
 import {config} from "./config";
 import {auth, putEdit} from "./controller/userController";
 import {isAuth} from "./middleware/auth";
-import Chat from "./models/Chat";
-
 import chatRouter from "./router/chatRouter";
-
-import {Server} from "socket.io";
-import User from "./models/User";
-import {emit} from "process";
-import ChatsRoom from "./models/ChatingRoom";
-import mongoose, {isValidObjectId} from "mongoose";
 import chatting from "../connection/chatting";
 const app = express();
-const httpServer = http.createServer(app);
+
 app.use(express.json());
 app.use(helmet());
 app.use(cors());
 app.use(morgan("dev"));
 app.set("view engine", "pug");
 app.set("views", process.cwd() + "/src/views");
-//라우터
 
+//라우터
 app.use("/", globalRouter);
 app.use("/users", userRouter);
 app.use("/chats", chatRouter);

@@ -2,10 +2,10 @@ import 'package:flutter_chat_app/data/MyData.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 final storage = new FlutterSecureStorage();
-late MyData myData;// = new MyData('jh');
+late MyData myData = new MyData('jonsasdasdg');
 
 class ServerData {
-  static bool JHtest = true;
+  static bool JHtest = false;
   static final Map<String,String> ApiList = // <My Use Key, value of api key>
   {
     '/chat' : (JHtest ? '/chat' : '/chat'),
@@ -14,14 +14,14 @@ class ServerData {
     '/check': (JHtest ? '' : '/check'),
     '/find': (JHtest ? '' : '/find'),
     '/friends': (JHtest ? '' : '/friends'),
-    '/myprofile' : (JHtest ? '' : '/myprofile'),
+    '/myprofile' : (JHtest ? '' : '/users/myprofile'),
     '/userupdate' : (JHtest ? '' : '/update'),
   };
   static final Map<String,String> KeyList = // <My Use Key, value of api key>
   {
-    'id' : 'id',
+    'id' : 'username',
     'pwd' : 'password',
-    'checkpwd' : 'password2',
+    'checkpwd' : 'confirmpassword',
     'nick' : 'nick_name',
     'name' : 'name',
     'phone' : 'phone_number',

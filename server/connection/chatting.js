@@ -31,30 +31,33 @@ const chatting = (server) => {
                 chat.emit("message", data);
                 createChat(data, createRoom);
             });
-            const user1_chat = await findChattingRoom(ChatUser1, createRoom);
-            if (user1_chat) {
-                user1_chat[0].chats.map(async (chat) => {
-                    // console.log(chat);
-                    const data = existingChat(chat);
+            const chatsInRoom = await findChattingRoom(roomNum);
+            // ################### test
+            console.log(chatsInRoom);
+            const user = chatsInRoom.chats[0].username;
+            const message = chatsInRoom.chats[0].message;
+            const dataObj = {message, user};
+            const data1 = JSON.stringify(dataObj, data1);
+            socket.emit("message", data1);
+            // ################### test
+            // const user1_chat = await findChattingRoom(ChatUser1, createRoom);
+            // if (user1_chat) {
+            //     user1_chat[0].chats.map(async (chat) => {
+            //         // console.log(chat);
+            //         const data = existingChat(chat);
 
-                    socket.emit("message", data);
-                });
-            }
-            const user2_chat = await findChattingRoom(ChatUser2, createRoom);
-            console.log(user2_chat);
-            if (user2_chat) {
-                user2_chat[0].chats.map(async (chat) => {
-                    const data = existingChat(chat);
+            //         socket.emit("message", data);
+            //     });
+            // }
+            // const user2_chat = await findChattingRoom(ChatUser2, createRoom);
+            // console.log(user2_chat);
+            // if (user2_chat) {
+            //     user2_chat[0].chats.map(async (chat) => {
+            //         const data = existingChat(chat);
 
-                    socket.emit("message", data);
-                });
-            }
-
-            io.on("connection", (socket) => {
-                const headers = socket.handshake["headers"];
-
-                socket.on("message", (data) => {});
-            });
+            //         socket.emit("message", data);
+            //     });
+            // }
         });
     });
 };

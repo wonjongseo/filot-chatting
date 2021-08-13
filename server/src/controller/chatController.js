@@ -28,7 +28,6 @@ export const findChatByUser = (req, res, next) => {
 
 export const seeAllChat = async (req, res, next) => {
     const chats = await Chat.find({});
-
     return res.json(chats);
 };
 
@@ -54,11 +53,9 @@ export const createChattingRoom = async (data) => {
     }
     return {roomNum, ChatUser1, ChatUser2, createRoom};
 };
-export const findChattingRoom = async (ChatUser, createRoom) => {
-    return ChatsRoom.find({
-        user: ChatUser._id,
-        roomNum: createRoom.roomNum,
-    }).populate("chats");
+export const findChattingRoom = async (createRoom) => {
+    console.log(createRoom);
+    return ChatsRoom.findOne({roomNum: createRoom}).populate("chats");
 };
 
 export const existingChat = (chat) => {

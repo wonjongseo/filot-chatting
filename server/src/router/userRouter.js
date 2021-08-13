@@ -4,7 +4,8 @@ import {
     deleteUser,
     getFind,
     putEdit,
-    remove,
+    getMyProfile,
+    postMyProfile,
 } from "../controller/userController";
 import {isAuth} from "../middleware/auth";
 // 라우터
@@ -17,6 +18,11 @@ userRouter.put(
     isAuth,
     changePassword
 );
+userRouter
+    .route("/myprofile")
+    .all(isAuth)
+    .get(getMyProfile)
+    .post(postMyProfile);
 
 userRouter.delete("/:id([0-9a-zA-Z]{4,12})", isAuth, deleteUser);
 

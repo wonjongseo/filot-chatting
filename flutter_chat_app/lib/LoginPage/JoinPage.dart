@@ -15,11 +15,7 @@ class JoinPage extends StatefulWidget {
 class _JoinPage extends State<JoinPage>{
 
   /**수정 사항**/
-<<<<<<< HEAD
-  String _Join_api = ServerData.api+ "/join";//"여기에 api";
-=======
   String _Join_api = ServerData.api+(ServerData.ApiList['/join'] as String);//"여기에 api";
->>>>>>> front
   /**수정 사항**/
 
   String ID='', Password='';
@@ -104,11 +100,7 @@ class _JoinPage extends State<JoinPage>{
       ),
       headers: {'Content-Type': "application/json"},
     );
-<<<<<<< HEAD
-    if (response.statusCode == 200) {
-=======
     if(response.statusCode >= 200 && response.statusCode < 300) {
->>>>>>> front
       // check Join Success and return
       Navigator.of(context).pop();
       return;

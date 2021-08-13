@@ -14,11 +14,7 @@ class InfoCheck extends StatefulWidget{
 }
 class _InfoCheck extends State<InfoCheck>{
   /*******이부분 수정하면 됩니당********/
-<<<<<<< HEAD
-  String _Check_api = "http://localhost:3002";
-=======
   String _Check_api = ServerData.api + (ServerData.ApiList['/check'] as String);
->>>>>>> front
   List<String> _KeyList = ['id','password', 'confirmPassword','nickName','introduction'];
   /*******이부분 수정하면 됩니당********/
 

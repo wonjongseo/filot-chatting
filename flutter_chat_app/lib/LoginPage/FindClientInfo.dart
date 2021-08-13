@@ -14,13 +14,8 @@ class FindClientInfo extends StatefulWidget{
 }
 class _FindClientInfo extends State<FindClientInfo>{
   /*******이부분 수정하면 됩니당********/
-<<<<<<< HEAD
-  String _Check_api = "http://localhost:3002";
-  List<String> _KeyList = ['id','password', 'confirmPassword','name','nickName','phone'];
-=======
   String _Check_api = ServerData.api + (ServerData.ApiList['/find'] as String);
-  List<String> _KeyList = ['id','password', 'confirmPassword','nickName','introduction'];
->>>>>>> front
+  List<String> _KeyList = ['id','password', 'confirmPassword','name','nickName','phone'];
   /*******이부분 수정하면 됩니당********/
 
   String ID = '';

@@ -96,7 +96,7 @@ class _ChatList extends State<ChatList> {
   }
 
   void _goToChatting(){
-    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Chatting(userObj: new UserData('jh'))));
+    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Chatting(userObj: new UserData('jongs1eo'))));
   }
 
   @override

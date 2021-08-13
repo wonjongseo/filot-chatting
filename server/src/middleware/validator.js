@@ -24,7 +24,6 @@ export const validateCredential = [
 
 export const validateSignup = [
     ...validateCredential,
-    body("nick_name").trim().notEmpty().withMessage("닉네임을 적어주세요"),
     // body("phoneNumber")
     //     .trim()
     //     .isMobilePhone()

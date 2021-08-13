@@ -16,12 +16,7 @@ class Chatting extends StatefulWidget{
   State<StatefulWidget> createState() => _Chatting(userObj);
 }
 class _Chatting extends State<Chatting>{
-<<<<<<< HEAD
-  final _socket_api = 'http://localhost:3002' + '/chat'; //ServerData.api + '/see';
-
-=======
-  final _socket_api = 'http://localhost:3000' + (ServerData.ApiList['/chat'] as String); //ServerData.api + '/see'; //10.0.2.2
->>>>>>> front
+  final _socket_api = 'http://localhost:3002' + (ServerData.ApiList['/chat'] as String); //ServerData.api + '/see'; //10.0.2.2
   late IO.Socket socket;
 
   UserData friendObj;
@@ -41,9 +36,6 @@ class _Chatting extends State<Chatting>{
     _myData.userObj = _myData.getName();
 
     // TODO: implement initState
-<<<<<<< HEAD
-    socket = IO.io(_socket_api,<String, dynamic>{
-=======
     _LinkSocket();
     super.initState();
   }
@@ -57,13 +49,14 @@ class _Chatting extends State<Chatting>{
       roomNum = roomNum + i;
 
     item = jsonEncode({
-      'user1': _myData.userObj,
-      'user2': friendObj.userObj,
-      'roomNum': roomNum,
+      // 'user1': _myData.userObj,
+       'user1': "visionwill",
+      // 'user2': friendObj.userObj,
+      'user2': "jjuho",
+      'roomNum': "123444", 
     });
 
     socket = await IO.io(_socket_api, <String, dynamic>{
->>>>>>> front
       'transports': ['websocket'],
     });
 

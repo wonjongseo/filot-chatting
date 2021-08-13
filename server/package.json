@@ -5,8 +5,8 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "nodemon --exec babel-node src/init.js --delay 2s",
-        "start2": "nodemon --exec babel-node connection/dd.js --delay 1s"
+        "start": "nodemon --exec babel-node src/init.js --delay 1s",
+        "port": "lsof -i :3002"
     },
     "author": "jongseo",
     "license": "ISC",
