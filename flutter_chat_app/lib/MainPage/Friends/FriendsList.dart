@@ -298,7 +298,6 @@ class _FriendsList extends State<FriendsList> {
     );
   }
 
-
   @override /// 이 컨텍스트가 실행되면서 초기화 메소드, 친구 List들을 불러온다.
   void initState() {
     // TODO: implement initState
