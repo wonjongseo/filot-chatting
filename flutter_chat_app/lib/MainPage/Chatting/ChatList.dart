@@ -14,13 +14,17 @@ class ChatList extends StatefulWidget {
 }
 
 class _ChatList extends State<ChatList> {
+
+  /*------------------ 변수 선언 구문 ------------------*/
   /// 화면을 scroll 할 수 있는 controller
   ScrollController _scrollController = new ScrollController();
   /// 채팅방 List
-  List<Object> Users = [1,2,3,4,5,6,7,8,9,10];
+  List<Object> Users = [];
   /// 기기 사이즈를 받고, 비율을 지정
   var deviceHeight, deviceWidth;
+  /*--------------------------------------------------*/
 
+  /*------------------ 위젯 생성 메서드 구문 ------------------*/
   /// 채팅방 하나의 cardview를 표현하는 위젯 메소드
   Widget _ChatCardeView(width, height, [object]){
     var _widthRate = width * 0.01;
@@ -99,11 +103,6 @@ class _ChatList extends State<ChatList> {
     );
   }
 
-  /// 채팅방 클릭 시 실제 해당 chatting room context로 이동시키는 메소드
-  void _goToChatting(){
-    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Chatting(userObj: new UserData('jh'))));
-  }
-
   @override /// 실제 화면을 build하는 메소드
   Widget build(BuildContext context) {
     deviceHeight = MediaQuery.of(context).size.height;
@@ -177,4 +176,12 @@ class _ChatList extends State<ChatList> {
       ),
     );
   }
+  /*--------------------------------------------------*/
+
+  /*------------------ 데이터 처리 메서드 구문 ------------------*/
+  /// 채팅방 클릭 시 실제 해당 chatting room context로 이동시키는 메소드
+  void _goToChatting(){
+    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Chatting(userObj: new UserData('jh'))));
+  }
+  /*--------------------------------------------------*/
 }

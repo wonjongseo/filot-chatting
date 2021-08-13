@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_chat_app/data/MyData.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -8,18 +10,21 @@ late MyData myData;
  * 로그인 시 admin, admin으로 하면 강제로 로그인을 합니다.
  **/
 
+
+
 class ServerData {
   static bool JHtest = true;
   static final Map<String,String> ApiList = /// <My Use Key, value of api key>
   {
     '/chat' : (JHtest ? '/chat' : '/chat'),
-    '/login' : (JHtest ? '' : '/login'),
-    '/join': (JHtest ? '' : '/join'),
+    '/login' : (JHtest ? '' : '/users/login'),
+    '/join': (JHtest ? '' : '/users/join'),
     '/check': (JHtest ? '' : '/check'),
     '/find': (JHtest ? '' : '/find'),
-    '/friends': (JHtest ? '' : '/friends'),
-    '/myprofile' : (JHtest ? '' : '/myprofile'),
+    '/friends': (JHtest ? '' : '/users/friends'),
+    '/myprofile' : (JHtest ? '' : '/users/myprofile'),
     '/userupdate' : (JHtest ? '' : '/update'),
+    '/state' : (JHtest ? '/state' : '/state'),
   };
   static final Map<String,String> KeyList = /// <My Use Key, value of api key>
   {
@@ -40,5 +45,15 @@ class ServerData {
     'enter-room' : 'enter-room',
     'load-message' : 'load-message',
   };
-  static final api = (JHtest ? 'https://en5f3ghmodccnhn.m.pipedream.net' : '형의 api 메인 주소');
+  static final api = (JHtest ? 'localhost:3000' : '형의 api 메인 주소');
+
+  /// test용 json 객체
+  static var adminItem = jsonEncode({
+    ServerData.KeyList['name'] : "admin",
+    ServerData.KeyList['role'] : "admin",
+    ServerData.KeyList['phone'] : "00011112222",
+    ServerData.KeyList['email'] : "admin@gmail.com",
+    ServerData.KeyList['github'] : "github.com",
+    ServerData.KeyList['state'] : 0,
+  });
 }

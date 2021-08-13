@@ -16,8 +16,10 @@ class Chatting extends StatefulWidget{
   State<StatefulWidget> createState() => _Chatting(userObj);
 }
 class _Chatting extends State<Chatting>{
+
+  /*------------------ 변수 선언 구문 ------------------*/
   /// 소켓 접속을 위한 api
-  final _socket_api = 'http://localhost:3000' + (ServerData.ApiList['/chat'] as String); //ServerData.api + '/see'; //10.0.2.2
+  final _socket_api = ServerData.api + (ServerData.ApiList['/chat'] as String); //ServerData.api + '/see'; //10.0.2.2
 
   /// socket 변수 생성
   late IO.Socket socket;
@@ -38,61 +40,9 @@ class _Chatting extends State<Chatting>{
 
   /// 기기 사이즈를 받고, 비율을 지정
   var _rateHeight,_rateWidth;
+  /*--------------------------------------------------*/
 
-  @override /// 이 컨텍스트가 실행되면서 초기화 메소드, Socket을 Link한다.
-  void initState() {
-    friendObj.userObj = friendObj.getName();
-    _myData.userObj = _myData.getName();
-
-    // TODO: implement initState
-    _LinkSocket();
-    super.initState();
-  }
-  /// 실제 Socket을 연결하는 메소드
-  _LinkSocket() async {
-    // 'username'
-    var item;
-    List<String> _tempList = [_myData.uuid,friendObj.uuid];
-    _tempList.sort();
-    String roomNum = '';
-    for(var i in _tempList)
-      roomNum = roomNum + i;
-
-    item = jsonEncode({
-      'user1': _myData.userObj,//name전송string
-      'user2': friendObj.userObj,
-      'roomNum': roomNum,
-    });
-
-    socket = await IO.io(_socket_api, <String, dynamic>{
-      'transports': ['websocket'],
-    });
-
-    socket.onConnect((str) {
-      print(str);
-      _messageList.clear();
-      socket.emit(ServerData.KeyList['enter-room'] as String, item); // chatting room
-    });
-    socket.on(ServerData.KeyList['load-message'] as String, (data) {
-      var _preMessageList = jsonDecode(data);
-      for(var item in _preMessageList)
-        _messageList.add(item);
-      setState(() {});
-    }); // 처음 진입 시
-    socket.onDisconnect((_) => print('disconnect'));
-    socket.on(ServerData.KeyList['msg'] as String, (msg)  {
-      print('server send msg: ${msg}');
-      setState(() {
-        _messageList.add(msg);
-      });
-    });
-    socket.onDisconnect((data) {
-      print('disconnect');
-      _messageList.clear();
-    });
-
-  }
-
+  /*------------------ 위젯 생성 메서드 구문 ------------------*/
   /// _messageList에서 요소를 받아 실제 UI를 그리는 위젯 추가 메서드
   Widget _addMessageWidget(item){
     var _item = jsonDecode(item);
@@ -254,4 +204,62 @@ class _Chatting extends State<Chatting>{
       ),
     );
   }
+  /*--------------------------------------------------*/
+
+  /*------------------ 데이터 처리 메서드 구문 ------------------*/
+  // 아래 모든 데이터 메소드는 서버 관련 메소드 --server
+  @override /// 이 컨텍스트가 실행되면서 초기화 메소드, Socket을 Link한다.
+  void initState() {
+    friendObj.userObj = friendObj.getName();
+    _myData.userObj = _myData.getName();
+
+    // TODO: implement initState
+    _LinkSocket();
+    super.initState();
+  }
+  /// 실제 Socket을 연결하는 메소드
+  _LinkSocket() async {
+    // 'username'
+    var item;
+    List<String> _tempList = [_myData.getName(),friendObj.getName()];
+    _tempList.sort();
+    String roomNum = '';
+    for(var i in _tempList)
+      roomNum = roomNum + i;
+
+    item = jsonEncode({
+      'user1': _myData.getName(),//name전송string
+      'user2': friendObj.getName(),
+      'roomNum': roomNum,
+    });
+
+    socket = await IO.io(_socket_api, <String, dynamic>{
+      'transports': ['websocket'],
+    });
+
+    socket.onConnect((str) {
+      print(str);
+      _messageList.clear();
+      socket.emit(ServerData.KeyList['enter-room'] as String, item); // chatting room
+    });
+    socket.on(ServerData.KeyList['load-message'] as String, (data) {
+      var _preMessageList = jsonDecode(data);
+      for(var item in _preMessageList)
+        _messageList.add(item);
+      setState(() {});
+    }); // 처음 진입 시
+    socket.onDisconnect((_) => print('disconnect'));
+    socket.on(ServerData.KeyList['msg'] as String, (msg)  {
+      print('server send msg: ${msg}');
+      setState(() {
+        _messageList.add(msg);
+      });
+    });
+    socket.onDisconnect((data) {
+      print('disconnect');
+      _messageList.clear();
+    });
+
+  }
+/*--------------------------------------------------*/
 }
