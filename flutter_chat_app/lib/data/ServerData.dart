@@ -6,7 +6,7 @@ late MyData myData;// = new MyData('jh');
 
 class ServerData {
   static bool JHtest = true;
-  static final Map<String,String> ApiList = // <My Use Key, value of api key>
+  static final Map<String,String> ApiList = /// <My Use Key, value of api key>
   {
     '/chat' : (JHtest ? '/chat' : '/chat'),
     '/login' : (JHtest ? '' : '/login'),
@@ -17,7 +17,7 @@ class ServerData {
     '/myprofile' : (JHtest ? '' : '/myprofile'),
     '/userupdate' : (JHtest ? '' : '/update'),
   };
-  static final Map<String,String> KeyList = // <My Use Key, value of api key>
+  static final Map<String,String> KeyList = /// <My Use Key, value of api key>
   {
     'id' : 'id',
     'pwd' : 'password',

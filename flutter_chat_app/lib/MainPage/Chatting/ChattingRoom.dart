@@ -16,21 +16,30 @@ class Chatting extends StatefulWidget{
   State<StatefulWidget> createState() => _Chatting(userObj);
 }
 class _Chatting extends State<Chatting>{
+  /// 소켓 접속을 위한 api
   final _socket_api = 'http://localhost:3000' + (ServerData.ApiList['/chat'] as String); //ServerData.api + '/see'; //10.0.2.2
+
+  /// socket 변수 생성
   late IO.Socket socket;
 
+  /// 친구 데이터와 내 데이터를 초기화
   UserData friendObj;
   MyData _myData = myData;
   _Chatting(this.friendObj);
 
+  /// 메시지에 대한 리스트, 이 순서대로 레이아웃이 펼쳐진다.
   List _messageList = [];
 
+  /// 텍스트 controller와 화면을 scroll 할 수 있는 controller
   TextEditingController _textController = new TextEditingController();
   ScrollController _scrollController = new ScrollController();
+
   String _sendText = '';
+
+  /// 기기 사이즈를 받고, 비율을 지정
   var _rateHeight,_rateWidth;
 
-  @override
+  @override /// 이 컨텍스트가 실행되면서 초기화 메소드, Socket을 Link한다.
   void initState() {
     friendObj.userObj = friendObj.getName();
     _myData.userObj = _myData.getName();
@@ -39,8 +48,9 @@ class _Chatting extends State<Chatting>{
     _LinkSocket();
     super.initState();
   }
+  /// 실제 Socket을 연결하는 메소드
   _LinkSocket() async {
-
+    // 'username'
     var item;
     List<String> _tempList = [_myData.uuid,friendObj.uuid];
     _tempList.sort();
@@ -49,7 +59,7 @@ class _Chatting extends State<Chatting>{
       roomNum = roomNum + i;
 
     item = jsonEncode({
-      'user1': _myData.userObj,
+      'user1': _myData.userObj,//name전송string
       'user2': friendObj.userObj,
       'roomNum': roomNum,
     });
@@ -83,38 +93,7 @@ class _Chatting extends State<Chatting>{
 
   }
 
-  @override
-  Widget build(BuildContext context) {
-    _rateHeight = MediaQuery.of(context).size.height / 100;
-    _rateWidth = MediaQuery.of(context).size.width / 100;
-    // TODO: implement build
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(friendObj.getName()),
-        primary: true,
-        actions: <Widget>[
-          IconButton(onPressed: (){Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);}, icon: Icon(Icons.home,size: 30,))
-        ],
-      ),
-      backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          Flexible(
-            child: ListView(
-              controller: _scrollController,
-              children: [
-                for(var item in _messageList)
-                  _addMessageWidget(item),
-              ],
-              semanticChildCount: _messageList.length,
-            ),
-          ),
-          _SendTextForm(),
-        ],
-      ),
-    );
-  }
-
+  /// _messageList에서 요소를 받아 실제 UI를 그리는 위젯 추가 메서드
   Widget _addMessageWidget(item){
     var _item = jsonDecode(item);
 
@@ -181,6 +160,7 @@ class _Chatting extends State<Chatting>{
     }
   }
 
+  /// 하단 텍스트 입력 란을 만드는 메서드
   Widget _SendTextForm([str]) => Container(
       alignment: Alignment.topCenter,
       decoration: BoxDecoration(
@@ -242,4 +222,36 @@ class _Chatting extends State<Chatting>{
         ),
       )
     );
+
+  @override /// 실제 화면을 build하는 메소드
+  Widget build(BuildContext context) {
+    _rateHeight = MediaQuery.of(context).size.height / 100;
+    _rateWidth = MediaQuery.of(context).size.width / 100;
+    // TODO: implement build
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(friendObj.getName()),
+        primary: true,
+        actions: <Widget>[
+          IconButton(onPressed: (){Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);}, icon: Icon(Icons.home,size: 30,))
+        ],
+      ),
+      backgroundColor: Colors.white,
+      body: Column(
+        children: [
+          Flexible(
+            child: ListView(
+              controller: _scrollController,
+              children: [
+                for(var item in _messageList)
+                  _addMessageWidget(item),
+              ],
+              semanticChildCount: _messageList.length,
+            ),
+          ),
+          _SendTextForm(),
+        ],
+      ),
+    );
+  }
 }

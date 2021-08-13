@@ -6,39 +6,11 @@ class Settings extends StatefulWidget{
   State<StatefulWidget> createState() => _Settings();
 }
 class _Settings extends State<Settings>{
-  TextEditingController _textController = new TextEditingController();
-  String _sendText = '';
+  /// 기기 사이즈를 받고, 비율을 지정
   var _rateHeight,_rateWidth;
-  @override
-  Widget build(BuildContext context) {
-    _rateHeight = MediaQuery.of(context).size.height / 100;
-    _rateWidth = MediaQuery.of(context).size.width / 100;
-    // TODO: implement build
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Settings"),
-        primary: true,
-        actions: <Widget>[
-          IconButton(onPressed: (){Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);}, icon: Icon(Icons.home,size: 30,))
-        ],
-        backgroundColor: Colors.grey,
-        foregroundColor: Colors.blue,
-      ),
-      bottomNavigationBar: _LogOut(),
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
 
-          ],
-        ),
-      ),
-
-
-    );
-    throw UnimplementedError();
-  }
-
+  /// 로그아웃 UI를 만들어주는 위젯 메소드
+  /// 실제 로그아웃을 담당하고, 초기 화면으로 이동한다.
   Widget _LogOut([str]) {
     return Container(
         alignment: Alignment.centerRight,
@@ -81,4 +53,32 @@ class _Settings extends State<Settings>{
     );
   }
 
+  @override  /// 실제 화면을 build하는 메소드
+  Widget build(BuildContext context) {
+    _rateHeight = MediaQuery.of(context).size.height / 100;
+    _rateWidth = MediaQuery.of(context).size.width / 100;
+    // TODO: implement build
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Settings"),
+        primary: true,
+        actions: <Widget>[
+          IconButton(onPressed: (){Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);}, icon: Icon(Icons.home,size: 30,))
+        ],
+        backgroundColor: Colors.grey,
+        foregroundColor: Colors.blue,
+      ),
+      bottomNavigationBar: _LogOut(),
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+
+          ],
+        ),
+      ),
+
+
+    );
+  }
 }

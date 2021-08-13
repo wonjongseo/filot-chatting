@@ -22,22 +22,29 @@ class FriendsList extends StatefulWidget {
 }
 
 class _FriendsList extends State<FriendsList> {
+
+  /// Friends List를 불러오는 api
   final _getUsersData_api = ServerData.api + (ServerData.ApiList['/friends'] as String);
 
+  /// UI용 Icon List
   Map<String,Widget> _IconList = {
     "Github":FittedBox(child: Image.asset(github_path,fit: BoxFit.fitHeight,color: Colors.white,),fit: BoxFit.fill,),
     "Email":Icon(Icons.mail,color: Colors.white,),
     "Phone":Icon(Icons.smartphone,color: Colors.white,),
     "Chat":Icon(Icons.chat_bubble,color: Colors.white,),
   };
+  /// 화면을 scroll 할 수 있는 controller
   ScrollController _scrollController = new ScrollController();
 
+  /// frineds list를 받아와 요소를 추가 & 현재 내 데이터를 로드
   List<FrinedsData> _friends = [new FrinedsData('testing')];
   MyData _mydata = myData;
 
+  /// 기기 사이즈를 받고, 비율을 지정
   var deviceHeight, deviceWidth;
   var rateWidth, rateHeight;
 
+  /** 각각의 정보 (github, mail, phone)을 실제 브라우저, 메일, 전화로 연결해줌 **/
   _launchURL(url) async {
     try {
       await launch(url, forceSafariVC: true, forceWebView: true);
@@ -59,6 +66,9 @@ class _FriendsList extends State<FriendsList> {
       print(e.toString());
     }
   }
+  /** 메소드 **/
+
+  /// Friends & My data들을 화면에 뿌리는 위젯 메소드
   Widget _ProfileCardeView(width, height, UserData UserObj){
     var _widthRate = width * 0.01;
     var _hegihtRate = height * 0.01;
@@ -165,6 +175,7 @@ class _FriendsList extends State<FriendsList> {
     );
   }
 
+  /// 클릭 시 친구 창을 띄우는 메소드 (pop up창 메소드)
   void _frinedPopup(UserData UserObj){
     double _nameSize;
     double _paddingSize,_iconSize;
@@ -287,95 +298,15 @@ class _FriendsList extends State<FriendsList> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    deviceHeight = MediaQuery.of(context).size.height;
-    deviceWidth = MediaQuery.of(context).size.width;
 
-    rateWidth = (deviceWidth - 80)/100;
-    rateHeight = (deviceHeight)/100;
-
-    var MyProfileWidget_width, MyProfileWidget_height;
-    var FriendProfileWidget_width, FriendProfileWidget_height;
-    // TODO: implement build
-    return Scaffold(
-        body: //SingleChildScrollView( child:
-        Column(
-            children: <Widget> [
-              Container(
-                child: Center(
-                  child: Column(
-                    children: [
-                      Padding(padding: EdgeInsets.all(rateHeight*3)),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(
-                            color: Colors.black12,
-                            width: 1,
-                          ),
-                          borderRadius: const BorderRadius.all(const Radius.circular(8)),
-                          boxShadow: [BoxShadow(
-                            color: Colors.grey.withOpacity(0.2),
-                            spreadRadius: 3,
-                            blurRadius: 7,
-                            offset: Offset(2, 3),
-                          )],
-
-                        ),
-                        width: (MyProfileWidget_width=rateWidth * 90),
-                        height: (MyProfileWidget_height=100.0),
-                        child: Center(child: _ProfileCardeView(MyProfileWidget_width,MyProfileWidget_height,_mydata)),
-                      ),
-                    ],
-                  ),
-                ),
-                height: rateHeight*20,
-              ),
-              Container(height: 20,width: double.infinity, child: Center(child: Container( height: 1, width: rateWidth*80, color: Colors.black12),)),
-              Flexible(
-                child: ListView(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    controller: _scrollController,
-                    children: [
-                      for(var item in _friends)
-                        Container(
-                          height: (FriendProfileWidget_height = rateHeight * 15),
-                          width: (FriendProfileWidget_width = rateWidth * 100),
-                          decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                    color: Colors.black12,
-                                    width: 1
-                                ),
-                              )
-                          ),
-                          child: GestureDetector(
-                            onTap: () {_frinedPopup(item);},
-                            child: Center(child: _ProfileCardeView(
-                                FriendProfileWidget_width,
-                                FriendProfileWidget_height,
-                                item
-                            )),
-                          ),
-                        ),
-                    ]
-                  //Column(children: [],),
-                ),
-              )
-            ],
-          ),
-        //)
-    );
-  }
-  @override
+  @override /// 이 컨텍스트가 실행되면서 초기화 메소드, 친구 List들을 불러온다.
   void initState() {
     // TODO: implement initState
     super.initState();
     _getData();
   }
 
+  /// 실제 친구 데이터들을 불러오는 메소드
   void _getData() async{
 
     // 모든 정보를 업데이트 한다.
@@ -418,6 +349,90 @@ class _FriendsList extends State<FriendsList> {
     }
 
   }
+
+  /// 미정
   void _updateData() async {}
-  
+
+  @override /// 실제 화면을 build하는 메소드
+  Widget build(BuildContext context) {
+    deviceHeight = MediaQuery.of(context).size.height;
+    deviceWidth = MediaQuery.of(context).size.width;
+
+    rateWidth = (deviceWidth - 80)/100;
+    rateHeight = (deviceHeight)/100;
+
+    var MyProfileWidget_width, MyProfileWidget_height;
+    var FriendProfileWidget_width, FriendProfileWidget_height;
+    // TODO: implement build
+    return Scaffold(
+      body: //SingleChildScrollView( child:
+      Column(
+        children: <Widget> [
+          Container(
+            child: Center(
+              child: Column(
+                children: [
+                  Padding(padding: EdgeInsets.all(rateHeight*3)),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        color: Colors.black12,
+                        width: 1,
+                      ),
+                      borderRadius: const BorderRadius.all(const Radius.circular(8)),
+                      boxShadow: [BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        spreadRadius: 3,
+                        blurRadius: 7,
+                        offset: Offset(2, 3),
+                      )],
+
+                    ),
+                    width: (MyProfileWidget_width=rateWidth * 90),
+                    height: (MyProfileWidget_height=100.0),
+                    child: Center(child: _ProfileCardeView(MyProfileWidget_width,MyProfileWidget_height,_mydata)),
+                  ),
+                ],
+              ),
+            ),
+            height: rateHeight*20,
+          ),
+          Container(height: 20,width: double.infinity, child: Center(child: Container( height: 1, width: rateWidth*80, color: Colors.black12),)),
+          Flexible(
+            child: ListView(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                controller: _scrollController,
+                children: [
+                  for(var item in _friends)
+                    Container(
+                      height: (FriendProfileWidget_height = rateHeight * 15),
+                      width: (FriendProfileWidget_width = rateWidth * 100),
+                      decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                                color: Colors.black12,
+                                width: 1
+                            ),
+                          )
+                      ),
+                      child: GestureDetector(
+                        onTap: () {_frinedPopup(item);},
+                        child: Center(child: _ProfileCardeView(
+                            FriendProfileWidget_width,
+                            FriendProfileWidget_height,
+                            item
+                        )),
+                      ),
+                    ),
+                ]
+              //Column(children: [],),
+            ),
+          )
+        ],
+      ),
+      //)
+    );
+  }
 }

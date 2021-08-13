@@ -17,17 +17,22 @@ class LoginPage extends StatefulWidget{
 }
 class _LoginPage extends State<LoginPage>{
 
-  /**수정 사항**/
+  /// 로그인 api
   String _Login_api = ServerData.api + (ServerData.ApiList['/login'] as String);//"여기에 api";
-  /**수정 사항**/
 
+  /// input controller 정의
   TextEditingController value1 = TextEditingController();
   TextEditingController value2 = TextEditingController();
+
+  /// id, password 저장 변수
   String ID='', Password='';
 
+  /// button list, 해당 버튼 클릭 시 해당하는 페이지로 이동
   List _buttonList = ['아이디 또는 비밀번호 찾기','회원가입하기', '회원 정보 조회'];
+  /// input text를 보여주기 위한 list
   List _TextFormList = ['아이디','비밀번호'];
 
+  /// 버튼을 생성하는 메소드, 위 _buttonList에서 텍스트를 받아와서 버튼을 생성한다.
   TextButton _makeTextButton(int index){
     return TextButton(
       child: Row(
@@ -56,6 +61,8 @@ class _LoginPage extends State<LoginPage>{
       },
     );
   }
+
+  /// 입력필드를 생성하는 메소드, 위 _TextFormList의 요소를 받아와서 입력 form을 생성한다.
   TextFormField _makeTextFormField(int index, bool obscure){
     return TextFormField(
       controller: index.isEven ? value1 : value2,
@@ -71,7 +78,59 @@ class _LoginPage extends State<LoginPage>{
     );
   }
 
-  @override
+  /// 서버와 api 통신을 위한 메소드, 로그인을 수행함
+  void _login(id, pwd) async{
+    final response = await http.post(
+      Uri.parse(_Login_api),
+      body: jsonEncode(
+        {
+          ServerData.KeyList['id']: id,
+          ServerData.KeyList['pwd']: pwd,
+        },
+      ),
+      headers: {'Content-Type': "application/json"},
+    );
+
+    if(response.statusCode >= 200 && response.statusCode < 300) {
+      // check Login Success and return
+      try {
+        storage.write(key: 'token', value: response.headers[ServerData.KeyList['token']]);
+      }
+      catch(e){
+        _errorPopup(e.toString());
+      }
+      Navigator.of(context).pushReplacementNamed('/main');
+      return;
+    }
+
+    // login failed, and popup Failed
+    _errorPopup(jsonDecode(response.body)[ServerData.KeyList!['msg']].toString());
+  }
+
+  /// 로그인 중 에러가 발생할 경우 팝업창을 띄우는 메소드
+  void _errorPopup(String text, [String? title]){
+    if(title == null)
+      title = "Error!";
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text(title!),
+          content: new Text(text),
+          actions: <Widget>[
+            ElevatedButton(
+                child: Text("확인"),
+                onPressed: () {
+                  Navigator.pop(context);
+                }),
+          ],
+        );
+      },
+    );
+  }
+
+  @override  /// 실제 화면을 build하는 메소드
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
@@ -120,8 +179,8 @@ class _LoginPage extends State<LoginPage>{
                       value2.clear();
                     });
                     _login(ID, Password);
-                      //login success and page move
-                      //login failed
+                    //login success and page move
+                    //login failed
                   }),
               Padding(padding: EdgeInsets.all(13)),
               _makeTextButton(0),
@@ -136,55 +195,4 @@ class _LoginPage extends State<LoginPage>{
     );
   }
 
-  void _login(id, pwd) async{
-    final response = await http.post(
-      Uri.parse(_Login_api),
-      body: jsonEncode(
-        {
-          ServerData.KeyList['id']: id,
-          ServerData.KeyList['pwd']: pwd,
-        },
-      ),
-      headers: {'Content-Type': "application/json"},
-    );
-
-    if(response.statusCode >= 200 && response.statusCode < 300) {
-      // check Login Success and return
-      try {
-        storage.write(key: 'token', value: response.headers[ServerData.KeyList['token']]);
-      }
-      catch(e){
-        _errorPopup(e.toString());
-      }
-      Navigator.of(context).pushReplacementNamed('/main');
-      return;
-    }
-
-    // login failed, and popup Failed
-    _errorPopup(jsonDecode(response.body)[ServerData.KeyList!['msg']].toString());
-  }
-  void _errorPopup(String text, [String? title]){
-    if(title == null)
-      title = "Error!";
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: new Text(title!),
-          content: new Text(text),
-          actions: <Widget>[
-            ElevatedButton(
-                child: Text("확인"),
-                onPressed: () {
-                  Navigator.pop(context);
-                }),
-          ],
-        );
-      },
-    );
-  }
-
-  @override
-  bool get wantKeepAlive => true;
 }

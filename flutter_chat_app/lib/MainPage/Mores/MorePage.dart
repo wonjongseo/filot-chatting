@@ -11,7 +11,8 @@ String state_path = 'image/state.png';
 
 
 class Mores extends StatelessWidget {
-
+  
+  /// UI용 Icon List
   Map<String,Widget> _IconList = {
     "State":FittedBox(child: Image.asset(state_path, fit: BoxFit.fitWidth,),fit: BoxFit.fill,),
     "Role":FittedBox(child: Image.asset(role_path,fit: BoxFit.fitWidth),fit: BoxFit.fill,),
@@ -19,34 +20,12 @@ class Mores extends StatelessWidget {
     "Email":Icon(Icons.mail,color: Colors.black,),
     "Phone":Icon(Icons.smartphone,color: Colors.black,),
   };
-
+  
+  /// 기기 사이즈를 저장
   var deviceHeight, deviceWidth;
 
-  @override
-  Widget build(BuildContext context) {
-    deviceHeight = MediaQuery.of(context).size.height;
-    deviceWidth = MediaQuery.of(context).size.width;
-
-    // TODO: implement build
-    return Scaffold(
-        backgroundColor: Colors.white,
-        body: Column(
-          children: <Widget> [
-            Text("More",
-              style: TextStyle(
-                  color: Colors.black87,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  height: 4
-              ),
-            ),
-            /** 더보기 List에서 모두 끌어와요 **/
-            Divider(color: Colors.black87),
-            _MakeIconTap(),
-          ],
-        ),
-    );
-  }
+  /// Icon List에서 각 요소를 list화 하여 화면에 띄우는 위젯 메소드
+  /// 즉, _IconList를 추가하면 알아서 자동 추가됨
   Widget _MakeIconTap(){
     return Flexible(
         child: GridView.count(
@@ -71,6 +50,32 @@ class Mores extends StatelessWidget {
                 )
             ]
         )
+    );
+  }
+  
+  @override /// 실제 화면을 build하는 메소드
+  Widget build(BuildContext context) {
+    deviceHeight = MediaQuery.of(context).size.height;
+    deviceWidth = MediaQuery.of(context).size.width;
+
+    // TODO: implement build
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Column(
+        children: <Widget> [
+          Text("More",
+            style: TextStyle(
+                color: Colors.black87,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                height: 4
+            ),
+          ),
+          /** 더보기 List에서 모두 끌어와요 **/
+          Divider(color: Colors.black87),
+          _MakeIconTap(),
+        ],
+      ),
     );
   }
 }
