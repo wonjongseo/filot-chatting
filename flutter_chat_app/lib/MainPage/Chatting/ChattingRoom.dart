@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/MainPage/Friends/FriendsList.dart';
+import 'package:flutter_chat_app/data/FrinedsData.dart';
 import 'package:flutter_chat_app/data/MyData.dart';
 import 'package:flutter_chat_app/data/ProfileData.dart';
 import 'package:flutter_chat_app/data/ServerData.dart';
@@ -9,11 +11,11 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class Chatting extends StatefulWidget{
 
-  UserData  userObj;
-  Chatting({Key? key,required this.userObj}) : super(key: key);
+  List<FrinedsData>  friendsObjs;
+  Chatting({Key? key, required this.friendsObjs}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _Chatting(userObj);
+  State<StatefulWidget> createState() => _Chatting(friendsObjs);
 }
 class _Chatting extends State<Chatting>{
 
@@ -25,9 +27,10 @@ class _Chatting extends State<Chatting>{
   late IO.Socket socket;
 
   /// 친구 데이터와 내 데이터를 초기화
-  UserData friendObj;
+  List<FrinedsData> _frinedsList;
+  late FrinedsData friendObj;
   MyData _myData = myData;
-  _Chatting(this.friendObj);
+  _Chatting(this._frinedsList);
 
   /// 메시지에 대한 리스트, 이 순서대로 레이아웃이 펼쳐진다.
   List _messageList = [];
@@ -210,8 +213,7 @@ class _Chatting extends State<Chatting>{
   // 아래 모든 데이터 메소드는 서버 관련 메소드 --server
   @override /// 이 컨텍스트가 실행되면서 초기화 메소드, Socket을 Link한다.
   void initState() {
-    friendObj.userObj = friendObj.getName();
-    _myData.userObj = _myData.getName();
+    friendObj = _frinedsList.first;
 
     // TODO: implement initState
     _LinkSocket();
@@ -221,7 +223,9 @@ class _Chatting extends State<Chatting>{
   _LinkSocket() async {
     // 'username'
     var item;
-    List<String> _tempList = [_myData.getName(),friendObj.getName()];
+    List<String> _tempList = [_myData.getName()];
+    _frinedsList.forEach((element) {_tempList.add(element.getName());});
+
     _tempList.sort();
     String roomNum = '';
     for(var i in _tempList)

@@ -163,7 +163,7 @@ class _FriendsList extends State<FriendsList> {
   }
 
   /// 클릭 시 친구 창을 띄우는 메소드 (pop up창 메소드)
-  void _frinedPopup(UserData UserObj){
+  void _frinedPopup(FrinedsData UserObj){
     double _nameSize;
     double _paddingSize,_iconSize;
     showDialog(
@@ -268,7 +268,7 @@ class _FriendsList extends State<FriendsList> {
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
                             ),),
-                            onTap: (){Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>Chatting(userObj: UserObj,)));},
+                            onTap: (){Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>Chatting(friendsObjs: [UserObj])));},
                           ),
                         ),
                       ],
@@ -284,7 +284,6 @@ class _FriendsList extends State<FriendsList> {
       },
     );
   }
-
 
   @override /// 실제 화면을 build하는 메소드
   Widget build(BuildContext context) {
