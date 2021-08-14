@@ -11,7 +11,6 @@ import userRouter from "./router/userRouter";
 import {config} from "./config";
 import {auth, putEdit} from "./controller/userController";
 import {isAuth} from "./middleware/auth";
-import chatRouter from "./router/chatRouter";
 import chatting from "../connection/chatting";
 const app = express();
 
@@ -25,7 +24,6 @@ app.set("views", process.cwd() + "/src/views");
 //라우터
 app.use("/", globalRouter);
 app.use("/users", userRouter);
-app.use("/chats", chatRouter);
 app.use("/auth", isAuth, auth);
 
 app.use((req, res, next) => {

@@ -2,39 +2,9 @@ import Chat from "../models/Chat";
 import ChatsRoom from "../models/ChatingRoom";
 import User from "../models/User";
 
-export const getChatByUser = (req, res, next) => {
-    const chats = Chat.find({});
-
-    return res.json(chats);
-};
-
-export const postChatByUser = async (req, res, next) => {
-    const {message} = req.body;
-    const user = req.user;
-
-    if (!user) {
-        return res.json({message: "로그인을 먼저 해주세요"});
-    }
-    const chat = await Chat.create({
-        message,
-        username: user.name,
-    });
-    return res.json(chat);
-};
-
-export const findChatByUser = (req, res, next) => {
-    const {user} = req.user;
-};
-
-export const seeAllChat = async (req, res, next) => {
-    const chats = await Chat.find({});
-    return res.json(chats);
-};
-
 export const createChattingRoom = async (data) => {
     const objData = JSON.parse(data);
-    const {user1, user2} = objData;
-    const roomNum = objData.roomNum;
+    const {user1, user2, roomNum} = objData;
     let createRoom = await ChatsRoom.findOne({roomNum});
     const ChatUser1 = await User.findOne({id: user1});
     const ChatUser2 = await User.findOne({id: user2});
@@ -53,12 +23,11 @@ export const createChattingRoom = async (data) => {
     }
     return {roomNum, ChatUser1, ChatUser2, createRoom};
 };
-export const findChattingRoom = async (createRoom) => {
-    console.log(createRoom);
+export const importChatting = async (createRoom) => {
     return ChatsRoom.findOne({roomNum: createRoom}).populate("chats");
 };
 
-export const existingChat = (chat) => {
+export const parsingChats = (chat) => {
     const user = chat.username;
     const message = chat.message;
     const dataObj = {message, user};

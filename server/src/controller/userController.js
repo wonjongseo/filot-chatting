@@ -168,6 +168,19 @@ export const postMyProfile = async (req, res, next) => {
     return res.json(user);
 };
 
+export const getFriendsList = async (req, res, next) => {
+    const {id} = req;
+    console.log(id);
+
+    const users = await User.find({}).select("-password -_id").populate({
+        path: "rooms",
+        select: "roomNum -_id",
+    });
+    console.log(users.rooms);
+
+    return res.status(200).json(users);
+};
+
 const createJwt = (id) => {
     return jwt.sign({id}, config.jwt.secretKey, {
         expiresIn: config.jwt.expireInSec,

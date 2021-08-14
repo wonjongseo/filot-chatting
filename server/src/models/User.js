@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
     name: {type: String, required: true},
     phone_number: {type: String, default: ""},
     rooms: [{type: mongoose.Schema.Types.ObjectId, ref: "ChatsRoom"}],
-    state: {type: String, default: Date.now()},
+    state: {type: Number, default: 0},
     role: {type: String, default: ""},
     github: {type: String, default: ""},
     email: {type: String, default: ""},

@@ -2,8 +2,8 @@ import {Server} from "socket.io";
 import {
     createChat,
     createChattingRoom,
-    existingChat,
-    findChattingRoom,
+    parsingChats,
+    importChatting,
 } from "../src/controller/chatController";
 
 const chatting = (server) => {
@@ -18,7 +18,9 @@ const chatting = (server) => {
         rejectUnauthorized: false,
         transports: ["websocket"],
     });
-
+    io.on("message", (data) => {
+        console.log(data);
+    });
     const chat = io.of("/chat");
 
     chat.on("connection", async (socket) => {
@@ -31,7 +33,7 @@ const chatting = (server) => {
                 chat.emit("message", data);
                 createChat(data, createRoom);
             });
-            const chatsInRoom = await findChattingRoom(roomNum);
+            const chatsInRoom = await importChatting(roomNum);
             // ################### test
             console.log(chatsInRoom);
             const user = chatsInRoom.chats[0].username;
@@ -39,25 +41,6 @@ const chatting = (server) => {
             const dataObj = {message, user};
             const data1 = JSON.stringify(dataObj, data1);
             socket.emit("message", data1);
-            // ################### test
-            // const user1_chat = await findChattingRoom(ChatUser1, createRoom);
-            // if (user1_chat) {
-            //     user1_chat[0].chats.map(async (chat) => {
-            //         // console.log(chat);
-            //         const data = existingChat(chat);
-
-            //         socket.emit("message", data);
-            //     });
-            // }
-            // const user2_chat = await findChattingRoom(ChatUser2, createRoom);
-            // console.log(user2_chat);
-            // if (user2_chat) {
-            //     user2_chat[0].chats.map(async (chat) => {
-            //         const data = existingChat(chat);
-
-            //         socket.emit("message", data);
-            //     });
-            // }
         });
     });
 };
