@@ -1,16 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/data/ServerData.dart';
+import 'package:http/http.dart' as http;
 
 class Settings extends StatefulWidget{
   @override
   State<StatefulWidget> createState() => _Settings();
 }
 class _Settings extends State<Settings>{
+
+  /*------------------ 변수 선언 구문 ------------------*/
+  /// Friends List를 불러오는 api / state를 실시간 변경됨을 소통하는 api --server
+  final _Logout_api = ServerData.api + (ServerData.ApiList['/logout'] as String);
   /// 기기 사이즈를 받고, 비율을 지정
   var _rateHeight,_rateWidth;
+  /*--------------------------------------------------*/
 
+  /*------------------ 위젯 생성 메서드 구문 ------------------*/
   /// 로그아웃 UI를 만들어주는 위젯 메소드
-  /// 실제 로그아웃을 담당하고, 초기 화면으로 이동한다.
+  /// 로그아웃을 담당하고, 초기 화면으로 이동한다.
   Widget _LogOut([str]) {
     return Container(
         alignment: Alignment.centerRight,
@@ -32,8 +40,8 @@ class _Settings extends State<Settings>{
           children: [
             ElevatedButton(
               onPressed: (){
-                // Logout function and releas token
-                Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                // Logout function and release token
+                _logout();
               },
               child: Row(
                 children: [
@@ -81,4 +89,29 @@ class _Settings extends State<Settings>{
 
     );
   }
+  /*--------------------------------------------------*/
+
+  /*------------------ 데이터 처리 메서드 구문 ------------------*/
+  // 아래 모든 데이터 메소드는 서버 관련 메소드 --server
+  /// 실제 로그아웃 메소드, 토큰삭제 실패 시 토큰 유지, 성공 시 모든 데이터를 삭제한다.
+  void _logout() async {
+    var _tokenValue;
+    try {
+      _tokenValue = (await storage.read(key: 'token'))!;
+    }catch (e){
+      print(e.toString());
+    }
+    var response = await http.post(
+      Uri.parse(_Logout_api),
+      body: {
+        ServerData.KeyList['token'] : _tokenValue,
+      }
+    );
+    if(response.statusCode < 200 || response.statusCode >= 300){
+      return;
+    }
+    storage.deleteAll();
+    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+  }
+  /*--------------------------------------------------*/
 }

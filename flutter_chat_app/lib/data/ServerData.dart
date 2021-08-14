@@ -26,6 +26,7 @@ class ServerData {
     '/myprofile' : (JHtest ? '' : '/users/myprofile'),
     '/userupdate' : (JHtest ? '' : '/update'),
     '/state' : (JHtest ? '/state' : '/state'),
+    '/logout' : (JHtest ? '/logout' : '/logout'),
   };
   static final Map<String,String> KeyList = /// <My Use Key, value of api key>
   {
