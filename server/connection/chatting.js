@@ -18,29 +18,26 @@ const chatting = (server) => {
         rejectUnauthorized: false,
         transports: ["websocket"],
     });
-    io.on("message", (data) => {
-        console.log(data);
-    });
+
     const chat = io.of("/chat");
 
+    // name spae "chat" 과 연결
     chat.on("connection", async (socket) => {
-        const headers = socket.handshake["headers"];
-        socket.on("enter-room", async (data) => {
+        // 서버 쪽에서 item 이벤트로 두 유저와 방 번호를 받음
+        socket.on("item", async (data) => {
             const {roomNum, ChatUser1, ChatUser2, createRoom} =
                 await createChattingRoom(data);
 
+            const chatsInRoom = await importChatting(roomNum);
+            // 과거 존재하는 방의 채팅들 불러와 서버쪽에 보내줌
+            socket.emit("load-message", chatsInRoom || []);
+
+            // 서버에서 메세지가 오면
             socket.on("message", async (data) => {
                 chat.emit("message", data);
+                // 데이터베이스에 채팅 저장
                 createChat(data, createRoom);
             });
-            const chatsInRoom = await importChatting(roomNum);
-            // ################### test
-            console.log(chatsInRoom);
-            const user = chatsInRoom.chats[0].username;
-            const message = chatsInRoom.chats[0].message;
-            const dataObj = {message, user};
-            const data1 = JSON.stringify(dataObj, data1);
-            socket.emit("message", data1);
         });
     });
 };
