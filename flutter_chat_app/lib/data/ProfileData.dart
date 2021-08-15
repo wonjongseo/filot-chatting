@@ -10,7 +10,7 @@ class UserData {
   String _role = '';
   String _imgPath = 'image/teamIcon.png';
 
-  var _state;
+  int _state = 0;
   var _userObj;
 
   /// Server에서 json type으로 user 객체를 통째로 받아 저장한다. --server
@@ -32,7 +32,7 @@ class UserData {
   void setGithub(String? github) => this._github = github!;
   String getRole() => _role;
   void setRole(String? role) => this._role = role!;
-  dynamic getState() => _state;
+  int getState() => _state;
   void setState(state) => this._state = state!;
   String getImage() => _imgPath;
   void setImage(String? imgPath) => this._imgPath = (imgPath!.isEmpty ? 'image/teamIcon.png' : imgPath)!;
@@ -45,12 +45,13 @@ class UserData {
       /// object parsing
       try {
         var data = jsonDecode(_userObj);
+        print(data);
         this.setName(data[ServerData.KeyList['name']]);
         this.setRole(data[ServerData.KeyList['role']]);
         this.setPhone(data[ServerData.KeyList['phone']]);
         this.setEmail(data[ServerData.KeyList['email']]);
         this.setGithub(data[ServerData.KeyList['github']]);
-        this.setState(data[ServerData.KeyList['state']]);
+        this.setState(data[ServerData.KeyList['state']] as int);
       } catch (e) {
 
       }

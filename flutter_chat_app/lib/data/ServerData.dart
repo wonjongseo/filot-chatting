@@ -49,7 +49,7 @@ class ServerData {
     'enter-room' : 'enter-room',
     'load-message' : 'load-message',
   };
-  static final api = (JHtest ? 'localhost:3000' : '형의 api 메인 주소');
+  static final api = (JHtest ? 'https://localhost:3000' : '형의 api 메인 주소');
 
   /// test용 json 객체
   static var adminItem = jsonEncode({

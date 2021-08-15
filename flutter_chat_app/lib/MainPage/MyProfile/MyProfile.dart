@@ -57,7 +57,7 @@ class _MyProfile extends State<MyProfile> {
   };
 
   /// 내 정보 데이터 저장 변수
-  late MyData _myData;
+  MyData _myData = new MyData(ServerData.adminItem);
 
   /// 기기 사이즈를 저장하는 변수
   var deviceHeight, deviceWidth;
@@ -326,6 +326,15 @@ class _MyProfile extends State<MyProfile> {
     );
   }
 
+  /// 하단 text를 수정한다.
+  void _updateUiText(){
+    /// 아래는 UI적 요소
+    _TextEditController["Role"]!.text =  _myData.getRole();
+    _TextEditController["Github"]!.text =  _myData.getGithub();
+    _TextEditController["Email"]!.text =  _myData.getEmail();
+    _TextEditController["Phone"]!.text =  _myData.getPhone();
+  }
+
   @override /// 실제 화면을 build하는 메소드
   Widget build(BuildContext context) {
 
@@ -469,6 +478,7 @@ class _MyProfile extends State<MyProfile> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _myData.parsingData();
     _getData();
   }
   /// 실제 내 데이터를 불러오는 메소드, header에 발급받은 token을 넣어 보낸다. METHOD = GET
@@ -481,10 +491,10 @@ class _MyProfile extends State<MyProfile> {
       print(e.toString());
 
       myData = new MyData(ServerData.adminItem);
+      myData.parsingData();
 
-      _myData = myData;
       _tokenValue = "admin";
-      _updateData();
+      _updateUiText();
       return;
     }
     final response = await http.get(
@@ -511,17 +521,15 @@ class _MyProfile extends State<MyProfile> {
     _TextEditController["Github"]!.text =  _myData.getGithub();
     _TextEditController["Email"]!.text =  _myData.getEmail();
     _TextEditController["Phone"]!.text =  _myData.getPhone();
+    setState(() {});
   }
   /// 변경된 내 데이터를 서버에 전송한다.
   void _updateData() async {
     print(await _myData.UpdateData()); // --server MyData 클래스 내장 함수 update를 통해 프로필 갱신을 한다.
 
-    /// 아래는 UI적 요소
-    _TextEditController["Role"]!.text =  _myData.getRole();
-    _TextEditController["Github"]!.text =  _myData.getGithub();
-    _TextEditController["Email"]!.text =  _myData.getEmail();
-    _TextEditController["Phone"]!.text =  _myData.getPhone();
+    _updateUiText();
   }
+
   /// 변경된 내 상태를 실시간 서버에 전송한다.
   void _updateState(int index) async {
     myData.setState(index);
