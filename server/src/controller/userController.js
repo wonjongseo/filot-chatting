@@ -165,18 +165,15 @@ export const postMyProfile = async (req, res, next) => {
     user.phone_number = phone_number;
     user.role = role;
     await user.save();
-    return res.json(user);
+    return res.status(201).json(user);
 };
 
 export const getFriendsList = async (req, res, next) => {
     const {id} = req;
     console.log(id);
 
-    const users = await User.find({}).select("-password -_id").populate({
-        path: "rooms",
-        select: "roomNum -_id",
-    });
-    console.log(users.rooms);
+    //{ ‘name’, ‘state’, ‘phone_number’, ’role’, ‘github’, ’email’ }] to front
+    const users = await User.find({}).select("-password -_id -rooms -id");
 
     return res.status(200).json(users);
 };
