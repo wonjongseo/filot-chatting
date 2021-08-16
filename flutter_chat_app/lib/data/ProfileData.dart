@@ -44,7 +44,9 @@ class UserData {
     else{
       /// object parsing
       try {
-        var data = jsonDecode(_userObj);
+        var data;
+        if(_userObj is String)
+          data = jsonDecode(_userObj);
         print(data);
         this.setName(data[ServerData.KeyList['name']]);
         this.setRole(data[ServerData.KeyList['role']]);
@@ -53,7 +55,7 @@ class UserData {
         this.setGithub(data[ServerData.KeyList['github']]);
         this.setState(data[ServerData.KeyList['state']] as int);
       } catch (e) {
-
+        print(e.toString())
       }
 
       return true;
