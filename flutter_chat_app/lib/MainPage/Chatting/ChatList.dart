@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_chat_app/MainPage/Chatting/ChattingRoom.dart';
-import 'package:flutter_chat_app/data/ProfileData.dart';
+import 'package:flutter_chat_app/data/FrinedsData.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_chat_app/data/ServerData.dart';
 
 String icon_path = 'image/teamIcon.png';
 String github_outline_path = 'image/github_outline.png';
@@ -14,15 +18,30 @@ class ChatList extends StatefulWidget {
 }
 
 class _ChatList extends State<ChatList> {
-  ScrollController _scrollController = new ScrollController();
-  List<Object> Users = [1,2,3,4,5,6,7,8,9,10];
-  var deviceHeight, deviceWidth;
 
-  Widget _ChatCardeView(width, height, [object]){
+  /*------------------ 변수 선언 구문 ------------------*/
+  /// Chat List를 불러오는 api
+  final _getRoomsData_api = ServerData.api + (ServerData.ApiList['/rooms'] as String);
+  /// 화면을 scroll 할 수 있는 controller
+  ScrollController _scrollController = new ScrollController();
+  /// 채팅방 List
+  List<_roomData> _Rooms = [];
+  /// 기기 사이즈를 받고, 비율을 지정
+  var deviceHeight, deviceWidth;
+  /*--------------------------------------------------*/
+
+  /*------------------ 위젯 생성 메서드 구문 ------------------*/
+  /// 채팅방 하나의 cardview를 표현하는 위젯 메소드
+  Widget _ChatCardeView(width, height, _roomData object){
     var _widthRate = width * 0.01;
     var _hegihtRate = height * 0.01;
     // 추후 User Data를 받아오는 파라미터 필요
     // 현재 위젯의 너비와 높이를 받아와서 비율을 계산
+
+    String _title = '', _lastChat;
+    object.users.forEach((element) {_title = _title + element.getName();});
+    _lastChat = object.lastChat;
+
     return Container(
       width: _widthRate*85,
       height: _hegihtRate*80,
@@ -32,7 +51,7 @@ class _ChatList extends State<ChatList> {
           Container(
               width: _widthRate*25,
               height: _widthRate*25,
-              child: Image.asset(icon_path, fit: BoxFit.fill,),
+              child: Image.asset( object.users.length > 1 ? icon_path : object.users.first.getImage(), fit: BoxFit.fill,),
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(
@@ -53,7 +72,7 @@ class _ChatList extends State<ChatList> {
                   alignment: Alignment.bottomLeft,
                   child: Row(
                     children: [
-                      Text("FILOT 전체 톡방",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
+                      Text(_title,style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
                       Padding(padding: EdgeInsets.all(_widthRate*4)),
 
                       Container(
@@ -83,7 +102,7 @@ class _ChatList extends State<ChatList> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Flexible(child: Text("Latest Chat Text", overflow: TextOverflow.ellipsis,maxLines: 1,)),
+                      Flexible(child: Text(_lastChat, overflow: TextOverflow.ellipsis,maxLines: 1,)),
                     ],
                   ),
                 ),
@@ -95,11 +114,7 @@ class _ChatList extends State<ChatList> {
     );
   }
 
-  void _goToChatting(){
-    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Chatting(userObj: new UserData('jongs1eo'))));
-  }
-
-  @override
+  @override /// 실제 화면을 build하는 메소드
   Widget build(BuildContext context) {
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
@@ -128,8 +143,11 @@ class _ChatList extends State<ChatList> {
                     height: (MyProfileWidget_height=100.0),
                     child: Center(
                         child: GestureDetector(
-                          onTap: (){_goToChatting();},
-                          child: _ChatCardeView(MyProfileWidget_width,MyProfileWidget_height),
+                          onTap: (){
+                            //_goToChatting();
+                            print("아직 미구현");
+                          },
+                          child: _ChatCardeView(MyProfileWidget_width,MyProfileWidget_height, _roomData()),
                         )
                     ),
                   ),
@@ -145,7 +163,7 @@ class _ChatList extends State<ChatList> {
                 shrinkWrap: true,
                 controller: _scrollController,
                 children: [
-                  for(var item in Users)
+                  for(var item in _Rooms)
                     Container(
                       height: (FriendProfileWidget_height = rateHeight * 15),
                       width: (FriendProfileWidget_width = rateWidth * 100),
@@ -158,10 +176,12 @@ class _ChatList extends State<ChatList> {
                           )
                       ),
                       child: GestureDetector(
-                        onTap: () {_goToChatting();},
+                        onTap: () {_goToChatting(item);},
                         child: Center(child: _ChatCardeView(
                             FriendProfileWidget_width,
-                            FriendProfileWidget_height)),
+                            FriendProfileWidget_height,
+                            item
+                        )),
                       ),
                     ),
                 ]
@@ -172,4 +192,95 @@ class _ChatList extends State<ChatList> {
       ),
     );
   }
+  /*--------------------------------------------------*/
+
+  /*------------------ 데이터 처리 메서드 구문 ------------------*/
+  @override /// 이 컨텍스트가 실행되면서 초기화 메소드, 친구 List들을 불러온다.
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getRoom();
+  }
+
+  /// 실제 room 데이터들을 불러오는 메소드
+  void _getRoom() async{
+
+    // 모든 정보를 업데이트 한다.
+    var _tokenValue;
+    try {
+      _tokenValue = (await storage.read(key: 'token'))!;
+    }catch (e){
+      print(e.toString());
+    }
+
+    final response = await http.get(
+        Uri.parse(_getRoomsData_api),
+        headers: {'Content-Type': "application/json",
+          ServerData.KeyList['token'] as String : _tokenValue,
+        }
+    );
+    if(response.statusCode < 200 || response.statusCode >= 300){
+      return;
+    }
+    var data;
+    try {
+      data = jsonDecode(response.body);
+    }catch(e){
+      print(e.toString());
+    }
+    try {
+      print(data);
+      for (var item in data)
+        _Rooms.add(new _roomData(item));
+
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+  /// 채팅방 클릭 시 실제 해당 chatting room context로 이동시키는 메소드
+  void _goToChatting(_roomData object){
+    // 친구 조회 필요, 친구 객체 전달
+    // 조회 및 채팅방 이동은 동기식으로 진행해야 함
+    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Chatting(friendsObjs: object.users)));
+  }
+  /*--------------------------------------------------*/
+}
+
+class _roomData{
+  List<FrinedsData> users = [];
+  String roomNumber = '';
+  String lastChat = '';
+
+  _roomData([jsonObj]){
+    if(jsonObj == null){
+      var user1 = new FrinedsData(ServerData.adminItem);
+      var user2 = new FrinedsData(ServerData.adminItem);
+      user1.parsingData();
+      user2.parsingData();
+      user1.setName("test1");
+      user2.setName('test2');
+      users.add(user1);
+      users.add(user2);
+      roomNumber = '1234';
+      lastChat = 'Latest Chat Text';
+    }
+    else {
+      var data = jsonDecode(jsonObj);
+      roomNumber = data[ServerData.KeyList['room']];
+      var users = data[ServerData.KeyList['user']] as List;
+      var chats = data[ServerData.KeyList['chat']] as List;
+      lastChat = chats.last[ServerData.KeyList['msg']] as String;
+      for(var item in users){
+        FrinedsData temp = new FrinedsData(item);
+        if(temp.parsingData()) {
+          if(temp.getName() == myData.getName())
+            continue;
+          users.add(temp);
+        }
+        else
+          print("error");
+      }
+    }
+  }
+
 }

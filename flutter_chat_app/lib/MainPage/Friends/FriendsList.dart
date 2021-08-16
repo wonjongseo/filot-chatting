@@ -10,6 +10,7 @@ import 'package:flutter_chat_app/data/ProfileData.dart';
 import 'package:flutter_chat_app/data/ServerData.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 String icon_path = 'image/teamIcon.png';
 String github_outline_path = 'image/github_outline.png';
@@ -22,43 +23,39 @@ class FriendsList extends StatefulWidget {
 }
 
 class _FriendsList extends State<FriendsList> {
-  final _getUsersData_api = ServerData.api + (ServerData.ApiList['/friends'] as String);
 
+  /*------------------ 변수 선언 구문 ------------------*/
+  /// Friends List를 불러오는 api / state를 실시간 변경됨을 소통하는 api --server
+  final _getUsersData_api = ServerData.api + (ServerData.ApiList['/friends'] as String);
+  final state_socket_api = ServerData.api + (ServerData.ApiList['/state'] as String);
+
+  /// socket 변수 생성  --server
+  late IO.Socket socket;
+
+  /// UI용 Icon List
   Map<String,Widget> _IconList = {
     "Github":FittedBox(child: Image.asset(github_path,fit: BoxFit.fitHeight,color: Colors.white,),fit: BoxFit.fill,),
     "Email":Icon(Icons.mail,color: Colors.white,),
     "Phone":Icon(Icons.smartphone,color: Colors.white,),
     "Chat":Icon(Icons.chat_bubble,color: Colors.white,),
   };
+  /// 화면을 scroll 할 수 있는 controller
   ScrollController _scrollController = new ScrollController();
 
-  List<FrinedsData> _friends = [new FrinedsData('testing')];
+  /// frineds list를 받아와 요소를 추가 & 현재 내 데이터를 로드
+  List<FrinedsData> _friends = [new FrinedsData(ServerData.adminItem)];
   MyData _mydata = myData;
 
+  /// 친구의 현재 상태를 알리는 Color List, 각각 [ 연락 가능, 연락 불가, 연락 임시 가능 ]을 의미함
+  List<Color> _stateColorList = [Colors.green, Colors.red, Colors.blue];
+
+  /// 기기 사이즈를 받고, 비율을 지정
   var deviceHeight, deviceWidth;
   var rateWidth, rateHeight;
+  /*--------------------------------------------------*/
 
-  _launchURL(url) async {
-    try {
-      await launch(url, forceSafariVC: true, forceWebView: true);
-    }catch(e){
-      print(e.toString());
-    }
-  }
-  _launchMail(mail) async{
-    try {
-      await launch("mailto:$mail");
-    }catch(e){
-      print(e.toString());
-    }
-  }
-  _launchPhone(phoneNum) async{
-    try {
-      await launch("tel:$phoneNum");
-    }catch(e){
-      print(e.toString());
-    }
-  }
+  /*------------------ 위젯 생성 메서드 구문 ------------------*/
+  /// Friends & My data들을 화면에 뿌리는 위젯 메소드
   Widget _ProfileCardeView(width, height, UserData UserObj){
     var _widthRate = width * 0.01;
     var _hegihtRate = height * 0.01;
@@ -113,7 +110,7 @@ class _FriendsList extends State<FriendsList> {
                         height: _hegihtRate*14,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
-                            color: Colors.green,
+                            color: _stateColorList[UserObj.getState()],
                             border: Border.all(
                               color: Colors.black12,
                               width: 1,
@@ -165,7 +162,8 @@ class _FriendsList extends State<FriendsList> {
     );
   }
 
-  void _frinedPopup(UserData UserObj){
+  /// 클릭 시 친구 창을 띄우는 메소드 (pop up창 메소드)
+  void _frinedPopup(FrinedsData UserObj){
     double _nameSize;
     double _paddingSize,_iconSize;
     showDialog(
@@ -270,7 +268,7 @@ class _FriendsList extends State<FriendsList> {
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
                             ),),
-                            onTap: (){Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>Chatting(userObj: UserObj,)));},
+                            onTap: (){Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>Chatting(friendsObjs: [UserObj])));},
                           ),
                         ),
                       ],
@@ -287,7 +285,7 @@ class _FriendsList extends State<FriendsList> {
     );
   }
 
-  @override
+  @override /// 실제 화면을 build하는 메소드
   Widget build(BuildContext context) {
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
@@ -299,83 +297,88 @@ class _FriendsList extends State<FriendsList> {
     var FriendProfileWidget_width, FriendProfileWidget_height;
     // TODO: implement build
     return Scaffold(
-        body: //SingleChildScrollView( child:
-        Column(
-            children: <Widget> [
-              Container(
-                child: Center(
-                  child: Column(
-                    children: [
-                      Padding(padding: EdgeInsets.all(rateHeight*3)),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(
-                            color: Colors.black12,
-                            width: 1,
-                          ),
-                          borderRadius: const BorderRadius.all(const Radius.circular(8)),
-                          boxShadow: [BoxShadow(
-                            color: Colors.grey.withOpacity(0.2),
-                            spreadRadius: 3,
-                            blurRadius: 7,
-                            offset: Offset(2, 3),
-                          )],
-
-                        ),
-                        width: (MyProfileWidget_width=rateWidth * 90),
-                        height: (MyProfileWidget_height=100.0),
-                        child: Center(child: _ProfileCardeView(MyProfileWidget_width,MyProfileWidget_height,_mydata)),
+      body: //SingleChildScrollView( child:
+      Column(
+        children: <Widget> [
+          Container(
+            child: Center(
+              child: Column(
+                children: [
+                  Padding(padding: EdgeInsets.all(rateHeight*3)),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        color: Colors.black12,
+                        width: 1,
                       ),
-                    ],
+                      borderRadius: const BorderRadius.all(const Radius.circular(8)),
+                      boxShadow: [BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        spreadRadius: 3,
+                        blurRadius: 7,
+                        offset: Offset(2, 3),
+                      )],
+
+                    ),
+                    width: (MyProfileWidget_width=rateWidth * 90),
+                    height: (MyProfileWidget_height=100.0),
+                    child: Center(child: _ProfileCardeView(MyProfileWidget_width,MyProfileWidget_height,_mydata)),
                   ),
-                ),
-                height: rateHeight*20,
+                ],
               ),
-              Container(height: 20,width: double.infinity, child: Center(child: Container( height: 1, width: rateWidth*80, color: Colors.black12),)),
-              Flexible(
-                child: ListView(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    controller: _scrollController,
-                    children: [
-                      for(var item in _friends)
-                        Container(
-                          height: (FriendProfileWidget_height = rateHeight * 15),
-                          width: (FriendProfileWidget_width = rateWidth * 100),
-                          decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                    color: Colors.black12,
-                                    width: 1
-                                ),
-                              )
-                          ),
-                          child: GestureDetector(
-                            onTap: () {_frinedPopup(item);},
-                            child: Center(child: _ProfileCardeView(
-                                FriendProfileWidget_width,
-                                FriendProfileWidget_height,
-                                item
-                            )),
-                          ),
-                        ),
-                    ]
-                  //Column(children: [],),
-                ),
-              )
-            ],
+            ),
+            height: rateHeight*20,
           ),
-        //)
+          Container(height: 20,width: double.infinity, child: Center(child: Container( height: 1, width: rateWidth*80, color: Colors.black12),)),
+          Flexible(
+            child: ListView(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                controller: _scrollController,
+                children: [
+                  for(var item in _friends)
+                    Container(
+                      height: (FriendProfileWidget_height = rateHeight * 15),
+                      width: (FriendProfileWidget_width = rateWidth * 100),
+                      decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                                color: Colors.black12,
+                                width: 1
+                            ),
+                          )
+                      ),
+                      child: GestureDetector(
+                        onTap: () {_frinedPopup(item);},
+                        child: Center(child: _ProfileCardeView(
+                            FriendProfileWidget_width,
+                            FriendProfileWidget_height,
+                            item
+                        )),
+                      ),
+                    ),
+                ]
+              //Column(children: [],),
+            ),
+          )
+        ],
+      ),
+      //)
     );
   }
-  @override
+  /*--------------------------------------------------*/
+
+  /*------------------ 데이터 처리 메서드 구문 ------------------*/
+  // 아래 모든 데이터 메소드는 서버 관련 메소드 --server
+  @override /// 이 컨텍스트가 실행되면서 초기화 메소드, 친구 List들을 불러온다.
   void initState() {
     // TODO: implement initState
     super.initState();
     _getData();
   }
 
+  /// 실제 친구 데이터들을 불러오는 메소드
   void _getData() async{
 
     // 모든 정보를 업데이트 한다.
@@ -395,6 +398,8 @@ class _FriendsList extends State<FriendsList> {
     if(response.statusCode < 200 || response.statusCode >= 300){
       return;
     }
+    _LinkSocket();
+
     var data;
     try {
       data = jsonDecode(response.body);
@@ -404,20 +409,64 @@ class _FriendsList extends State<FriendsList> {
     try {
       print(data);
       for (var item in data) {
-        FrinedsData _item = new FrinedsData(item[ServerData.KeyList['name']]);
-        _item.setGithub(item[ServerData.KeyList['github']]);
-        _item.setEmail(item[ServerData.KeyList['email']]);
-        _item.setImage(item[ServerData.KeyList['image']]);
-        _item.setPhone(item[ServerData.KeyList['phone']]);
-        _item.setState(item[ServerData.KeyList['state']]);
-        _item.userObj = item[ServerData.KeyList['user']];
-        _friends.add(_item);
+        FrinedsData _item = new FrinedsData(item);
+
+        if(_item.parsingData())
+          _friends.add(_item);
+        else
+          print("error for adding friend");
       }
     } catch (e) {
       print(e.toString());
     }
-
   }
+  /// 실제 Socket을 연결하는 메소드 / 성공적으로 데이터를 불러왔을 때 Socket을 연결한다.
+  _LinkSocket() async {
+    socket = await IO.io(state_socket_api, <String, dynamic>{
+      'transports': ['websocket'],
+    });
+
+    socket.onConnect((str) {
+      // server socket connect
+      print(str);
+    });
+    socket.on('get_state', (data) {
+
+      var _data = jsonDecode(data);
+      /// find friend, update state, setState(){}
+      for(var _item in _friends)
+        if(_item.getName() == _data[ServerData.KeyList['name']]) {
+          setState(() => _item.setState(_data[ServerData.KeyList['state']]));
+          return;
+        }
+    });
+    socket.onDisconnect((_) => print('disconnect'));
+  }
+
+  /** 각각의 정보 (github, mail, phone)을 실제 브라우저, 메일, 전화로 연결해줌 **/
+  _launchURL(url) async {
+    try {
+      await launch(url, forceSafariVC: true, forceWebView: true);
+    }catch(e){
+      print(e.toString());
+    }
+  }
+  _launchMail(mail) async{
+    try {
+      await launch("mailto:$mail");
+    }catch(e){
+      print(e.toString());
+    }
+  }
+  _launchPhone(phoneNum) async{
+    try {
+      await launch("tel:$phoneNum");
+    }catch(e){
+      print(e.toString());
+    }
+  }
+  /** 메소드 **/
+
+  /// 미정
   void _updateData() async {}
-  
 }

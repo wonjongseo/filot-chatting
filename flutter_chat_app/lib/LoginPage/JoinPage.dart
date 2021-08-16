@@ -14,17 +14,19 @@ class JoinPage extends StatefulWidget {
 }
 class _JoinPage extends State<JoinPage>{
 
-  /**수정 사항**/
+  /// 회원가입 api
   String _Join_api = ServerData.api+(ServerData.ApiList['/join'] as String);//"여기에 api";
-  /**수정 사항**/
 
-  String ID='', Password='';
-
+  /// input text를 보여주기 위한 list, 이 List에 요소를 추가하면 입력란이 생성된다.
   List _TextFormList = ['아이디','비밀번호','비밀번호 확인','이름', '닉네임','전화번호'];
   Map<String,String> _InfoList = {};
+  /// 위 Map 함수에 사용될 Key List, 이를 추가해주어야 정상적으로 json 형태로 데이터들이 parsing 된다.
   List _InfoLists = ['id','pwd','checkpwd','name', 'nick','phone'];
+  /// Text Controller List, 이는 위의 요소들에 의해 자동으로 생성된다.
   List<TextEditingController> values = [];
 
+
+  /// Password의 validation을 확인한다.
   String? validatePassword(String value) {
     if (!(value.length > 5) && value.isNotEmpty) {
       return "Password should contain more than 5 characters";
@@ -32,7 +34,7 @@ class _JoinPage extends State<JoinPage>{
     return null;
   }
 
-  @override
+  @override   /// 이 컨텍스트가 실행되면서 초기화 메소드, controller를 생성한다.
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -42,7 +44,8 @@ class _JoinPage extends State<JoinPage>{
     }
   }
 
-  Padding _makeTextFormField(int index, bool obscure) {
+  /// 실제 Text Form 필드를 생성하는 메소드
+  Padding _makeTextFormField(int index, bool obscure){
     return Padding(
       padding: EdgeInsets.fromLTRB(15, 20, 15, 5),
       child: Column(
@@ -69,7 +72,8 @@ class _JoinPage extends State<JoinPage>{
     );
   }
 
-  void _errorPopup(String str) {
+  /// 회원가입 중 에러가 발생할 경우 팝업창을 띄우는 메소드
+  void _errorPopup(String str){
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -89,7 +93,8 @@ class _JoinPage extends State<JoinPage>{
     );
   }
 
-  void _join() async {
+  /// 서버와 api 통신을 위한 메소드, 회원가입을 수행함
+  void _join() async{
     final response = await http.post(
       Uri.parse(_Join_api),
       body: jsonEncode(
@@ -106,11 +111,11 @@ class _JoinPage extends State<JoinPage>{
       return;
     }
 
-    // Join failed, and popup Failed
+    /// Join failed, and popup Failed
     _errorPopup(jsonDecode(response.body)[ServerData.KeyList!['msg']].toString());
   }
 
-  @override
+  @override /// 실제 화면을 build하는 메소드
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(

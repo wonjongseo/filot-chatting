@@ -1,26 +1,23 @@
+import 'dart:convert';
+
+import 'package:flutter_chat_app/data/ServerData.dart';
+
 class UserData {
   String _name = '';
   String _phone = '';
   String _email = '';
   String _github = '';
   String _role = '';
-  String _uuid = ''; //고유 식별번호
   String _imgPath = 'image/teamIcon.png';
 
   var _state;
   var _userObj;
 
-
-  UserData(name,[userObj]){
-    this._name = name;
-    if(userObj != null)
-      this._userObj = userObj;
+  /// Server에서 json type으로 user 객체를 통째로 받아 저장한다. --server
+  UserData(userObj){
+    this._userObj = userObj; //json encoding된 상태
   }
 
-  String get uuid => _uuid;
-  set uuid(String value) {
-    _uuid = value;
-  }
   set userObj(value) {
     _userObj = value;
   }
@@ -36,7 +33,29 @@ class UserData {
   String getRole() => _role;
   void setRole(String? role) => this._role = role!;
   dynamic getState() => _state;
-  void setState(String state) => this._state = state!;
+  void setState(state) => this._state = state!;
   String getImage() => _imgPath;
   void setImage(String? imgPath) => this._imgPath = (imgPath!.isEmpty ? 'image/teamIcon.png' : imgPath)!;
+
+  /// server에서 받은 user Object를 parsing하는 메소드 --server method
+  bool parsingData(){
+    if(_userObj.toString().isEmpty)
+      return false;
+    else{
+      /// object parsing
+      try {
+        var data = jsonDecode(_userObj);
+        this.setName(data[ServerData.KeyList['name']]);
+        this.setRole(data[ServerData.KeyList['role']]);
+        this.setPhone(data[ServerData.KeyList['phone']]);
+        this.setEmail(data[ServerData.KeyList['email']]);
+        this.setGithub(data[ServerData.KeyList['github']]);
+        this.setState(data[ServerData.KeyList['state']]);
+      } catch (e) {
+
+      }
+
+      return true;
+    }
+  }
 }

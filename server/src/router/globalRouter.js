@@ -5,7 +5,7 @@ import {validateCredential, validateSignup} from "../middleware/validator";
 const globalRouter = express.Router();
 
 globalRouter.get("/", home);
-globalRouter.post("/login", postLogin);
+globalRouter.post("/users/login", postLogin);
 globalRouter.post("/join", postJoin);
 globalRouter.get("/find", getFind);
 

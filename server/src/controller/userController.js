@@ -47,13 +47,12 @@ export const postJoin = async (req, res) => {
 
 export const postLogin = async (req, res, next) => {
     const {username, password} = req.body;
-    console.log(username, password);
     const user = await User.findOne({id: username});
-    console.log(user);
     // 없으면 사용자 에러
     if (!user) {
         return res.status(401).json({errorMessage: "없는 아이디입니다."});
     }
+    console.log(user);
     // 비밀번호 확인
     const match = await bcrypt.compare(password, user.password);
 
