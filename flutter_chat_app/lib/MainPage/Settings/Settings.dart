@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/data/MyData.dart';
 import 'package:flutter_chat_app/data/ServerData.dart';
 import 'package:http/http.dart' as http;
 
@@ -97,7 +98,7 @@ class _Settings extends State<Settings>{
   void _logout() async {
     var _tokenValue;
     try {
-      _tokenValue = (await storage.read(key: 'token'))!;
+      _tokenValue = myData.getToken();
     }catch (e){
       print(e.toString());
     }
@@ -110,7 +111,7 @@ class _Settings extends State<Settings>{
     if(response.statusCode < 200 || response.statusCode >= 300){
       return;
     }
-    storage.deleteAll();
+    myData = new MyData(ServerData.adminItem);
     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
   }
   /*--------------------------------------------------*/

@@ -208,7 +208,7 @@ class _ChatList extends State<ChatList> {
     // 모든 정보를 업데이트 한다.
     var _tokenValue;
     try {
-      _tokenValue = (await storage.read(key: 'token'))!;
+      _tokenValue = myData.getToken();
     }catch (e){
       print(e.toString());
     }

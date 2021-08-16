@@ -77,7 +77,6 @@ class _MyProfile extends State<MyProfile> {
           Expanded(child: Container(
             child: Center(child: type == 'State' ? _currentState():_EditTextForm(_TextEditController[type]),),
           ),)
-
         ],
       ),
     );
@@ -486,11 +485,10 @@ class _MyProfile extends State<MyProfile> {
     // 모든 정보를 업데이트 한다.
     var _tokenValue;
     try {
-      _tokenValue = (await storage.read(key: 'token'))!;
+      _tokenValue = myData.getToken();
     }catch (e){
       print(e.toString());
 
-      myData = new MyData(ServerData.adminItem);
       myData.parsingData();
 
       _tokenValue = "admin";
@@ -507,7 +505,7 @@ class _MyProfile extends State<MyProfile> {
       return;
     }
 
-    myData = new MyData(response.body);
+    myData.userObj(response.body);
 
     if(myData.parsingData())
       _LinkSocket();

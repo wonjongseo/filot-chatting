@@ -83,7 +83,7 @@ class _LoginPage extends State<LoginPage>{
     if(id == "admin" && pwd == "admin") {
       // check Login Administrator
       try {
-        storage.write(key: 'token', value: "admin");
+        myData.setToken("admin");
       }
       catch(e){
         _errorPopup(e.toString());
@@ -105,18 +105,7 @@ class _LoginPage extends State<LoginPage>{
     if(response.statusCode >= 200 && response.statusCode < 300) {
       // check Login Success and return
       try {
-        storage.write(key: 'token', value: response.headers[ServerData.KeyList['token']]);
-      }
-      catch(e){
-        _errorPopup(e.toString());
-      }
-      Navigator.of(context).pushReplacementNamed('/main');
-      return;
-    }
-    else if(id == "admin" && pwd == "admin") {
-      // check Login Administrator
-      try {
-        storage.write(key: 'token', value: "admin");
+        myData.setToken(response.headers[ServerData.KeyList['token']] as String);
       }
       catch(e){
         _errorPopup(e.toString());

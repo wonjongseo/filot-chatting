@@ -3,8 +3,7 @@ import 'dart:convert';
 import 'package:flutter_chat_app/data/MyData.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-final storage = new FlutterSecureStorage();
-late MyData myData;
+MyData myData = new MyData(ServerData.adminItem);
 /** To server.
  * 관리자 및 테스트용 계정 id: admin, pwd: admin 을 생성해 두었습니다.
  * 로그인 시 admin, admin으로 하면 강제로 로그인을 합니다.
