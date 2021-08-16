@@ -14,7 +14,9 @@ class MyData extends UserData {
 
   /// 갱신된 데이터를 서버에 전달하는 myData만의 유일한 메서드 --server
   Future<String> UpdateData() async {
-    var _tokenValue = (await storage.read(key: 'token'))!;
+    // var _tokenValue = (await storage.read(key: 'token'))!;
+    var _tokenValue =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImpqdWhvIiwiaWF0IjoxNjI5MDk2NTMxLCJleHAiOjE2MjkxODI5MzF9.kejs0fPwzQdbzjkDbmVYWA70QmTlpZYrUa8YWQ--aYs";
     print(_tokenValue);
     String msg;
     try {

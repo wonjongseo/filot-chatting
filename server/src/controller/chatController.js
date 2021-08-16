@@ -59,12 +59,11 @@ export const createChat = async (data, createRoom) => {
 };
 
 export const getChatsRommList = async (req, res, next) => {
-    console.log("hi");
-
     const roomList = await ChatsRoom.find({}).select("-_id").populate({
         path: "user",
         select: "-id -password -rooms",
     });
+    console.log(roomList);
 
     return res.json(roomList);
 };

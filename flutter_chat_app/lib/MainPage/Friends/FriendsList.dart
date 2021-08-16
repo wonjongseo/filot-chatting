@@ -382,7 +382,7 @@ class _FriendsList extends State<FriendsList> {
   void _getData() async{
 
     // 모든 정보를 업데이트 한다.
-    var _tokenValue;
+    var _tokenValue="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImpqdWhvIiwiaWF0IjoxNjI5MDk1NTk0LCJleHAiOjE2MjkxODE5OTR9.pbdJbunmerAsscNwNOnaUj6YGP64Vogdm7FSWsppncM";
     try {
       _tokenValue = (await storage.read(key: 'token'))!;
     }catch (e){

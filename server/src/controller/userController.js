@@ -60,7 +60,9 @@ export const postLogin = async (req, res, next) => {
         return res.status(401).json({errorMessage: "비밀번호가 틀려요."});
     }
     const token = createJwt(user.id);
-    return res.json(token);
+    req.headers.token = token;
+
+    return res.json({token: token});
 };
 
 export const changePassword = async (req, res, next) => {
@@ -156,6 +158,7 @@ export const getMyProfile = async (req, res, next) => {
 
 export const postMyProfile = async (req, res, next) => {
     const {state, phone_number, role} = req.body;
+    console.log(role);
     const {id} = req;
 
     const user = await User.findOne({id});
@@ -169,11 +172,11 @@ export const postMyProfile = async (req, res, next) => {
 
 export const getFriendsList = async (req, res, next) => {
     const {id} = req;
-    console.log(id);
+    // console.log(id);
 
     //{ ‘name’, ‘state’, ‘phone_number’, ’role’, ‘github’, ’email’ }] to front
     const users = await User.find({}).select("-password -_id -rooms -id");
-
+    console.log(users);
     return res.status(200).json(users);
 };
 

@@ -25,7 +25,7 @@ userRouter
     .get(getMyProfile)
     .post(postMyProfile);
 
-userRouter.get("/frined-list", isAuth, getFriendsList);
+userRouter.get("/friends", isAuth, getFriendsList);
 userRouter.delete("/:id([0-9a-zA-Z]{4,12})", isAuth, deleteUser);
 
 export default userRouter;
