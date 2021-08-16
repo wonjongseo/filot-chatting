@@ -55,7 +55,7 @@ class UserData {
         this.setGithub(data[ServerData.KeyList['github']]);
         this.setState(data[ServerData.KeyList['state']] as int);
       } catch (e) {
-        print(e.toString())
+        print(e.toString());
       }
 
       return true;
