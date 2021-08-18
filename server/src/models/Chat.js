@@ -9,7 +9,7 @@ const chatSchema = new mongoose.Schema(
             required: true,
             ref: "ChatsRoom",
         },
-        username: {type: String, required: true},
+        user: {type: String, required: true},
     },
     {timestamps: true}
 );

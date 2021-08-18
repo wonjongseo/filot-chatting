@@ -234,9 +234,11 @@ class _ChatList extends State<ChatList> {
   /// 실제 room 데이터들을 불러오는 메소드
   void _getRoom() async {
     // 모든 정보를 업데이트 한다.
-    var _tokenValue = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImpqdWhvIiwiaWF0IjoxNjI5MDk1NTk0LCJleHAiOjE2MjkxODE5OTR9.pbdJbunmerAsscNwNOnaUj6YGP64Vogdm7FSWsppncM";
+    // var _tokenValue = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImpqdWhvIiwiaWF0IjoxNjI5MDk1NTk0LCJleHAiOjE2MjkxODE5OTR9.pbdJbunmerAsscNwNOnaUj6YGP64Vogdm7FSWsppncM";
+    var _tokenValue ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InZpc2lvbndpbGwiLCJpYXQiOjE2MjkxNzk1NDAsImV4cCI6MTYyOTI2NTk0MH0.1t1Q9rpn9H3w_zUEJGsO0TZgZ-qSHos9xkxxMAf1inc";
     try {
-      _tokenValue = (await storage.read(key: 'token'))!;
+      // _tokenValue = (await storage.read(key: 'token'))!;
+      var _tokenValue ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InZpc2lvbndpbGwiLCJpYXQiOjE2MjkxNzk1NDAsImV4cCI6MTYyOTI2NTk0MH0.1t1Q9rpn9H3w_zUEJGsO0TZgZ-qSHos9xkxxMAf1inc";
       print(_tokenValue);
     } catch (e) {
       print(e.toString());

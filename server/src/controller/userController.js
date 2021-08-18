@@ -12,9 +12,11 @@ export const home = async (req, res) => {
 };
 
 export const postJoin = async (req, res) => {
-    const {username, password, confirmpassword, name, role} = req.body;
+    const {username, password, confirmpassword, name, phone_number} = req.body;
     // 입력한 두 비밀번호가 다르면 사용자 에러
-    console.log(username, password, confirmpassword, name, role);
+    console.log("Post Join");
+    // console.log(username, password, confirmpassword, name, phone_number);
+    console.log(req.body);
     if (password != confirmpassword) {
         return res.status(409).json({message: "비밀번호가 틀립니다."});
     }
@@ -32,7 +34,8 @@ export const postJoin = async (req, res) => {
             id: username,
             password: newPassword,
             name,
-            role,
+            nick_name,
+            phone_number,
         });
 
         const token = createJwt(user.id);
@@ -52,7 +55,6 @@ export const postLogin = async (req, res, next) => {
     if (!user) {
         return res.status(401).json({errorMessage: "없는 아이디입니다."});
     }
-    console.log(user);
     // 비밀번호 확인
     const match = await bcrypt.compare(password, user.password);
 
@@ -132,7 +134,6 @@ export const deleteUser = async (req, res, next) => {
 
 export const auth = async (req, res, next) => {
     const user = await User.findOne({id: req.id});
-    console.log(req.id);
     if (!user) {
         return res.status(404).json({message: "User not found"});
     }
@@ -157,25 +158,32 @@ export const getMyProfile = async (req, res, next) => {
 };
 
 export const postMyProfile = async (req, res, next) => {
-    const {state, phone_number, role} = req.body;
-    console.log(role);
+    const {state, role, github, email, phone_number} = req.body;
     const {id} = req;
 
-    const user = await User.findOne({id});
-
-    user.state = state;
-    user.phone_number = phone_number;
-    user.role = role;
-    await user.save();
+    const user = await User.findOneAndUpdate(
+        {id},
+        {
+            state,
+            role,
+            github,
+            email,
+            phone_number,
+        }
+    );
+    console.log(user);
     return res.status(201).json(user);
 };
 
 export const getFriendsList = async (req, res, next) => {
     const {id} = req;
-    // console.log(id);
 
     //{ ‘name’, ‘state’, ‘phone_number’, ’role’, ‘github’, ’email’ }] to front
-    const users = await User.find({}).select("-password -_id -rooms -id");
+    const users = await User.find({
+        id: {
+            $ne: id,
+        },
+    }).select("-password -_id -rooms -id");
     console.log(users);
     return res.status(200).json(users);
 };

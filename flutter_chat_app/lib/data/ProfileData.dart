@@ -47,7 +47,7 @@ class UserData {
     else {
       /// object parsing
       try {
-        var data = jsonDecode(_userObj);
+        var data = _userObj is String ? jsonDecode(_userObj) : _userObj;
         print(data);
 
         this.setName(data[ServerData.KeyList['name']]);

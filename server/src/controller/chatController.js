@@ -10,9 +10,8 @@ export const createChattingRoom = async (data) => {
 
     // 데이터 베이스에서 이미 있는 방인지 확인
     let createRoom = await ChatsRoom.findOne({roomNum});
-
-    const ChatUser1 = await User.findOne({id: user1});
-    const ChatUser2 = await User.findOne({id: user2});
+    const ChatUser1 = await User.findOne({name: user1});
+    const ChatUser2 = await User.findOne({name: user2});
 
     if (createRoom) {
         return {roomNum, ChatUser1, ChatUser2, createRoom};
@@ -32,7 +31,12 @@ export const createChattingRoom = async (data) => {
     return {roomNum, ChatUser1, ChatUser2, createRoom};
 };
 export const importChatting = async (createRoom) => {
-    return ChatsRoom.findOne({roomNum: createRoom}).populate("chats");
+    return ChatsRoom.findOne({roomNum: createRoom})
+        .select("-user -_id")
+        .populate({
+            path: "chats",
+            select: "-_id -chatRoom",
+        });
 };
 
 export const parsingChats = (chat) => {

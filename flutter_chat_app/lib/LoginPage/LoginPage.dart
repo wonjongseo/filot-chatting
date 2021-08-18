@@ -83,6 +83,7 @@ class _LoginPage extends State<LoginPage>{
       // check Login Administrator
       try {
         storage.write(key: 'token', value: "admin");
+
       }
       catch(e){
         _errorPopup(e.toString());
@@ -104,7 +105,8 @@ class _LoginPage extends State<LoginPage>{
     if(response.statusCode >= 200 && response.statusCode < 300) {
       // check Login Success and return
       try {
-        storage.write(key: 'token', value: response.headers[ServerData.KeyList['token']]);
+        storage.write(key: 'token', value: "admin");
+        
       }
       catch(e){
         _errorPopup(e.toString());

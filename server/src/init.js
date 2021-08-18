@@ -3,16 +3,16 @@ import "./models/User";
 import "express-async-errors";
 import helmet from "helmet";
 import express from "express";
-import http from "http";
 import cors from "cors";
 import morgan from "morgan";
 import globalRouter from "./router/globalRouter";
 import userRouter from "./router/userRouter";
 import {config} from "./config";
-import {auth, putEdit} from "./controller/userController";
+import {auth} from "./controller/userController";
 import {isAuth} from "./middleware/auth";
 import chatting from "../connection/chatting";
 import chatRouter from "./router/chatRouter";
+
 const app = express();
 
 app.use(express.json());
@@ -37,6 +37,7 @@ app.use((error, req, res, next) => {
     console.error(error);
     res.status(500).json({massage: "Sorry try later :("});
 });
+
 const server = app.listen(config.host.port, () => {
     console.log(`Server is Listening on http://localhost:${config.host.port}`);
 });
