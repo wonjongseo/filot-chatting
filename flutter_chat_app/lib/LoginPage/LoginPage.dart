@@ -105,7 +105,8 @@ class _LoginPage extends State<LoginPage>{
     if(response.statusCode >= 200 && response.statusCode < 300) {
       // check Login Success and return
       try {
-        myData.setToken(response.headers[ServerData.KeyList['token']] as String);
+        var token = jsonDecode(response.body)[ServerData.KeyList['token']] as String;
+        myData.setToken(token);
       }
       catch(e){
         _errorPopup(e.toString());

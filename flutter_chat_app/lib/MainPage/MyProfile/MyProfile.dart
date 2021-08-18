@@ -495,11 +495,13 @@ class _MyProfile extends State<MyProfile> {
       _updateUiText();
       return;
     }
+    Map<String, String> header = {
+      'Content-Type': "application/json",
+      ServerData.KeyList['token'] as String : _tokenValue,
+    };
     final response = await http.get(
         Uri.parse(MyProfile_api),
-        headers: {'Content-Type': "application/json",
-          ServerData.KeyList['token'] as String : _tokenValue,
-        }
+        headers: header
     );
     if(response.statusCode < 200 || response.statusCode >= 300){
       return;
