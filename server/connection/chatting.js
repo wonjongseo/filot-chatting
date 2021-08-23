@@ -1,4 +1,5 @@
-import {Server} from "socket.io";
+import SocketIO from "socket.io";
+
 import {
     createChat,
     createChattingRoom,
@@ -7,17 +8,7 @@ import {
 } from "../src/controller/chatController";
 
 const chatting = (server) => {
-    const io = new Server(server, {
-        cors: {
-            origin: "*",
-        },
-        allowEIO3: true,
-
-        requestCert: true,
-        secure: true,
-        rejectUnauthorized: false,
-        transports: ["websocket"],
-    });
+    const io = SocketIO(server);
 
     const chat = io.of("/chat");
 

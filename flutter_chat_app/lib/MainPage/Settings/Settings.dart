@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/data/MyData.dart';
 import 'package:flutter_chat_app/data/ServerData.dart';
 import 'package:http/http.dart' as http;
 
@@ -111,10 +112,8 @@ class _Settings extends State<Settings> {
     var _tokenValue =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InZpc2lvbndpbGwiLCJpYXQiOjE2MjkxNzk1NDAsImV4cCI6MTYyOTI2NTk0MH0.1t1Q9rpn9H3w_zUEJGsO0TZgZ-qSHos9xkxxMAf1inc";
     try {
-      _tokenValue =
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InZpc2lvbndpbGwiLCJpYXQiOjE2MjkxNzk1NDAsImV4cCI6MTYyOTI2NTk0MH0.1t1Q9rpn9H3w_zUEJGsO0TZgZ-qSHos9xkxxMAf1inc";
-      // (await storage.read(key: 'token'))!;
-    } catch (e) {
+      _tokenValue = myData.getToken();
+    }catch (e){
       print(e.toString());
     }
     var response = await http.post(Uri.parse(_Logout_api), body: {
@@ -123,7 +122,7 @@ class _Settings extends State<Settings> {
     if (response.statusCode < 200 || response.statusCode >= 300) {
       return;
     }
-    storage.deleteAll();
+    myData = new MyData(ServerData.adminItem);
     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
   }
   /*--------------------------------------------------*/

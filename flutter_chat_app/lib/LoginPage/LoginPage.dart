@@ -15,25 +15,27 @@ class LoginPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _LoginPage();
 }
-class _LoginPage extends State<LoginPage>{
 
+class _LoginPage extends State<LoginPage> {
   /// 로그인 api
-  String _Login_api = ServerData.api + (ServerData.ApiList['/login'] as String);//"여기에 api";
+  String _Login_api =
+      ServerData.api + (ServerData.ApiList['/login'] as String); //"여기에 api";
 
   /// input controller 정의
   TextEditingController value1 = TextEditingController();
   TextEditingController value2 = TextEditingController();
 
   /// id, password 저장 변수
-  String ID='', Password='';
+  String ID = '', Password = '';
 
   /// button list, 해당 버튼 클릭 시 해당하는 페이지로 이동
-  List _buttonList = ['아이디 또는 비밀번호 찾기','회원가입하기', '회원 정보 조회'];
+  List _buttonList = ['아이디 또는 비밀번호 찾기', '회원가입하기', '회원 정보 조회'];
+
   /// input text를 보여주기 위한 list
-  List _TextFormList = ['아이디','비밀번호'];
+  List _TextFormList = ['아이디', '비밀번호'];
 
   /// 버튼을 생성하는 메소드, 위 _buttonList에서 텍스트를 받아와서 버튼을 생성한다.
-  TextButton _makeTextButton(int index){
+  TextButton _makeTextButton(int index) {
     return TextButton(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -49,13 +51,13 @@ class _LoginPage extends State<LoginPage>{
         ],
       ),
       onPressed: () {
-        if(index == 0)
+        if (index == 0)
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => FindClientInfo()));
-        else if(index == 1)
+        else if (index == 1)
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => JoinPage()));
-        else if(index == 2)
+        else if (index == 2)
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => InfoCheck()));
       },
@@ -63,7 +65,7 @@ class _LoginPage extends State<LoginPage>{
   }
 
   /// 입력필드를 생성하는 메소드, 위 _TextFormList의 요소를 받아와서 입력 form을 생성한다.
-  TextFormField _makeTextFormField(int index, bool obscure){
+  TextFormField _makeTextFormField(int index, bool obscure) {
     return TextFormField(
       controller: index.isEven ? value1 : value2,
       keyboardType: TextInputType.text,
@@ -78,14 +80,12 @@ class _LoginPage extends State<LoginPage>{
   }
 
   /// 서버와 api 통신을 위한 메소드, 로그인을 수행함
-  void _login(id, pwd) async{
-    if(id == "admin" && pwd == "admin") {
+  void _login(id, pwd) async {
+    if (id == "admin" && pwd == "admin") {
       // check Login Administrator
       try {
-        storage.write(key: 'token', value: "admin");
-
-      }
-      catch(e){
+        myData.setToken("admin");
+      } catch (e) {
         _errorPopup(e.toString());
       }
       Navigator.of(context).pushReplacementNamed('/main');
@@ -102,24 +102,14 @@ class _LoginPage extends State<LoginPage>{
       headers: {'Content-Type': "application/json"},
     );
 
-    if(response.statusCode >= 200 && response.statusCode < 300) {
+    if (response.statusCode >= 200 && response.statusCode < 300) {
       // check Login Success and return
       try {
-        storage.write(key: 'token', value: "admin");
-        
-      }
-      catch(e){
-        _errorPopup(e.toString());
-      }
-      Navigator.of(context).pushReplacementNamed('/main');
-      return;
-    }
-    else if(id == "admin" && pwd == "admin") {
-      // check Login Administrator
-      try {
-        storage.write(key: 'token', value: "admin");
-      }
-      catch(e){
+        var token =
+            jsonDecode(response.body)[ServerData.KeyList['token']] as String;
+        myData.setToken(token);
+        print(myData.getToken());
+      } catch (e) {
         _errorPopup(e.toString());
       }
       Navigator.of(context).pushReplacementNamed('/main');
@@ -127,13 +117,13 @@ class _LoginPage extends State<LoginPage>{
     }
 
     // login failed, and popup Failed
-    _errorPopup(jsonDecode(response.body)[ServerData.KeyList!['msg']].toString());
+    _errorPopup(
+        jsonDecode(response.body)[ServerData.KeyList!['msg']].toString());
   }
 
   /// 로그인 중 에러가 발생할 경우 팝업창을 띄우는 메소드
-  void _errorPopup(String text, [String? title]){
-    if(title == null)
-      title = "Error!";
+  void _errorPopup(String text, [String? title]) {
+    if (title == null) title = "Error!";
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -153,7 +143,9 @@ class _LoginPage extends State<LoginPage>{
     );
   }
 
-  @override  /// 실제 화면을 build하는 메소드
+  @override
+
+  /// 실제 화면을 build하는 메소드
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
@@ -212,5 +204,4 @@ class _LoginPage extends State<LoginPage>{
       ),
     );
   }
-
 }

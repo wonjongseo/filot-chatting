@@ -34,7 +34,6 @@ export const postJoin = async (req, res) => {
             id: username,
             password: newPassword,
             name,
-            nick_name,
             phone_number,
         });
 
@@ -63,6 +62,7 @@ export const postLogin = async (req, res, next) => {
     }
     const token = createJwt(user.id);
     req.headers.token = token;
+    console.log(`aa :${res}`);
 
     return res.json({token: token});
 };
@@ -172,7 +172,7 @@ export const postMyProfile = async (req, res, next) => {
         }
     );
     console.log(user);
-    return res.status(201).json(user);
+    return res.status(201).json({user});
 };
 
 export const getFriendsList = async (req, res, next) => {

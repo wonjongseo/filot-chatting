@@ -3,6 +3,8 @@ import "./models/User";
 import "express-async-errors";
 import helmet from "helmet";
 import express from "express";
+import http from "http";
+
 import cors from "cors";
 import morgan from "morgan";
 import globalRouter from "./router/globalRouter";
@@ -11,8 +13,7 @@ import {config} from "./config";
 import {auth} from "./controller/userController";
 import {isAuth} from "./middleware/auth";
 import chatting from "../connection/chatting";
-import chatRouter from "./router/chatRouter";
-
+import {pugTest} from "../assets/js/test";
 const app = express();
 
 app.use(express.json());
@@ -23,9 +24,14 @@ app.set("view engine", "pug");
 app.set("views", process.cwd() + "/src/views");
 
 //라우터
+app.use("/static", express.static("assets"));
+
+app.get("/chat", (req, res, next) => {
+    res.render("chat");
+});
 app.use("/", globalRouter);
 app.use("/users", userRouter);
-app.use("/chat", chatRouter);
+// app.use("/chat", chatRouter);
 app.use("/auth", isAuth, auth);
 
 app.use((req, res, next) => {
@@ -38,8 +44,10 @@ app.use((error, req, res, next) => {
     res.status(500).json({massage: "Sorry try later :("});
 });
 
-const server = app.listen(config.host.port, () => {
+const httpServer = http.createServer(app);
+pugTest(httpServer);
+// chatting(httpServer);
+
+httpServer.listen(config.host.port, () => {
     console.log(`Server is Listening on http://localhost:${config.host.port}`);
 });
-
-chatting(server);

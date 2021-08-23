@@ -1,0 +1,40 @@
+
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        link(rel="stylesheet" href="https://unpkg.com/mvp.css")
+        link(rel='stylesheet', href='/static/js/index.css')
+        
+        title Document
+    body 
+        header 
+            h3#username Test Chat Page 
+
+        main            
+            div#welcome
+                form
+                    input#roomName(value="ABCDE" required, type="text")
+                    input#user1(value="a" required, type="text")
+                    input#user2(value="b" required, type="text")
+                    button Enter Room
+                    
+            div#hello
+            div#room
+                h3
+                ul
+                form#loading_btn
+                    button Press button
+                form#name
+                    input(placeholder="name" required, type="text")
+                    button change
+                form#msg
+                    input(placeholder="message" required, type="text")
+                    button Send
+            div#chat
+              
+            
+        script(src="/socket.io/socket.io.js") 
+        script(src="/static/js/chat.js") 

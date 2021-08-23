@@ -10,6 +10,7 @@ export const createChattingRoom = async (data) => {
 
     // 데이터 베이스에서 이미 있는 방인지 확인
     let createRoom = await ChatsRoom.findOne({roomNum});
+
     const ChatUser1 = await User.findOne({name: user1});
     const ChatUser2 = await User.findOne({name: user2});
 
@@ -31,7 +32,7 @@ export const createChattingRoom = async (data) => {
     return {roomNum, ChatUser1, ChatUser2, createRoom};
 };
 export const importChatting = async (createRoom) => {
-    return ChatsRoom.findOne({roomNum: createRoom})
+    return ChatsRoom.findOne({roomNum: createRoom.roomNum})
         .select("-user -_id")
         .populate({
             path: "chats",
@@ -47,19 +48,36 @@ export const parsingChats = (chat) => {
     return data;
 };
 
-export const createChat = async (data, createRoom) => {
-    // 프론트에서 받은 채팅 java object로 풀기
-    const dataObj = JSON.parse(data);
-    const {message, user} = dataObj;
+// filot sever
+// export const createChat = async (data, createRoom) => {
+//     // 프론트에서 받은 채팅 java object로 풀기
+//     const dataObj = JSON.parse(data);
+//     const {message, user} = dataObj;
 
-    // 채팅 데베에 저장
+//     // 채팅 데베에 저장
+//     const dbChat = await Chat.create({
+//         chatRoom: createRoom._id,
+//         message,
+//         username: user,
+//     });
+//     createRoom.chats.push(dbChat._id);
+//     createRoom.save();
+// };
+
+export const TESTcreateChat = async (data) => {
+    console.log("asdasdadsadsdas");
+    console.log(data);
+    const {name: user, message, roomNum} = data;
+    const room = await ChatsRoom.findOne({roomNum});
+
+    // // 채팅 데베에 저장
     const dbChat = await Chat.create({
-        chatRoom: createRoom._id,
+        chatRoom: room._id,
         message,
-        username: user,
+        user,
     });
-    createRoom.chats.push(dbChat._id);
-    createRoom.save();
+    room.chats.push(dbChat._id);
+    room.save();
 };
 
 export const getChatsRommList = async (req, res, next) => {
@@ -67,12 +85,6 @@ export const getChatsRommList = async (req, res, next) => {
         path: "user",
         select: "-id -password -rooms",
     });
-    console.log(roomList);
 
     return res.json(roomList);
 };
-
-// const users = await User.find({}).select("-password -_id").populate({
-//     path: "rooms",
-//     select: "roomNum -_id",
-// });

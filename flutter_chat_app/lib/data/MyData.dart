@@ -6,19 +6,18 @@ import 'package:http/http.dart' as http;
 
 class MyData extends UserData {
   /** 수정 사항 **/
-  final _user_data_update_api =
-      ServerData.api + (ServerData.ApiList['/myprofile'] as String);
+  final _user_data_update_api = ServerData.api + (ServerData.ApiList['/myprofile'] as String);
+  String token = '';
   /** 수정 사항 **/
+
+  String getToken() => this.token;
+  void setToken(String tkn) => this.token = tkn;
 
   MyData(data) : super(data);
 
   /// 갱신된 데이터를 서버에 전달하는 myData만의 유일한 메서드 --server
-  Future<String> UpdateData() async {
-    // var _tokenValue = (await storage.read(key: 'token'))!;
-    var _tokenValue =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InZpc2lvbndpbGwiLCJpYXQiOjE2MjkxNzk1NDAsImV4cCI6MTYyOTI2NTk0MH0.1t1Q9rpn9H3w_zUEJGsO0TZgZ-qSHos9xkxxMAf1inc";
-    //     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImpqdWhvIiwiaWF0IjoxNjI5MDk2NTMxLCJleHAiOjE2MjkxODI5MzF9.kejs0fPwzQdbzjkDbmVYWA70QmTlpZYrUa8YWQ--aYs";
-    print(_tokenValue);
+  Future<String> UpdateData() async{
+    var _tokenValue = token;
     String msg;
     try {
       final response = await http.post(

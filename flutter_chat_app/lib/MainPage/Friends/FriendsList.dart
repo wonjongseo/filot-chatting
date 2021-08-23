@@ -523,22 +523,20 @@ class _FriendsList extends State<FriendsList> {
   /// 실제 친구 데이터들을 불러오는 메소드
   void _getData() async {
     // 모든 정보를 업데이트 한다.
-    // var _tokenValue =
-    //     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InZpc2lvbndpbGwiLCJpYXQiOjE2MjkxMDU4MzksImV4cCI6MTYyOTE5MjIzOX0.maZYv8rWR9JcTxN-jA7PdQraPouCWD21Ggug72ceqbA";
-    var _tokenValue =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InZpc2lvbndpbGwiLCJpYXQiOjE2MjkxNzk1NDAsImV4cCI6MTYyOTI2NTk0MH0.1t1Q9rpn9H3w_zUEJGsO0TZgZ-qSHos9xkxxMAf1inc";
-    // try {
-    //   _tokenValue =
-    //       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InZpc2lvbndpbGwiLCJpYXQiOjE2MjkxNzk1NDAsImV4cCI6MTYyOTI2NTk0MH0.1t1Q9rpn9H3w_zUEJGsO0TZgZ-qSHos9xkxxMAf1inc";
-    // } catch (e) {
-    //   print(e.toString());
-    // }
+    var _tokenValue;
+    try {
+      _tokenValue = myData.getToken();
+    }catch (e){
+      print(e.toString());
+    }
 
-    final response = await http.get(Uri.parse(_getUsersData_api), headers: {
-      'Content-Type': "application/json",
-      ServerData.KeyList['token'] as String: _tokenValue,
-    });
-    if (response.statusCode < 200 || response.statusCode >= 300) {
+    final response = await http.get(
+        Uri.parse(_getUsersData_api),
+        headers: {'Content-Type': "application/json",
+          ServerData.KeyList['token'] as String : _tokenValue,
+        }
+    );
+    if(response.statusCode < 200 || response.statusCode >= 300){
       return;
     }
     _LinkSocket();

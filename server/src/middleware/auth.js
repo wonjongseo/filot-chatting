@@ -14,6 +14,7 @@ export const isAuth = async (req, res, next) => {
 
     // const token = authHeader.split(" ")[1];
     const token = req.get("token");
+    console.log(`token in middleware ${token}`);
     jwt.verify(token, config.jwt.secretKey, async (error, decoded) => {
         if (error) {
             return res.status(401).json(AUTH_ERROR);
@@ -26,7 +27,6 @@ export const isAuth = async (req, res, next) => {
         req.token = token;
         req.id = user.id;
         req.headers.token = token;
-        console.log(`req.headers : ${req.headers}`);
         next();
     });
 };

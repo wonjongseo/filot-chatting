@@ -48,8 +48,8 @@ class _Chatting extends State<Chatting> {
 
   /*------------------ 위젯 생성 메서드 구문 ------------------*/
   /// _messageList에서 요소를 받아 실제 UI를 그리는 위젯 추가 메서드
-  Widget _addMessageWidget(item) {
-    var _item = jsonDecode(item);
+  Widget _addMessageWidget(item){
+    var _item = item is String ? jsonDecode(item) : item;
 
     String msg = _item[ServerData.KeyList['msg']];
     bool _isMe = (_item[ServerData.KeyList['user']] == _myData.userObj);
@@ -277,8 +277,7 @@ class _Chatting extends State<Chatting> {
     socket.on(ServerData.KeyList['load-message'] as String, (data) {
       print(data);
       var _preMessageList = jsonDecode(data);
-      print(_preMessageList);
-      for (var item in _preMessageList[ServerData.KeyList['chat']])
+      for(var item in _preMessageList[ServerData.KeyList['chat']])
         _messageList.add(item);
       setState(() {});
     }); // 처음 진입 시
