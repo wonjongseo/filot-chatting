@@ -5,34 +5,48 @@ html(lang="en")
         meta(charset="UTF-8")
         meta(http-equiv="X-UA-Compatible", content="IE=edge")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        link(rel="stylesheet" href="https://unpkg.com/mvp.css")
+        //- link(rel="stylesheet" href="https://unpkg.com/mvp.css")
         link(rel='stylesheet', href='/static/js/index.css')
+        link(rel='stylesheet', href='/static/js/reset.css')
         
         title Document
-    body 
-        header 
-            h3#username Test Chat Page 
+    body  
+        h3#username Test Chat Page 
 
-        main            
+        main
+            
             div#welcome
                 form
-                    input#roomName(value="ABCDE" required, type="text")
-                    input#user1(value="a" required, type="text")
-                    input#user2(value="b" required, type="text")
+                    input#roomName(placeholder="room name" required, type="text")
+                    input#user1(placeholder="user1 name"  required, type="text")
+                    input#user2(placeholder="user2 name"  required, type="text")
                     button Enter Room
+                div
+                div#_msgContainer.my_name.user2_chat
+                    span#_readMe.readMe 1
+                    span#_msgSpan.my_message
+                        | Hi
+                div#_msgContainer.my_name.user2_chat
+                    span#_readMe.readMe 1
+                    span#_msgSpan.my_message
+                        | HiHi
+                div#_msgContainer.my_name.user2_chat
+                    span#_readMe.readMe 1
+                    span#_msgSpan.my_message
+                        | HiHiHiHi
+                div#_msgContainer.my_name.user2_chat
+                    span#_readMe.readMe 1
+                    span#_msgSpan.my_message
+                        | HiHiHiHiasdasdasdasdjkasdnkf
+
                     
             div#hello
             div#room
                 h3
                 ul
-                form#loading_btn
-                    button Press button
-                form#name
-                    input(placeholder="name" required, type="text")
-                    button change
                 form#msg
                     input(placeholder="message" required, type="text")
-                    button Send
+                    button 전송
             div#chat
               
             

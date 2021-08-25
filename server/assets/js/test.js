@@ -7,7 +7,23 @@ import {
 
 export const pugTest = (server) => {
     const io = SocketIO(server);
-
+    function publicRooms() {
+        const {
+            sockets: {
+                adapter: {sids, rooms},
+            },
+        } = io;
+        const publicRooms = [];
+        rooms.forEach((_, key) => {
+            if (sids.get(key) === undefined) {
+                publicRooms.push(key);
+            }
+        });
+        return publicRooms;
+    }
+    function countRoom(roomName) {
+        return io.sockets.adapter.rooms.get(roomName)?.size;
+    }
     const chat = io.of("");
     chat.on("connection", (socket) => {
         socket["nickname"] = "Anonymous";
@@ -21,16 +37,22 @@ export const pugTest = (server) => {
             const {chats} = await importChatting(createRoom);
             io.sockets.to(roomNum).emit("load-message", chats, socket["name"]);
             done();
+            socket.to(roomNum).emit("del");
         });
 
         socket.on("disconnecting", () => {
             socket.emit("bye", "ㅠㅠ");
         });
 
-        socket.on("message", (messageInfo) => {
+        socket.on("message", (messageInfo, done) => {
             TESTcreateChat(messageInfo);
             console.log(messageInfo.roomNum);
             socket.to(messageInfo.roomNum).emit("message", messageInfo);
+            console.log(`asdasd :${countRoom(messageInfo.roomNum)}`);
+            if (countRoom(messageInfo.roomNum) > 1) {
+                done();
+                socket.to(messageInfo).emit("del");
+            }
         });
 
         socket.on("name", (name) => {
@@ -40,7 +62,7 @@ export const pugTest = (server) => {
             console.log(data, name);
             data.map((item) => {
                 console.log(item);
-                if (item.user == name) {
+                if (item.user != name) {
                     myChat(item.message);
                 } else {
                     youChat(item.message);

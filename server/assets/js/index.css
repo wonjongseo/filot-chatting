@@ -1,11 +1,122 @@
 * {
     box-sizing: border-box;
+
+    background-color: #9bbad8;
     font-size: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+        Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+body {
+    height: 120vh;
+    padding: absolute;
 }
 
+.container {
+    margin: 10px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 22px;
+    background-color: black;
+}
 .user1_chat {
+    margin: 20px 10px;
+
     text-align: start;
 }
+.user1_chat span {
+    /* color: yellow; */
+}
 .user2_chat {
+    margin: 0px 10px;
     text-align: end;
+}
+
+#welcome {
+    padding: 80px 0px;
+}
+
+#chat {
+    padding: 120px 0px;
+}
+#username {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    font-size: 30px;
+    align-items: center;
+    height: 80px;
+}
+
+#msg {
+    position: fixed;
+    width: 100vw;
+    height: 10%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    bottom: 0;
+    background-color: white;
+    left: 0;
+}
+
+#msg input {
+    border: none;
+    background-color: inherit;
+    width: 90%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#msg input:hover {
+    border: none;
+}
+#msg button {
+    border-radius: 8px;
+    background-color: #fae100;
+    width: 13%;
+    height: 80%;
+    color: black;
+    display: block;
+    margin: 10px 10px;
+}
+
+.your_name {
+    color: rgb(20, 20, 20);
+    margin-bottom: 15px;
+}
+.my_name {
+    margin-bottom: 35px;
+}
+.your_message {
+    background-color: white;
+    border-radius: 3px;
+    padding: 10px 10px;
+    font-size: 18px;
+    color: rgb(31, 29, 29);
+    width: 100%;
+}
+
+.my_message {
+    background-color: #fae100;
+    border-radius: 3px;
+    padding: 10px 10px;
+    font-size: 18px;
+    margin-left: 10px;
+    color: rgb(31, 29, 29);
+    width: 100%;
+}
+
+.readMe {
+    color: #fae100;
+    font-size: 15px;
+    height: 20px;
 }

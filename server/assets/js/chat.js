@@ -5,40 +5,80 @@ const initForm = welcome.querySelector("form");
 const room = document.getElementById("room");
 const chat = document.getElementById("chat");
 const user1 = welcome.querySelector("#user1");
+const user2 = welcome.querySelector("#user2");
 const loadingBtn = room.querySelector("#loading_btn");
 
 const USER1_CHAT = "user1_chat";
 const USER2_CHAT = "user2_chat";
+const YOUER_MEESAGE = "your_message";
 
 let objData;
 let name = "";
 room.hidden = true;
 let existingData;
+let readMe;
 
 const myChat = (msg) => {
-    const div = document.createElement("div");
-    div.classList.add(USER1_CHAT);
-    div.innerHTML = msg;
-    chat.appendChild(div);
+    const msgContainer = document.createElement("div");
+    const msgSpan = document.createElement("span");
+    readMe = document.createElement("span");
+    readMe.innerHTML = 1;
+    readMe.classList = "readMe";
+    msgSpan.classList.add("my_message");
+    msgSpan.innerHTML = msg;
+    msgContainer.classList.add("my_name");
+    msgContainer.classList.add(USER2_CHAT);
+    msgContainer.appendChild(readMe);
+    msgContainer.append(msgSpan);
+    chat.appendChild(msgContainer);
 };
 
 const youChat = (msg) => {
+    const Container = document.createElement("div");
+    const avatar = document.createElement("img");
+    avatar.src = "/static/js/anon.png";
     const div = document.createElement("div");
-    div.classList.add(USER2_CHAT);
-    div.innerHTML = msg;
-    chat.appendChild(div);
+    const userContainer = document.createElement("div");
+    const msgContainer = document.createElement("div");
+    const msgSpan = document.createElement("span");
+    const userSpan = document.createElement("span");
+
+    msgSpan.innerHTML = msg;
+    userSpan.innerHTML = user2.value;
+
+    msgSpan.classList.add(YOUER_MEESAGE);
+    userContainer.classList.add("your_name");
+
+    msgContainer.appendChild(msgSpan);
+    userContainer.appendChild(userSpan);
+
+    avatar.classList.add("avatar");
+    Container.classList.add("container");
+    div.append(userContainer);
+    div.append(msgContainer);
+    div.classList.add(USER1_CHAT);
+    Container.append(avatar);
+    Container.append(div);
+    chat.appendChild(Container);
 };
 
 const showRoom = () => {
-    const h3 = room.querySelector("h3");
-    h3.innerText = `Room ${objData.roomNum}`;
     room.hidden = false;
     welcome.hidden = true;
     const msgForm = room.querySelector("#msg");
-    const nameForm = room.querySelector("#name");
-    nameForm.addEventListener("submit", handleNameForm);
     msgForm.addEventListener("submit", handleMsgForm);
 };
+
+const del = () => {
+    const readMes = document.querySelectorAll(".readMe");
+    readMes.forEach((item) => {
+        item.remove();
+    });
+};
+
+socket.on("del", () => {
+    del();
+});
 
 const handleMsgForm = async (event) => {
     event.preventDefault();
@@ -48,15 +88,13 @@ const handleMsgForm = async (event) => {
         message: input.value,
         roomNum: objData.roomNum,
     };
-    socket.emit("message", messageData);
+    socket.emit("message", messageData, del);
     myChat(messageData.message);
     input.value = "";
 };
 
 const handleNameForm = (event) => {
     event.preventDefault();
-    // const input = room.querySelector("#name input");
-    // name = input.value;
     const headerUsername = document.querySelector("#username");
     name = user.value;
     headerUsername.innerHTML = name;
@@ -69,7 +107,7 @@ initForm.addEventListener("submit", async () => {
     const user1Input = document.getElementById("user1");
     const user2Input = document.getElementById("user2");
     const headerUsername = document.querySelector("#username");
-    name = user1.value;
+    name = user2.value;
     headerUsername.innerHTML = name;
 
     objData = {
@@ -85,8 +123,7 @@ initForm.addEventListener("submit", async () => {
     if (existingData !== undefined) {
         console.log(existingData);
         existingData.map((item) => {
-            console.log(item);
-            if (item.user == name) {
+            if (item.user != name) {
                 myChat(item.message);
             } else {
                 youChat(item.message);
@@ -103,11 +140,10 @@ socket.on("bye", (data) => {
     console.log(data);
 });
 
-socket.on("load-message", (data, name) => {
+socket.once("load-message", (data, name) => {
     existingData = data;
     data.map((item) => {
-        console.log(item);
-        if (item.user == name) {
+        if (item.user != name) {
             myChat(item.message);
         } else {
             youChat(item.message);
