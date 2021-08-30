@@ -32,6 +32,9 @@ class _Chatting extends State<Chatting>{
   MyData _myData = myData;
   _Chatting(this._frinedsList);
 
+  /// Chatting room number
+  late String roomNum;
+
   /// 메시지에 대한 리스트, 이 순서대로 레이아웃이 펼쳐진다.
   List _messageList = [];
 
@@ -51,7 +54,7 @@ class _Chatting extends State<Chatting>{
     var _item = item is String ? jsonDecode(item) : item;
 
     String msg = _item[ServerData.KeyList['msg']];
-    bool _isMe = (_item[ServerData.KeyList['user']] == _myData.userObj);
+    bool _isMe = (_item[ServerData.KeyList['user']] == _myData.getName());
 
     if(_isMe)
       return Container(
@@ -159,7 +162,8 @@ class _Chatting extends State<Chatting>{
                 var item;
                 item = jsonEncode({
                   ServerData.KeyList['msg']: _sendText,
-                  ServerData.KeyList['user']: _myData.userObj
+                  ServerData.KeyList['user']: _myData.getName(),
+                  'roomNum': roomNum,
                 });
                 socket.emit(ServerData.KeyList['msg'] as String, item);
                 setState(() {
@@ -227,7 +231,7 @@ class _Chatting extends State<Chatting>{
     _frinedsList.forEach((element) {_tempList.add(element.getName());});
 
     _tempList.sort();
-    String roomNum = '';
+    roomNum = '';
     for(var i in _tempList)
       roomNum = roomNum + i;
 
@@ -244,11 +248,11 @@ class _Chatting extends State<Chatting>{
     socket.onConnect((str) {
       print(str);
       _messageList.clear();
-      socket.emit(ServerData.KeyList['enter-room'] as String, item); // chatting room
+      socket.emit(ServerData.KeyList['enter_room'] as String, item); // chatting room
     });
-    socket.on(ServerData.KeyList['load-message'] as String, (data) {
+    socket.once(ServerData.KeyList['load-message'] as String, (data) {
       var _preMessageList = jsonDecode(data);
-      for(var item in _preMessageList[ServerData.KeyList['chat']])
+      for(var item in _preMessageList) // [ServerData.KeyList['chat']]
         _messageList.add(item);
       setState(() {});
     }); // 처음 진입 시

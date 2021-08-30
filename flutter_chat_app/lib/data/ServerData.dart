@@ -45,7 +45,7 @@ class ServerData {
     'user' : 'user',
     'room' : 'roomNum',
     'chat' : 'chats',
-    'enter-room' : 'enter-room',
+    'enter_room' : 'enter_room',
     'load-message' : 'load-message',
   };
   static final api = (JHtest ? 'https://localhost:3000' : '형의 api 메인 주소');
