@@ -500,7 +500,6 @@ class _MyProfile extends State<MyProfile> {
       'Content-Type': "application/json",
       ServerData.KeyList['token'] as String : _tokenValue,
     };
-
     final response = await http.get(
         Uri.parse(MyProfile_api),
         headers: header
