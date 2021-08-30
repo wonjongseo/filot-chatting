@@ -1,7 +1,7 @@
 * {
     box-sizing: border-box;
 
-    background-color: #9bbad8;
+    background-color: #c5d4df;
     font-size: 20px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
         Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
@@ -12,24 +12,27 @@ body {
 }
 
 .container {
-    margin: 10px;
+    margin: 0px 10px;
     display: flex;
     justify-content: start;
     align-items: center;
 }
 .avatar {
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
     border-radius: 22px;
     background-color: black;
 }
 .user1_chat {
-    margin: 20px 10px;
+    margin: 15px 10px;
 
     text-align: start;
 }
 .user1_chat span {
     /* color: yellow; */
+}
+.user2__name {
+    font-size: 14px;
 }
 .user2_chat {
     margin: 0px 10px;
@@ -50,7 +53,7 @@ body {
     width: 100%;
     display: flex;
     justify-content: center;
-    font-size: 30px;
+    font-size: 25px;
     align-items: center;
     height: 80px;
 }
@@ -91,6 +94,7 @@ body {
 
 .your_name {
     color: rgb(20, 20, 20);
+    font-size: 16px;
     margin-bottom: 15px;
 }
 .my_name {
@@ -99,8 +103,9 @@ body {
 .your_message {
     background-color: white;
     border-radius: 3px;
-    padding: 10px 10px;
-    font-size: 18px;
+    padding: 8px 8px;
+    font-size: 16px;
+
     color: rgb(31, 29, 29);
     width: 100%;
 }
@@ -108,8 +113,8 @@ body {
 .my_message {
     background-color: #fae100;
     border-radius: 3px;
-    padding: 10px 10px;
-    font-size: 18px;
+    padding: 8px 10px;
+    font-size: 16px;
     margin-left: 10px;
     color: rgb(31, 29, 29);
     width: 100%;

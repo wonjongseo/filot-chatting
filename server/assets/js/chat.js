@@ -1,5 +1,4 @@
-const socket = io("/");
-
+const socket = io("");
 const welcome = document.getElementById("welcome");
 const initForm = welcome.querySelector("form");
 const room = document.getElementById("room");
@@ -88,6 +87,7 @@ const handleMsgForm = async (event) => {
         message: input.value,
         roomNum: objData.roomNum,
     };
+
     socket.emit("message", messageData, del);
     myChat(messageData.message);
     input.value = "";
@@ -116,9 +116,9 @@ initForm.addEventListener("submit", async () => {
         user2: user2Input.value,
     };
 
-    const jsonata = await JSON.stringify(objData);
+    const roomInfo = await JSON.stringify(objData);
 
-    socket.emit("enter_room", jsonata, showRoom);
+    socket.emit("enter_room", roomInfo, showRoom);
 
     if (existingData !== undefined) {
         console.log(existingData);
@@ -134,10 +134,6 @@ initForm.addEventListener("submit", async () => {
 
 socket.on("message", (loggedInName) => {
     youChat(loggedInName.message);
-});
-socket.on("bye", (data) => {
-    console.log(`asdasdsd`);
-    console.log(data);
 });
 
 socket.once("load-message", (data, name) => {

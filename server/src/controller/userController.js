@@ -1,9 +1,7 @@
 import User from "../models/User";
 import bcrypt from "bcrypt";
-
 import jwt from "jsonwebtoken";
 import {config} from "../config";
-import {ieNoOpen} from "helmet";
 
 export const home = async (req, res) => {
     // db에서 모든 유저 가져옴
@@ -14,7 +12,6 @@ export const home = async (req, res) => {
 export const postJoin = async (req, res) => {
     const {username, password, confirmpassword, name, phone_number} = req.body;
     // 입력한 두 비밀번호가 다르면 사용자 에러
-    console.log("Post Join");
     // console.log(username, password, confirmpassword, name, phone_number);
     console.log(req.body);
     if (password != confirmpassword) {

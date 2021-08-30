@@ -7,7 +7,6 @@ export const createChattingRoom = async (data) => {
     // json파일 java object로 변경
     const objData = JSON.parse(data);
     const {user1, user2, roomNum} = objData;
-
     // 데이터 베이스에서 이미 있는 방인지 확인
     let createRoom = await ChatsRoom.findOne({roomNum});
 
@@ -31,9 +30,10 @@ export const createChattingRoom = async (data) => {
 
     return {roomNum, ChatUser1, ChatUser2, createRoom};
 };
+
 export const importChatting = async (createRoom) => {
     return ChatsRoom.findOne({roomNum: createRoom.roomNum})
-        .select("-user -_id")
+        .select("-_id")
         .populate({
             path: "chats",
             select: "-_id -chatRoom",
@@ -65,7 +65,6 @@ export const parsingChats = (chat) => {
 // };
 
 export const TESTcreateChat = async (data) => {
-    console.log("asdasdadsadsdas");
     console.log(data);
     const {name: user, message, roomNum} = data;
     const room = await ChatsRoom.findOne({roomNum});
