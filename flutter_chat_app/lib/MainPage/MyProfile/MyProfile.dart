@@ -477,14 +477,15 @@ class _MyProfile extends State<MyProfile> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _myData.parsingData();
+    //_myData.parsingData();
     _getData();
   }
   /// 실제 내 데이터를 불러오는 메소드, header에 발급받은 token을 넣어 보낸다. METHOD = GET
   void _getData() async{
     // 모든 정보를 업데이트 한다.
-    var _tokenValue;
-    try {
+    var _tokenValue = myData.getToken();
+    /// 추후 삭제 --delete
+    /*try {
       _tokenValue = myData.getToken();
     }catch (e){
       print(e.toString());
@@ -494,7 +495,8 @@ class _MyProfile extends State<MyProfile> {
       _tokenValue = "admin";
       _updateUiText();
       return;
-    }
+    }*/
+
     Map<String, String> header = {
       'Content-Type': "application/json",
       ServerData.KeyList['token'] as String : _tokenValue,
@@ -503,11 +505,12 @@ class _MyProfile extends State<MyProfile> {
         Uri.parse(MyProfile_api),
         headers: header
     );
+
     if(response.statusCode < 200 || response.statusCode >= 300){
       return;
     }
 
-    myData.userObj(response.body);
+    myData.userObj = response.body;
 
     if(myData.parsingData())
       _LinkSocket();

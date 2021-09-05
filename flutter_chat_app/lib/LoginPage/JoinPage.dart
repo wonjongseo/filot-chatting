@@ -20,10 +20,10 @@ class _JoinPage extends State<JoinPage>{
   String _Join_api = ServerData.api+(ServerData.ApiList['/join'] as String);//"여기에 api";
 
   /// input text를 보여주기 위한 list, 이 List에 요소를 추가하면 입력란이 생성된다.
-  List _TextFormList = ['아이디','비밀번호','비밀번호 확인','이름', '닉네임','전화번호'];
+  List _TextFormList = ['아이디','비밀번호','비밀번호 확인','이름', '역할','전화번호'];
   Map<String,String> _InfoList = {};
   /// 위 Map 함수에 사용될 Key List, 이를 추가해주어야 정상적으로 json 형태로 데이터들이 parsing 된다.
-  List _InfoLists = ['id','pwd','checkpwd','name', 'nick','phone'];
+  List _InfoLists = ['id','pwd','checkpwd','name', 'role','phone'];
   /// Text Controller List, 이는 위의 요소들에 의해 자동으로 생성된다.
   List<TextEditingController> values = [];
 

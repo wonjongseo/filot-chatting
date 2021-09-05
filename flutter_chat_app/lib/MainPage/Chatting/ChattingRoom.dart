@@ -2,10 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_app/MainPage/Friends/FriendsList.dart';
 import 'package:flutter_chat_app/data/FrinedsData.dart';
 import 'package:flutter_chat_app/data/MyData.dart';
-import 'package:flutter_chat_app/data/ProfileData.dart';
 import 'package:flutter_chat_app/data/ServerData.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 

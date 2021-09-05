@@ -232,6 +232,9 @@ class _ChatList extends State<ChatList> {
       print(data);
       for (var item in data)
         _Rooms.add(new _roomData(item));
+      setState(() {
+
+      });
 
     } catch (e) {
       print(e.toString());

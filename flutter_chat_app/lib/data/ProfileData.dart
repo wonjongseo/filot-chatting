@@ -11,7 +11,7 @@ class UserData {
   String _imgPath = 'image/teamIcon.png';
 
   int _state = 0;
-  var _userObj;
+  dynamic _userObj;
 
   /// Server에서 json type으로 user 객체를 통째로 받아 저장한다. --server
   UserData(userObj){

@@ -12,10 +12,10 @@ MyData myData = new MyData(ServerData.adminItem);
 
 
 class ServerData {
-  static bool JHtest = true;
+  static bool JHtest = false;
   static final Map<String,String> ApiList = /// <My Use Key, value of api key>
   {
-    '/chat' : (JHtest ? '' : '/chat'),
+    '/chat' : (JHtest ? '' : ''),
     '/rooms' : (JHtest ? '' : '/chat/rooms'),
     '/login' : (JHtest ? '' : '/users/login'),
     '/join': (JHtest ? '' : '/users/join'),
@@ -29,12 +29,12 @@ class ServerData {
   };
   static final Map<String,String> KeyList = /// <My Use Key, value of api key>
   {
-    'id' : 'id',
+    'id' : 'username',
     'pwd' : 'password',
-    'checkpwd' : 'confirmPassword',
+    'checkpwd' : 'confirmpassword',
     'nick' : 'nickName',
     'name' : 'name',
-    'phone' : 'phoneNumber',
+    'phone' : 'phone_number',
     'email' : 'email',
     'github' : 'github',
     'role' : 'role',
@@ -48,7 +48,7 @@ class ServerData {
     'enter_room' : 'enter_room',
     'load-message' : 'load-message',
   };
-  static final api = (JHtest ? 'https://localhost:3000' : '형의 api 메인 주소');
+  static final api = (JHtest ? 'https://localhost:3000' : 'http://3.36.33.222:3000');
 
   /// test용 json 객체
   static var adminItem = jsonEncode({
