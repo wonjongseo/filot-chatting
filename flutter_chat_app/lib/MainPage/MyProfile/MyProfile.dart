@@ -238,7 +238,7 @@ class _MyProfile extends State<MyProfile> {
                   alignment: Alignment.bottomLeft,
                   child: Row(
                     children: [
-                      Text("이주호",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
+                      Text(_myData.getName(),style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
                       Padding(padding: EdgeInsets.all(3)),
                       Container(
                         width: _widthRate*23.1,
@@ -246,12 +246,10 @@ class _MyProfile extends State<MyProfile> {
                         child: Column(
                           children: [
                             Padding(padding: EdgeInsets.all(6)),
-                            Text("Front End",style: TextStyle(fontSize: 12))
+                            Text(_myData.getRole(),style: TextStyle(fontSize: 12))
                           ],
                         ),
-
                       ),
-
                       Container(
                         width: _widthRate*8,
                         height: _hegihtRate*14,
@@ -266,7 +264,6 @@ class _MyProfile extends State<MyProfile> {
                       ),
                     ],
                   ),
-
                 ),
                 Container(
                   height: 1,
