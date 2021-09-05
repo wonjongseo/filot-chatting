@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:client_cookie/client_cookie.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/LoginPage/FindClientInfo.dart';
@@ -106,6 +107,8 @@ class _LoginPage extends State<LoginPage>{
       // check Login Success and return
       try {
         var token = jsonDecode(response.body)[ServerData.KeyList['token']] as String;
+        var cookie = new ClientCookie("token", token, new DateTime.now());
+        print(response.headers);
         myData.setToken(token);
       }
       catch(e){

@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:html';
 
+import 'package:client_cookie/client_cookie.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -478,6 +480,7 @@ class _MyProfile extends State<MyProfile> {
     // TODO: implement initState
     super.initState();
     //_myData.parsingData();
+    print(CookieStore().get("token"));
     _getData();
   }
   /// 실제 내 데이터를 불러오는 메소드, header에 발급받은 token을 넣어 보낸다. METHOD = GET
