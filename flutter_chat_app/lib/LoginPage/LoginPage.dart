@@ -81,7 +81,7 @@ class _LoginPage extends State<LoginPage>{
 
   /// 서버와 api 통신을 위한 메소드, 로그인을 수행함
   void _login(id, pwd) async{
-    if(id == "admin" && pwd == "admin") {
+    /*if(id == "admin" && pwd == "admin") {
       // check Login Administrator
       try {
         myData.setToken("admin");
@@ -91,7 +91,7 @@ class _LoginPage extends State<LoginPage>{
       }
       Navigator.of(context).pushReplacementNamed('/main');
       return;
-    }
+    }*/
     final response = await http.post(
       Uri.parse(_Login_api),
       body: jsonEncode(

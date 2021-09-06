@@ -163,7 +163,10 @@ class _Chatting extends State<Chatting>{
                   ServerData.KeyList['user']: _myData.getName(),
                   'roomNum': roomNum,
                 });
-                socket.emit(ServerData.KeyList['msg'] as String, item);
+                if(socket.connected) {
+                  socket.emit(ServerData.KeyList['msg'] as String, item);
+                  _messageList.add(item);
+                }
                 setState(() {
                   _textController.clear();
                   _sendText = '';
@@ -245,16 +248,24 @@ class _Chatting extends State<Chatting>{
 
     socket.onConnect((str) {
       print(str);
+      print("connect");
       _messageList.clear();
       socket.emit(ServerData.KeyList['enter_room'] as String, item); // chatting room
+      socket.connected = true;
     });
+
     socket.once(ServerData.KeyList['load-message'] as String, (data) {
       var _preMessageList = jsonDecode(data);
       for(var item in _preMessageList) // [ServerData.KeyList['chat']]
         _messageList.add(item);
       setState(() {});
     }); // 처음 진입 시
-    socket.onDisconnect((_) => print('disconnect'));
+
+    socket.onDisconnect((_) {
+      print('disconnect');
+      //socket.connected = false;
+    });
+
     socket.on(ServerData.KeyList['msg'] as String, (msg)  {
       print('server send msg: ${msg}');
       setState(() {
