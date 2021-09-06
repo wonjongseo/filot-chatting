@@ -16,7 +16,6 @@ dependencies:
   url_launcher: ^6.0.9
   flutter_secure_storage: 4.2.1
   socket_io_client: ^1.0.1
-  client_cookie: ^3.0.2
 
   cupertino_icons: ^1.0.2
 
