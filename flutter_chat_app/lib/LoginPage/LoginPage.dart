@@ -108,7 +108,6 @@ class _LoginPage extends State<LoginPage>{
       try {
         var token = jsonDecode(response.body)[ServerData.KeyList['token']] as String;
         /*var cookie = new ClientCookie("token", token, new DateTime.now());*/
-        print(response.headers);
         myData.setToken(token);
       }
       catch(e){

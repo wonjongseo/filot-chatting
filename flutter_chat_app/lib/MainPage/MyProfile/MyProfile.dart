@@ -188,7 +188,6 @@ class _MyProfile extends State<MyProfile> {
         onChanged: (val){},
         textInputAction: TextInputAction.go,
         onFieldSubmitted: (value)async{
-          print(value.toString());
           _myData.setRole(_TextEditController["Role"]!.text);
           _myData.setGithub(_TextEditController["Github"]!.text);
           _myData.setEmail(_TextEditController["Email"]!.text);
@@ -475,26 +474,13 @@ class _MyProfile extends State<MyProfile> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    //_myData.parsingData();
-    //print(CookieStore().get("token"));
     _getData();
+    _LinkSocket();
   }
   /// 실제 내 데이터를 불러오는 메소드, header에 발급받은 token을 넣어 보낸다. METHOD = GET
   void _getData() async{
     // 모든 정보를 업데이트 한다.
     var _tokenValue = myData.getToken();
-    /// 추후 삭제 --delete
-    /*try {
-      _tokenValue = myData.getToken();
-    }catch (e){
-      print(e.toString());
-
-      myData.parsingData();
-
-      _tokenValue = "admin";
-      _updateUiText();
-      return;
-    }*/
 
     Map<String, String> header = {
       'Content-Type': "application/json",
@@ -512,7 +498,7 @@ class _MyProfile extends State<MyProfile> {
     myData.userObj = response.body;
 
     if(myData.parsingData())
-      _LinkSocket();
+      print("parsing was successful");
     else
       throw Exception("parsing error: response body is empty");
 
@@ -523,18 +509,18 @@ class _MyProfile extends State<MyProfile> {
     _TextEditController["Github"]!.text =  _myData.getGithub();
     _TextEditController["Email"]!.text =  _myData.getEmail();
     _TextEditController["Phone"]!.text =  _myData.getPhone();
-    setState(() {});
+    _StateWidgetUpdate(_myData.getState());
   }
   /// 변경된 내 데이터를 서버에 전송한다.
   void _updateData() async {
     print(await _myData.UpdateData()); // --server MyData 클래스 내장 함수 update를 통해 프로필 갱신을 한다.
-
     _updateUiText();
   }
 
   /// 변경된 내 상태를 실시간 서버에 전송한다.
   void _updateState(int index) async {
     myData.setState(index);
+    print(socket.connected);
     if(socket.connected) {
       var item = jsonEncode({
         'name': myData.getName(), // name 전송 string
@@ -542,24 +528,36 @@ class _MyProfile extends State<MyProfile> {
       });
       socket.emit('set_state', item);
 
-      for(var idx = 0; idx < _currentStates.length; idx++)
-      setState(() {
-        _currentStates[idx] = (idx==index);
-        _myData.setState(index);
-      });
+      _StateWidgetUpdate(index);
     }
+  }
+  void _StateWidgetUpdate(int index){
+    for(var idx = 0; idx < _currentStates.length; idx++) {
+      _currentStates[idx] = (idx == index);
+      _myData.setState(index);
+    }
+    setState(() {});
   }
   /// 실제 Socket을 연결하는 메소드 / 성공적으로 데이터를 불러왔을 때 Socket을 연결한다.
   _LinkSocket() async {
+    print("Linking Socket... ");
     socket = await IO.io(state_socket_api, <String, dynamic>{
       'transports': ['websocket'],
     });
 
     socket.onConnect((str) {
       // server socket connect
-      print(str);
+      print("myprofile state : conntected");
+      print(socket.connected);
+      print(socket.disconnected);
     });
-    socket.onDisconnect((_) => print('disconnect'));
+    socket.onReconnect((str) {
+      // server socket reconnect
+      print("myprofile state : reconnected");
+      print(socket.connected);
+      print(socket.disconnected);
+    });
+    socket.onDisconnect((data) => print('myprofile state : disconnect'));
   }
 
   /** 각각의 정보 (github, mail, phone)을 실제 브라우저, 메일, 전화로 연결해줌 **/

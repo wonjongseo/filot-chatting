@@ -248,7 +248,7 @@ class _Chatting extends State<Chatting>{
 
     socket.onConnect((str) {
       print(str);
-      print("connect");
+      print("chatting room socket connect");
       _messageList.clear();
       socket.emit(ServerData.KeyList['enter_room'] as String, item); // chatting room
       socket.connected = true;
@@ -261,11 +261,6 @@ class _Chatting extends State<Chatting>{
       setState(() {});
     }); // 처음 진입 시
 
-    socket.onDisconnect((_) {
-      print('disconnect');
-      //socket.connected = false;
-    });
-
     socket.on(ServerData.KeyList['msg'] as String, (msg)  {
       print('server send msg: ${msg}');
       setState(() {
@@ -273,7 +268,7 @@ class _Chatting extends State<Chatting>{
       });
     });
     socket.onDisconnect((data) {
-      print('disconnect');
+      print('chatting room socket disconnect');
       _messageList.clear();
     });
 

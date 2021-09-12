@@ -416,6 +416,7 @@ class _FriendsList extends State<FriendsList> {
         else
           print("error for adding friend");
       }
+      setState(() {});
     } catch (e) {
       print(e.toString());
     }
@@ -440,7 +441,7 @@ class _FriendsList extends State<FriendsList> {
           return;
         }
     });
-    socket.onDisconnect((_) => print('disconnect'));
+    socket.onDisconnect((_) => print('Friends List disconnect'));
   }
 
   /** 각각의 정보 (github, mail, phone)을 실제 브라우저, 메일, 전화로 연결해줌 **/

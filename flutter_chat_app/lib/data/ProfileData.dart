@@ -45,7 +45,6 @@ class UserData {
       /// object parsing
       try {
         var data = _userObj is String ? jsonDecode(_userObj) : _userObj;
-        print(data);
         this.setName(data[ServerData.KeyList['name']]);
         this.setRole(data[ServerData.KeyList['role']]);
         this.setPhone(data[ServerData.KeyList['phone']]);
