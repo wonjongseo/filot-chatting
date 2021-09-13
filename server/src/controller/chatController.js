@@ -115,5 +115,5 @@ export const getChatsRommList = async (req, res, next) => {
         select: "-id -password -rooms",
     });
 
-    return res.json({roomList});
+    return res.json(roomList);
 };
