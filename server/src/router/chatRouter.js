@@ -9,4 +9,11 @@ chatRouter.get("/", (req, res, next) => {
 });
 chatRouter.get("/rooms", isAuth, getChatsRommList);
 
+chatRouter.get("/a", (req, res, next) => {
+    const {userList} = req.body;
+
+    userList.map(({name}) => console.log(name));
+    return res.end;
+});
+
 export default chatRouter;

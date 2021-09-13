@@ -11,11 +11,11 @@ export const pugTest = (server) => {
         cors: {
             origin: "*",
         },
-        allowEIO3: true,
-        requestCert: true,
-        secure: true,
-        rejectUnauthorized: false,
-        transports: ["websocket"],
+        // allowEIO3: true,
+        // requestCert: true,
+        // secure: true,
+        // rejectUnauthorized: false,
+        // transports: ["websocket"],
     });
 
     function countRoom(roomName) {
@@ -28,14 +28,14 @@ export const pugTest = (server) => {
         console.log(`connectioned`);
         socket.onAny((event) => console.log(`Socket Event: ${event}`));
 
-        socket.on("enter_room", async (roomInfo, done) => {
+        socket.on("enter_room", async (roomInfo) => {
             const {roomNum, createRoom} = await createChattingRoom(roomInfo);
             socket["roomNum"] = roomNum;
             socket.join(roomNum);
             var {chats} = await importChatting(createRoom);
             chats = JSON.stringify(chats);
             io.sockets.to(roomNum).emit("load-message", chats);
-            done();
+            // done();
             socket.to(roomNum).emit("del");
         });
 
@@ -46,7 +46,7 @@ export const pugTest = (server) => {
             socket.emit("success", "success");
         });
 
-        socket.on("message", (messageInfo, done) => {
+        socket.on("message", (messageInfo) => {
             TESTcreateChat(messageInfo);
             socket.to(messageInfo.roomNum).emit("message", messageInfo);
         });

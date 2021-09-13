@@ -37,6 +37,7 @@ export const addUser = async (data) => {
 export const createChattingRoom = async (data) => {
     // json파일 java object로 변경
     const objData = JSON.parse(data);
+
     const {user1, user2, roomNum} = objData;
     // 데이터 베이스에서 이미 있는 방인지 확인
     let createRoom = await ChatsRoom.findOne({roomNum});
@@ -77,22 +78,6 @@ export const parsingChats = (chat) => {
     const data = JSON.stringify(dataObj, data);
     return data;
 };
-
-// filot sever
-// export const createChat = async (data, createRoom) => {
-//     // 프론트에서 받은 채팅 java object로 풀기
-//     const dataObj = JSON.parse(data);
-//     const {message, user} = dataObj;
-
-//     // 채팅 데베에 저장
-//     const dbChat = await Chat.create({
-//         chatRoom: createRoom._id,
-//         message,
-//         username: user,
-//     });
-//     createRoom.chats.push(dbChat._id);
-//     createRoom.save();
-// };
 
 export const TESTcreateChat = async (data) => {
     console.log(data);
