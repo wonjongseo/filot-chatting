@@ -11,11 +11,11 @@ export const pugTest = (server) => {
         cors: {
             origin: "*",
         },
-        // allowEIO3: true,
-        // requestCert: true,
-        // secure: true,
-        // rejectUnauthorized: false,
-        // transports: ["websocket"],
+        allowEIO3: true,
+        requestCert: true,
+        secure: true,
+        rejectUnauthorized: false,
+        transports: ["websocket"],
     });
 
     function countRoom(roomName) {
