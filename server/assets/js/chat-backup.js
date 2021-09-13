@@ -7,18 +7,6 @@ const user1 = welcome.querySelector("#user1");
 const user2 = welcome.querySelector("#user2");
 const loadingBtn = room.querySelector("#loading_btn");
 
-//#####
-const addUser = document.getElementById("addUser");
-const addUserBtn = addUser.querySelector("button");
-addUser.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const addUserInput = addUser.querySelector("input");
-    const {value} = addUserInput;
-    const username = JSON.stringify(value);
-    // console.log(username);
-    socket.emit("add_user", username);
-});
-
 const USER1_CHAT = "user1_chat";
 const USER2_CHAT = "user2_chat";
 const YOUER_MEESAGE = "your_message";
@@ -148,8 +136,7 @@ socket.on("message", (loggedInName) => {
     youChat(loggedInName.message);
 });
 
-socket.on("load-message", (data, name) => {
-    console.log(data);
+socket.once("load-message", (data, name) => {
     existingData = data;
     data.map((item) => {
         if (item.user != name) {

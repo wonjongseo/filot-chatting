@@ -4,11 +4,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/data/ServerData.dart';
 
+
 import 'package:http/http.dart' as http;
+
 
 String icon_path = 'image/teamIcon.png';
 
-class JoinPage extends StatefulWidget {
+class JoinPage extends StatefulWidget{
   @override
   State<StatefulWidget> createState() => _JoinPage();
 }
@@ -39,7 +41,7 @@ class _JoinPage extends State<JoinPage>{
     // TODO: implement initState
     super.initState();
 
-    for (var item in _TextFormList) {
+    for(var item in _TextFormList) {
       values.add(TextEditingController());
     }
   }
@@ -47,28 +49,29 @@ class _JoinPage extends State<JoinPage>{
   /// 실제 Text Form 필드를 생성하는 메소드
   Padding _makeTextFormField(int index, bool obscure){
     return Padding(
-      padding: EdgeInsets.fromLTRB(15, 20, 15, 5),
-      child: Column(
-        children: <Widget>[
-          TextFormField(
-            controller: values[index],
-            keyboardType: TextInputType.text,
-            obscureText: obscure,
-            decoration: InputDecoration(
-                labelText: _TextFormList[index],
-                labelStyle: TextStyle(
-                  fontFamily: 'bmjua',
-                  fontSize: 14,
-                )),
-            validator: (text) {
-              if (text == null || text.isEmpty) {
-                return 'Text is empty';
-              }
-              return null;
-            },
-          ),
-        ],
-      ),
+        padding: EdgeInsets.fromLTRB(15,20,15,5),
+        child: Column(
+          children: <Widget>[
+            TextFormField(
+              controller: values[index],
+              keyboardType: TextInputType.text,
+              obscureText: obscure,
+              decoration: InputDecoration(
+                  labelText: _TextFormList[index],
+                  labelStyle: TextStyle(
+                    fontFamily: 'bmjua',
+                    fontSize: 14,
+                  )
+              ),
+              validator: (text) {
+                if (text == null || text.isEmpty) {
+                  return 'Text is empty';
+                }
+                return null;
+              },
+            ),
+          ],
+        ),
     );
   }
 
@@ -122,11 +125,12 @@ class _JoinPage extends State<JoinPage>{
       appBar: AppBar(
         title: Text("Join Page"),
       ),
+
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Padding(padding: EdgeInsets.fromLTRB(0, 30, 0, 30)),
+          children: <Widget> [
+            Padding(padding: EdgeInsets.fromLTRB(0,30,0,30)),
             Text("FILOT",
                 style: TextStyle(
                   fontFamily: 'bmjua',
@@ -137,23 +141,25 @@ class _JoinPage extends State<JoinPage>{
               padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
               child: Column(
                 children: <Widget>[
-                  _makeTextFormField(0, false),
-                  _makeTextFormField(1, true),
-                  _makeTextFormField(2, true),
-                  _makeTextFormField(3, false),
-                  _makeTextFormField(4, false),
-                  _makeTextFormField(5, false),
+                  _makeTextFormField(0,false),
+                  _makeTextFormField(1,true),
+                  _makeTextFormField(2,true),
+                  _makeTextFormField(3,false),
+                  _makeTextFormField(4,false),
+                  _makeTextFormField(5,false),
                 ],
               ),
             ),
             ElevatedButton(
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[Text("인증하기")],
+                  children: <Widget>[
+                    Text("인증하기")
+                  ],
                 ),
                 style: ElevatedButton.styleFrom(
-                  onPrimary: Colors.white60,
-                  padding: EdgeInsets.fromLTRB(80, 0, 80, 0),
+                  onPrimary:Colors.white60,
+                  padding: EdgeInsets.fromLTRB(80,0,80,0),
                 ),
                 onPressed: () {
                   for(int index = 0; index<values.length;index++){
@@ -166,17 +172,20 @@ class _JoinPage extends State<JoinPage>{
                       _InfoList.addAll({_InfoLists[index]: str});
                   }
 
-                  if (_InfoList[1] != _InfoList[2]) {
+                  if(_InfoList[1] != _InfoList[2]){
                     _errorPopup("비밀번호가 일치하지 않습니다!");
                     return;
                   }
 
                   setState(() {
-                    for (var i = 0; i < values.length; i++) values[i].clear();
+                    for(var i = 0;i<values.length;i++)
+                      values[i].clear();
                   });
                   _join();
                 }),
             Padding(padding: EdgeInsets.all(13)),
+
+
           ],
         ),
       ),

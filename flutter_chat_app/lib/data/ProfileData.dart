@@ -1,6 +1,6 @@
 import 'dart:convert';
-
 import 'package:flutter_chat_app/data/ServerData.dart';
+
 
 class UserData {
   String _name = '';
@@ -11,7 +11,8 @@ class UserData {
   String _imgPath = 'image/teamIcon.png';
 
   int _state = 0;
-  var _userObj;
+
+  dynamic _userObj;
 
   /// Server에서 json type으로 user 객체를 통째로 받아 저장한다. --server
   UserData(userObj) {
@@ -21,6 +22,7 @@ class UserData {
   set userObj(value) {
     _userObj = value;
   }
+
 
   get userObj => _userObj;
   String getName() => _name;
@@ -36,12 +38,10 @@ class UserData {
   int getState() => _state;
   void setState(state) => this._state = state!;
   String getImage() => _imgPath;
-  void setImage(String? imgPath) =>
-      this._imgPath = (imgPath!.isEmpty ? 'image/teamIcon.png' : imgPath)!;
+  void setImage(String? imgPath) =>this._imgPath = (imgPath!.isEmpty ? 'image/teamIcon.png' : imgPath)!;
 
   /// server에서 받은 user Object를 parsing하는 메소드 --server method
   bool parsingData() {
-    print(_userObj.toString());
     if (_userObj.toString().isEmpty)
       return false;
     else {
@@ -49,7 +49,6 @@ class UserData {
       try {
         var data = _userObj is String ? jsonDecode(_userObj) : _userObj;
         print(data);
-
         this.setName(data[ServerData.KeyList['name']]);
         this.setRole(data[ServerData.KeyList['role']]);
         this.setPhone(data[ServerData.KeyList['phone']]);

@@ -10,16 +10,21 @@ html(lang="en")
         link(rel='stylesheet', href='/static/js/reset.css')
         
         title Document
-    body  
-        h3#username Test Chat Page 
+    body
+        div  
+            h3#username Test Chat Page  
+            form#addUser
+                input(value="duck" placeholder="username" required, type="text")
+                button Enter Room
+
 
         main
             
             div#welcome
                 form
-                    input#roomName( placeholder="room name" required, type="text")
-                    input#user1( placeholder="user1 name"  required, type="text")
-                    input#user2( placeholder="user2 name"  required, type="text")
+                    input#roomName(value="ABC" placeholder="room name" required, type="text")
+                    input#user1( placeholder="user1 name"  required, type="text" value="won")
+                    input#user2( placeholder="user2 name"  required, type="text" value="chan")
                     button Enter Room
                 //- test
                 //- div#_msgContainer.my_name.user2_chat
@@ -38,8 +43,9 @@ html(lang="en")
                     
             div#hello
             div#room
+                h1 
                 h3
-                ul
+                ul 
                 form#msg
                     input(placeholder="message" required, type="text")
                     button 전송

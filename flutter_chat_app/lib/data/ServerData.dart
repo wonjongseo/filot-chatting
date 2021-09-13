@@ -22,7 +22,6 @@ class ServerData {
     '/check': (JHtest ? '' : '/check'),
     '/find': (JHtest ? '' : '/find'),
     '/friends': (JHtest ? '' : '/users/friends'),
-    
     '/myprofile' : (JHtest ? '' : '/users/myprofile'),
     '/userupdate' : (JHtest ? '' : '/update'),
     '/state' : (JHtest ? '/state' : '/state'),
@@ -33,7 +32,7 @@ class ServerData {
     'id' : 'username',
     'pwd' : 'password',
     'checkpwd' : 'confirmpassword',
-    'nick' : 'nick_name',
+    'nick' : 'nickName',
     'name' : 'name',
     'phone' : 'phone_number',
     'email' : 'email',
@@ -46,10 +45,10 @@ class ServerData {
     'user' : 'user',
     'room' : 'roomNum',
     'chat' : 'chats',
-    'enter-room' : 'enter-room',
+    'enter_room' : 'enter_room',
     'load-message' : 'load-message',
   };
-  static final api = (JHtest ? 'localhost:3000' : 'http://localhost:3000');
+  static final api = (JHtest ? 'https://localhost:3000' :'http://localhost:3000');
 
   /// test용 json 객체
   static var adminItem = jsonEncode({

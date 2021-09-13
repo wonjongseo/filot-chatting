@@ -24,36 +24,59 @@ class MyProfile extends StatefulWidget {
 }
 
 class _MyProfile extends State<MyProfile> {
-
   /*------------------ 변수 선언 구문 ------------------*/
   /// 내 데이터들을 불러오는 api / state를 실시간 변경됨을 소통하는 api --server
-  final MyProfile_api = ServerData.api + (ServerData.ApiList['/myprofile'] as String);
-  final state_socket_api = ServerData.api + (ServerData.ApiList['/state'] as String);
+  final MyProfile_api =
+      ServerData.api + (ServerData.ApiList['/myprofile'] as String);
+  final state_socket_api =
+      ServerData.api + (ServerData.ApiList['/state'] as String);
 
   /// socket 변수 생성  --server
   late IO.Socket socket;
 
   /// 공지사항 리스트, 공지사항들을 불러와서 저장하되, 현재는 미사용
   List _NoticeList = [];
+
   /// UI용 Icon List
-  Map<String,Widget> _IconList = {
-    "State":Image.asset(state_path,width: 45,height: 45,),
-    "Role":Image.asset(role_path,width: 40,height: 40,),
-    "Github":Image.asset(github_path,width: 40,height: 40,),
-    "Email":Icon(Icons.mail,size: 40,color: Colors.black,),
-    "Phone":Icon(Icons.smartphone,size: 40,color: Colors.black,),
+  Map<String, Widget> _IconList = {
+    "State": Image.asset(
+      state_path,
+      width: 45,
+      height: 45,
+    ),
+    "Role": Image.asset(
+      role_path,
+      width: 40,
+      height: 40,
+    ),
+    "Github": Image.asset(
+      github_path,
+      width: 40,
+      height: 40,
+    ),
+    "Email": Icon(
+      Icons.mail,
+      size: 40,
+      color: Colors.black,
+    ),
+    "Phone": Icon(
+      Icons.smartphone,
+      size: 40,
+      color: Colors.black,
+    ),
   };
+
   /// 내 현재 상태를 알리는 변수, 각각 [ 연락 가능, 연락 불가, 연락 임시 가능 ]을 의미함
-  List<bool> _currentStates = [true,false,false];
+  List<bool> _currentStates = [true, false, false];
   List<Color> _stateColorList = [Colors.green, Colors.red, Colors.blue];
 
   /// 내 정보 ( 역할, 깃헙 사이트, email, 전화번호 ) 등을 수정할 수 있는 text controller
   /// 이 정보가 수정됨을 확인하기 위해 controller를 생성했다.
-  Map<String,TextEditingController> _TextEditController = {
-    "Role":new TextEditingController(),
-    "Github":new TextEditingController(),
-    "Email":new TextEditingController(),
-    "Phone":new TextEditingController(),
+  Map<String, TextEditingController> _TextEditController = {
+    "Role": new TextEditingController(),
+    "Github": new TextEditingController(),
+    "Email": new TextEditingController(),
+    "Phone": new TextEditingController(),
   };
 
   /// 내 정보 데이터 저장 변수
@@ -66,17 +89,23 @@ class _MyProfile extends State<MyProfile> {
   /*------------------ 위젯 생성 메서드 구문 ------------------*/
   /// 내 정보를 보여주고 또 변경할 수 있는 text context를 생성해준다.
   /// 타입을 받아서 state, github, email, phone number를 변경 및 표현한다.
-  Widget _makeProfileState(String type){
-    final rateWidth = deviceWidth/100;
+  Widget _makeProfileState(String type) {
+    final rateWidth = deviceWidth / 100;
     return Container(
       height: 65,
-      width: rateWidth*68,
+      width: rateWidth * 68,
       child: Row(
         children: [
           Center(child: _IconList[type]),
-          Expanded(child: Container(
-            child: Center(child: type == 'State' ? _currentState():_EditTextForm(_TextEditController[type]),),
-          ),)
+          Expanded(
+            child: Container(
+              child: Center(
+                child: type == 'State'
+                    ? _currentState()
+                    : _EditTextForm(_TextEditController[type]),
+              ),
+            ),
+          )
         ],
       ),
     );
@@ -84,109 +113,105 @@ class _MyProfile extends State<MyProfile> {
 
   /// 현재 내 상태 _currentStates[] 에 따른 UI를 표현하는 위젯 메소드, decobox는 아래 함수가 너무 길어져 분리한 꾸미기 메소드
   /// _makeProfileState에서 routing 되어 사용된다. (type == state)
-  Widget _currentState(){
+  Widget _currentState() {
     final _widthRate = deviceWidth / 100;
     return Wrap(
       children: [
         GestureDetector(
           child: Container(
-            width: _widthRate*12,
+            width: _widthRate * 12,
             height: 30,
-            decoration: _currentStateDecoBox(Colors.green,_currentStates[0]),
+            decoration: _currentStateDecoBox(Colors.green, _currentStates[0]),
           ),
-          onTap: _currentStates[0]?(){}:(){
-            _updateState(0);
-          },
+          onTap: _currentStates[0]
+              ? () {}
+              : () {
+                  _updateState(0);
+                },
         ),
-        Padding(padding: EdgeInsets.fromLTRB(_widthRate*5,0,0,0)),
+        Padding(padding: EdgeInsets.fromLTRB(_widthRate * 5, 0, 0, 0)),
         GestureDetector(
           child: Container(
-            width: _widthRate*12,
+            width: _widthRate * 12,
             height: 30,
-            decoration: _currentStateDecoBox(Colors.red,_currentStates[1]),
+            decoration: _currentStateDecoBox(Colors.red, _currentStates[1]),
           ),
-          onTap: _currentStates[1]?(){}:(){
-            _updateState(1);
-          },
+          onTap: _currentStates[1]
+              ? () {}
+              : () {
+                  _updateState(1);
+                },
         ),
-        Padding(padding: EdgeInsets.fromLTRB(_widthRate*5,0,0,0)),
+        Padding(padding: EdgeInsets.fromLTRB(_widthRate * 5, 0, 0, 0)),
         GestureDetector(
           child: Container(
-            width: _widthRate*12,
+            width: _widthRate * 12,
             height: 30,
-            decoration: _currentStateDecoBox(Colors.blue,_currentStates[2]),
+            decoration: _currentStateDecoBox(Colors.blue, _currentStates[2]),
           ),
-          onTap: _currentStates[2]?(){}:(){
-            _updateState(2);
-          },
+          onTap: _currentStates[2]
+              ? () {}
+              : () {
+                  _updateState(2);
+                },
         ),
-
       ],
     );
   }
-  BoxDecoration _currentStateDecoBox(Color color, [flag]){
-    if(flag){
+
+  BoxDecoration _currentStateDecoBox(Color color, [flag]) {
+    if (flag) {
       return BoxDecoration(
-        borderRadius: BorderRadius.circular(100),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black87.withOpacity(0.7),
-          ),
-          BoxShadow(
-            color: color,
-            spreadRadius: -3.0,
-            blurRadius: 6.0,
-            offset: Offset(0, 0),
-          ),
-        ],
-        border: Border.all(
-          color: color,
-          width: 0.1
-        )
-      );
-    }
-    else {
+          borderRadius: BorderRadius.circular(100),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black87.withOpacity(0.7),
+            ),
+            BoxShadow(
+              color: color,
+              spreadRadius: -3.0,
+              blurRadius: 6.0,
+              offset: Offset(0, 0),
+            ),
+          ],
+          border: Border.all(color: color, width: 0.1));
+    } else {
       return BoxDecoration(
           borderRadius: BorderRadius.circular(100),
           color: color,
           border: Border.all(
             color: Colors.black12,
             width: 1,
-          )
-      );
+          ));
     }
   }
 
   /// state를 제외한 text 입력 폼을 생성해주는 위젯 메소드
   /// _makeProfileState에서 routing 되어 사용된다. (type != state)
-  Widget _EditTextForm(TextEditingController? controller,[str]){
-
+  Widget _EditTextForm(TextEditingController? controller, [str]) {
     final _rateWidth = deviceWidth / 100;
     return Container(
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            width: 1,
-            color: Colors.black54,
-          )
-        )
-      ),
-      width: _rateWidth*55,
+          border: Border(
+              bottom: BorderSide(
+        width: 1,
+        color: Colors.black54,
+      ))),
+      width: _rateWidth * 55,
       height: 40,
       child: TextFormField(
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-          labelStyle: TextStyle(
-            fontSize: 15,
-          )
-        ),
+            contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            labelStyle: TextStyle(
+              fontSize: 15,
+            )),
         controller: controller,
-        onSaved: (val){
+        onSaved: (val) {
           print("saved");
         },
-        onChanged: (val){},
+        onChanged: (val) {},
         textInputAction: TextInputAction.go,
-        onFieldSubmitted: (value)async{
+        onFieldSubmitted: (value) async {
           print(value.toString());
           _myData.setRole(_TextEditController["Role"]!.text);
           _myData.setGithub(_TextEditController["Github"]!.text);
@@ -196,102 +221,122 @@ class _MyProfile extends State<MyProfile> {
           _getData();
         },
       ),
-
     );
   }
 
   /// 가장 상단에 보여지는 내 프로필을 보여주는 위젯 메소드, 길이와 높이를 받아 표현한다.
-  Widget _ProfileCardeView(width, height){
+  Widget _ProfileCardeView(width, height) {
     var _widthRate = width * 0.01;
     var _hegihtRate = height * 0.01;
     // 추후 User Data를 받아오는 파라미터 필요
     // 현재 위젯의 너비와 높이를 받아와서 비율을 계산
     return Container(
-      width: _widthRate*85,
-      height: _hegihtRate*80,
+      width: _widthRate * 85,
+      height: _hegihtRate * 80,
       child: Row(
         children: [
           // profile image
           Container(
-              width: _widthRate*25,
-              height: _widthRate*25,
-              child: Image.asset(icon_path, fit: BoxFit.fill,),
+              width: _widthRate * 25,
+              height: _widthRate * 25,
+              child: Image.asset(
+                icon_path,
+                fit: BoxFit.fill,
+              ),
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(
                   color: Colors.black12,
                   width: 1,
                 ),
-                borderRadius: const BorderRadius.all(const Radius.circular(100)),
-              )
+                borderRadius:
+                    const BorderRadius.all(const Radius.circular(100)),
+              )),
+          Padding(
+            padding: EdgeInsets.all(5),
           ),
-          Padding(padding: EdgeInsets.all(5),),
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  width: _widthRate*50,
-                  height: _hegihtRate*33,
+                  width: _widthRate * 50,
+                  height: _hegihtRate * 33,
                   alignment: Alignment.bottomLeft,
                   child: Row(
                     children: [
-                      Text("이주호",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
+                      Text("이주호",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
                       Padding(padding: EdgeInsets.all(3)),
                       Container(
-                        width: _widthRate*23.1,
+                        width: _widthRate * 23.1,
                         alignment: Alignment.bottomLeft,
                         child: Column(
                           children: [
                             Padding(padding: EdgeInsets.all(6)),
-                            Text("Front End",style: TextStyle(fontSize: 12))
+                            Text("Front End", style: TextStyle(fontSize: 12))
                           ],
                         ),
-
                       ),
-
                       Container(
-                        width: _widthRate*8,
-                        height: _hegihtRate*14,
+                        width: _widthRate * 8,
+                        height: _hegihtRate * 14,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
                             color: _stateColorList[_myData.getState()],
                             border: Border.all(
                               color: Colors.black12,
                               width: 1,
-                            )
-                        ),
+                            )),
                       ),
                     ],
                   ),
-
                 ),
                 Container(
                   height: 1,
-                  width: _widthRate*55,
-                  child: Divider(color: Colors.black38,),
+                  width: _widthRate * 55,
+                  child: Divider(
+                    color: Colors.black38,
+                  ),
                 ),
-                Padding(padding: EdgeInsets.all(3),),
+                Padding(
+                  padding: EdgeInsets.all(3),
+                ),
                 Container(
-                  width: _widthRate*50,
+                  width: _widthRate * 50,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       GestureDetector(
                         onTap: () => _launchURL(_myData.getGithub()),
-                        child: Image.asset(github_outline_path,width: 20,height: 20,),
+                        child: Image.asset(
+                          github_outline_path,
+                          width: 20,
+                          height: 20,
+                        ),
                       ),
 
                       //Image.asset(github_outline_path,width: double.infinity,height: double.infinity,),
-                      Padding(padding: EdgeInsets.all(5),),
+                      Padding(
+                        padding: EdgeInsets.all(5),
+                      ),
                       GestureDetector(
                         onTap: () => _launchMail(_myData.getEmail()),
-                        child:  Icon(Icons.mail_outline,size: 20,),
+                        child: Icon(
+                          Icons.mail_outline,
+                          size: 20,
+                        ),
                       ),
-                      Padding(padding: EdgeInsets.all(5),),
+                      Padding(
+                        padding: EdgeInsets.all(5),
+                      ),
                       GestureDetector(
                         onTap: () => _launchPhone(_myData.getPhone()),
-                        child:  Icon(Icons.phone,size: 20,),
+                        child: Icon(
+                          Icons.phone,
+                          size: 20,
+                        ),
                       ),
                     ],
                   ),
@@ -303,8 +348,9 @@ class _MyProfile extends State<MyProfile> {
       ),
     );
   }
+
   /// 프로필 바로 하단에 보여지는 공지사항 메소드, 공지사항을 불러와 보여준다.
-  Widget _Notice([object]){
+  Widget _Notice([object]) {
     //Notice Object가 필요하다.
     //Notice object에는 내용과 제목, 작성자, 날짜 등이 있다.
     return Container(
@@ -318,7 +364,9 @@ class _MyProfile extends State<MyProfile> {
       ),
       child: Row(
         children: [
-          Padding(padding: EdgeInsets.all(10),),
+          Padding(
+            padding: EdgeInsets.all(10),
+          ),
           Text("Hello?")
         ],
       ),
@@ -326,23 +374,24 @@ class _MyProfile extends State<MyProfile> {
   }
 
   /// 하단 text를 수정한다.
-  void _updateUiText(){
+  void _updateUiText() {
     /// 아래는 UI적 요소
-    _TextEditController["Role"]!.text =  _myData.getRole();
-    _TextEditController["Github"]!.text =  _myData.getGithub();
-    _TextEditController["Email"]!.text =  _myData.getEmail();
-    _TextEditController["Phone"]!.text =  _myData.getPhone();
+    _TextEditController["Role"]!.text = _myData.getRole();
+    _TextEditController["Github"]!.text = _myData.getGithub();
+    _TextEditController["Email"]!.text = _myData.getEmail();
+    _TextEditController["Phone"]!.text = _myData.getPhone();
   }
 
-  @override /// 실제 화면을 build하는 메소드
-  Widget build(BuildContext context) {
+  @override
 
+  /// 실제 화면을 build하는 메소드
+  Widget build(BuildContext context) {
     /** 실제 계산 과정 **/
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
 
-    final rateWidth = (deviceWidth - 80)/100;
-    final rateHeight = (deviceHeight)/100;
+    final rateWidth = (deviceWidth - 80) / 100;
+    final rateHeight = (deviceHeight) / 100;
 
     var MyProfileWidgetWidth, MyProfileWidgetHeight;
     /** 여기까지 **/
@@ -352,13 +401,13 @@ class _MyProfile extends State<MyProfile> {
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Column(
-            children: <Widget> [
+            children: <Widget>[
               /** 내 현재 프로필 상태 Container**/
               Container(
                 child: Center(
                   child: Column(
                     children: [
-                      Padding(padding: EdgeInsets.all(rateHeight*3)),
+                      Padding(padding: EdgeInsets.all(rateHeight * 3)),
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -366,38 +415,40 @@ class _MyProfile extends State<MyProfile> {
                             color: Colors.black12,
                             width: 1,
                           ),
-                          borderRadius: const BorderRadius.all(const Radius.circular(8)),
-                          boxShadow: [BoxShadow(
-                            color: Colors.grey.withOpacity(0.2),
-                            spreadRadius: 3,
-                            blurRadius: 7,
-                            offset: Offset(2, 3),
-                          )],
-
+                          borderRadius:
+                              const BorderRadius.all(const Radius.circular(8)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.2),
+                              spreadRadius: 3,
+                              blurRadius: 7,
+                              offset: Offset(2, 3),
+                            )
+                          ],
                         ),
-                        width: (MyProfileWidgetWidth=rateWidth * 90),
-                        height: (MyProfileWidgetHeight=100.0),
-                        child: Center(child: _ProfileCardeView(MyProfileWidgetWidth,MyProfileWidgetHeight)),
+                        width: (MyProfileWidgetWidth = rateWidth * 90),
+                        height: (MyProfileWidgetHeight = 100.0),
+                        child: Center(
+                            child: _ProfileCardeView(
+                                MyProfileWidgetWidth, MyProfileWidgetHeight)),
                       ),
-
                     ],
                   ),
-
                 ),
-                height: rateHeight*20,
+                height: rateHeight * 20,
               ),
 
               /** 공지사항 Container**/
               Container(
-                height: rateHeight*30,
+                height: rateHeight * 30,
                 child: Column(
                   children: [
                     Container(
-                      height: rateHeight*6.5,
-                      width: rateWidth*85,
+                      height: rateHeight * 6.5,
+                      width: rateWidth * 85,
                       alignment: Alignment.bottomLeft,
                       child: Container(
-                        height: rateHeight*5.0,
+                        height: rateHeight * 5.0,
                         decoration: BoxDecoration(
                           border: Border(
                             bottom: BorderSide(
@@ -410,14 +461,24 @@ class _MyProfile extends State<MyProfile> {
                           alignment: WrapAlignment.end,
                           direction: Axis.vertical,
                           children: [
-                            Icon(Icons.star,color: Colors.yellow,),
-                            Text("공지사항",style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
+                            Icon(
+                              Icons.star,
+                              color: Colors.yellow,
+                            ),
+                            Text(
+                              "공지사항",
+                              style: TextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.bold),
+                            ),
                           ],
                         ),
                       ),
                     ),
-                    Padding(padding: EdgeInsets.all(3),),
-                    Expanded(child: Container(
+                    Padding(
+                      padding: EdgeInsets.all(3),
+                    ),
+                    Expanded(
+                        child: Container(
                       alignment: Alignment.topCenter,
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -425,32 +486,33 @@ class _MyProfile extends State<MyProfile> {
                           color: Colors.black12,
                           width: 1,
                         ),
-                        boxShadow: [BoxShadow(
-                          color: Colors.grey.withOpacity(0.1),
-                          spreadRadius: 3,
-                          blurRadius: 10,
-                          offset: Offset(2, 3),
-                        )],
-                        borderRadius: const BorderRadius.all(const Radius.circular(5)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.1),
+                            spreadRadius: 3,
+                            blurRadius: 10,
+                            offset: Offset(2, 3),
+                          )
+                        ],
+                        borderRadius:
+                            const BorderRadius.all(const Radius.circular(5)),
                       ),
                       height: double.infinity,
-                      width: rateWidth*80,
+                      width: rateWidth * 80,
                       child: Column(
                         children: [
                           _Notice(),
-                          for(var item in _NoticeList)
-                            _Notice(),
+                          for (var item in _NoticeList) _Notice(),
                         ],
                       ),
                     ))
-
                   ],
                 ),
               ),
 
               /** 내 프로필 수정 Container**/
               Container(
-                height: rateHeight*50,
+                height: rateHeight * 50,
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -466,27 +528,29 @@ class _MyProfile extends State<MyProfile> {
               ),
             ],
           ),
-        )
-    );
+        ));
   }
   /*--------------------------------------------------*/
 
   /*------------------ 데이터 처리 메서드 구문 ------------------*/
   // 아래 모든 데이터 메소드는 서버 관련 메소드 --server
-  @override  /// 이 컨텍스트가 실행되면서 초기화 메소드, 내 data를 불러오고 Socket을 Link 한다..
+  @override
+
+  /// 이 컨텍스트가 실행되면서 초기화 메소드, 내 data를 불러오고 Socket을 Link 한다..
   void initState() {
     // TODO: implement initState
     super.initState();
-    _myData.parsingData();
+    // _myData.parsingData();
     _getData();
   }
+
   /// 실제 내 데이터를 불러오는 메소드, header에 발급받은 token을 넣어 보낸다. METHOD = GET
-  void _getData() async{
+  void _getData() async {
     // 모든 정보를 업데이트 한다.
     var _tokenValue;
     try {
       _tokenValue = myData.getToken();
-    }catch (e){
+    } catch (e) {
       print(e.toString());
 
       myData.parsingData();
@@ -495,37 +559,46 @@ class _MyProfile extends State<MyProfile> {
       _updateUiText();
       return;
     }
-  
+
     Map<String, String> header = {
       'Content-Type': "application/json",
-      ServerData.KeyList['token'] as String : _tokenValue,
+      ServerData.KeyList['token'] as String: _tokenValue,
     };
-    final response = await http.get(
-        Uri.parse(MyProfile_api),
-        headers: header
-    );
-    if(response.statusCode < 200 || response.statusCode >= 300){
+    final response = await http.get(Uri.parse(MyProfile_api), headers: header);
+
+    if (response.statusCode < 200 || response.statusCode >= 300) {
       return;
     }
-    myData.userObj(response.body);
-
-    if(myData.parsingData())
+    print(response.body is Object);
+    
+    try {
+      print(myData.getToken());
+      myData.userObj(response.body);
+    } catch (e) {
+      print(e.toString());
+      myData.userObj(ServerData.adminItem);
+    }
+  print("lalala");
+    if (myData.parsingData()) {
       _LinkSocket();
-    else
+    } else {
       throw Exception("parsing error: response body is empty");
+    }
 
     _myData = myData;
 
     /** 화면에 뿌리기 **/
-    _TextEditController["Role"]!.text =  _myData.getRole();
-    _TextEditController["Github"]!.text =  _myData.getGithub();
-    _TextEditController["Email"]!.text =  _myData.getEmail();
-    _TextEditController["Phone"]!.text =  _myData.getPhone();
+    _TextEditController["Role"]!.text = _myData.getRole();
+    _TextEditController["Github"]!.text = _myData.getGithub();
+    _TextEditController["Email"]!.text = _myData.getEmail();
+    _TextEditController["Phone"]!.text = _myData.getPhone();
     setState(() {});
   }
+
   /// 변경된 내 데이터를 서버에 전송한다.
   void _updateData() async {
-    print(await _myData.UpdateData()); // --server MyData 클래스 내장 함수 update를 통해 프로필 갱신을 한다.
+    print(await _myData
+        .UpdateData()); // --server MyData 클래스 내장 함수 update를 통해 프로필 갱신을 한다.
 
     _updateUiText();
   }
@@ -533,20 +606,21 @@ class _MyProfile extends State<MyProfile> {
   /// 변경된 내 상태를 실시간 서버에 전송한다.
   void _updateState(int index) async {
     myData.setState(index);
-    if(socket.connected) {
+    if (socket.connected) {
       var item = jsonEncode({
         'name': myData.getName(), // name 전송 string
         'state': myData.getState(),
       });
       socket.emit('set_state', item);
 
-      for(var idx = 0; idx < _currentStates.length; idx++)
-      setState(() {
-        _currentStates[idx] = (idx==index);
-        _myData.setState(index);
-      });
+      for (var idx = 0; idx < _currentStates.length; idx++)
+        setState(() {
+          _currentStates[idx] = (idx == index);
+          _myData.setState(index);
+        });
     }
   }
+
   /// 실제 Socket을 연결하는 메소드 / 성공적으로 데이터를 불러왔을 때 Socket을 연결한다.
   _LinkSocket() async {
     socket = await IO.io(state_socket_api, <String, dynamic>{
@@ -564,21 +638,23 @@ class _MyProfile extends State<MyProfile> {
   _launchURL(url) async {
     try {
       await launch(url, forceSafariVC: true, forceWebView: true);
-    }catch(e){
+    } catch (e) {
       print(e.toString());
     }
   }
-  _launchMail(mail) async{
+
+  _launchMail(mail) async {
     try {
       await launch("mailto:$mail");
-    }catch(e){
+    } catch (e) {
       print(e.toString());
     }
   }
-  _launchPhone(phoneNum) async{
+
+  _launchPhone(phoneNum) async {
     try {
       await launch("tel:$phoneNum");
-    }catch(e){
+    } catch (e) {
       print(e.toString());
     }
   }

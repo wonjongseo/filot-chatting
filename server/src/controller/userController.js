@@ -8,14 +8,14 @@ export const home = async (req, res) => {
     const users = await User.find({});
     res.status(200).json(users);
 };
-
 export const postJoin = async (req, res) => {
     const {username, password, confirmpassword, name, phone_number} = req.body;
     // 입력한 두 비밀번호가 다르면 사용자 에러
     // console.log(username, password, confirmpassword, name, phone_number);
-    console.log(req.body);
+    console.log(username, password, confirmpassword, name, phone_number);
+
     if (password != confirmpassword) {
-        return res.status(409).json({message: "비밀번호가 틀립니다."});
+        return res.status(409).json({message: "비밀번호가 틀립니다"});
     }
     const existUser = await User.exists({id: username});
     // 이미 존재하는 id라면 사용자 에러
@@ -59,8 +59,6 @@ export const postLogin = async (req, res, next) => {
     }
     const token = createJwt(user.id);
     req.headers.token = token;
-    console.log(`aa :${res}`);
-
     return res.json({token: token});
 };
 
@@ -88,11 +86,14 @@ export const changePassword = async (req, res, next) => {
 
 export const getFind = async (req, res, next) => {
     const {name} = req.query;
-    const user = await User.findOne({name});
+    const user = await User.findOne({name}).select(
+        "name, role,github,email, phone_number "
+    );
     if (!user) {
         return res.json({error: "User not found"});
     }
-    return res.status(200).json({usename: user.name});
+    console.log(user);
+    return res.status(200).json({user});
 };
 
 export const putEdit = async (req, res, next) => {
@@ -140,8 +141,8 @@ export const auth = async (req, res, next) => {
 export const getMyProfile = async (req, res, next) => {
     // 미들웨어에서 토큰 처리
     const {id} = req;
-    const user = await User.findOne({id});
-    const userInfo = {
+    var user = await User.findOne({id});
+    user = {
         state: user.state,
         name: user.name,
         phone_number: user.phone_number,
@@ -149,9 +150,9 @@ export const getMyProfile = async (req, res, next) => {
         github: user.github,
         email: user.email,
     };
-    console.log(userInfo);
 
-    return res.status(200).json(userInfo);
+    console.log(typeof user);
+    return res.status(200).json({user});
 };
 
 export const postMyProfile = async (req, res, next) => {
@@ -179,6 +180,7 @@ export const getFriendsList = async (req, res, next) => {
     const users = await User.find({
         id: {
             $ne: id,
+            // 본인 제외
         },
     }).select("-password -_id -rooms -id");
     console.log(users);
@@ -188,5 +190,11 @@ export const getFriendsList = async (req, res, next) => {
 const createJwt = (id) => {
     return jwt.sign({id}, config.jwt.secretKey, {
         expiresIn: config.jwt.expireInSec,
+    });
+};
+
+export const getLogout = (req, res, next) => {
+    return jwt.sign({id}, config.jwt.secretKey, {
+        expiresIn: 100,
     });
 };

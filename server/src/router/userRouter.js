@@ -7,6 +7,7 @@ import {
     getMyProfile,
     postMyProfile,
     getFriendsList,
+    getLogout,
 } from "../controller/userController";
 import {isAuth} from "../middleware/auth";
 // 라우터
@@ -26,6 +27,7 @@ userRouter
     .post(postMyProfile);
 
 userRouter.get("/friends", isAuth, getFriendsList);
+userRouter.get("/logout", isAuth, getLogout);
 userRouter.delete("/:id([0-9a-zA-Z]{4,12})", isAuth, deleteUser);
 
 export default userRouter;

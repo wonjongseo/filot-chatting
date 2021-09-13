@@ -2,37 +2,6 @@ import Chat from "../models/Chat";
 import ChatsRoom from "../models/ChatingRoom";
 import User from "../models/User";
 
-// 단톡방
-export const addUser = async (data) => {
-    const {roomNum, user: name} = data;
-
-    const room = await ChatsRoom.findOne({roomNum});
-    if (!room) {
-        console.log(`${roomNum} room Not found `);
-        return;
-    }
-    const user = await User.findOne({name}).select("_id rooms");
-    if (!user) {
-        console.log(`${name} User Not found `);
-        return;
-    }
-
-    const user_string = JSON.stringify(user._id);
-    const ok = room?.user?.find((userId) => {
-        const a = JSON.stringify(userId);
-
-        return a === user_string;
-    });
-    if (ok) {
-        console.log(`${name} is already in room`);
-        return;
-    }
-    room.user.push(user);
-    await room.save();
-    user.rooms.push(room._id);
-    await user.save();
-};
-
 // 서버쪽에서 유저와 방 정보에 대해 받음
 export const createChattingRoom = async (data) => {
     // json파일 java object로 변경
@@ -61,6 +30,7 @@ export const createChattingRoom = async (data) => {
 
     return {roomNum, ChatUser1, ChatUser2, createRoom};
 };
+
 export const importChatting = async (createRoom) => {
     return ChatsRoom.findOne({roomNum: createRoom.roomNum})
         .select("-_id")
@@ -115,5 +85,5 @@ export const getChatsRommList = async (req, res, next) => {
         select: "-id -password -rooms",
     });
 
-    return res.json({roomList});
+    return res.json(roomList);
 };
