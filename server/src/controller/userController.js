@@ -152,7 +152,7 @@ export const getMyProfile = async (req, res, next) => {
     };
 
     console.log(typeof user);
-    return res.status(200).json({user});
+    return res.status(200).json(user);
 };
 
 export const postMyProfile = async (req, res, next) => {
@@ -170,7 +170,7 @@ export const postMyProfile = async (req, res, next) => {
         }
     );
     console.log(user);
-    return res.status(201).json({user});
+    return res.status(201).json(user);
 };
 
 export const getFriendsList = async (req, res, next) => {
