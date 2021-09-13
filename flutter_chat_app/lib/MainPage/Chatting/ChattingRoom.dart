@@ -219,7 +219,7 @@ class _Chatting extends State<Chatting>{
   @override /// 이 컨텍스트가 실행되면서 초기화 메소드, Socket을 Link한다.
   void initState() {
     friendObj = _frinedsList.first;
-
+    print(friendObj.getName());
     // TODO: implement initState
     _LinkSocket();
     super.initState();
@@ -235,10 +235,9 @@ class _Chatting extends State<Chatting>{
     roomNum = '';
     for(var i in _tempList)
       roomNum = roomNum + i;
-
+    // adduser UI
     item = jsonEncode({
-      'user1': _myData.getName(),//name전송string
-      'user2': friendObj.getName(),
+      'userList' : _tempList,
       'roomNum': roomNum,
     });
 
@@ -271,7 +270,6 @@ class _Chatting extends State<Chatting>{
       print('chatting room socket disconnect');
       _messageList.clear();
     });
-
   }
 /*--------------------------------------------------*/
 }
