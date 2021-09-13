@@ -225,11 +225,6 @@ class _ChatList extends State<ChatList> {
     var data;
     try {
       data = jsonDecode(response.body);
-    }catch(e){
-      print(e.toString());
-    }
-    try {
-      print(data);
       for (var item in data)
         _Rooms.add(new _roomData(item));
       setState(() {
@@ -268,12 +263,14 @@ class _roomData{
       lastChat = 'Latest Chat Text';
     }
     else {
-      var data = jsonDecode(jsonObj);
+      var data = jsonObj;
+      print(data);
       roomNumber = data[ServerData.KeyList['room']];
-      var users = data[ServerData.KeyList['user']] as List;
+      var usersList = data[ServerData.KeyList['user']] as List;
       var chats = data[ServerData.KeyList['chat']] as List;
-      lastChat = chats.last[ServerData.KeyList['msg']] as String;
-      for(var item in users){
+      //lastChat = chats.last[ServerData.KeyList['msg']] as String;
+      for(var item in usersList){
+        print(item);
         FrinedsData temp = new FrinedsData(item);
         if(temp.parsingData()) {
           if(temp.getName() == myData.getName())
