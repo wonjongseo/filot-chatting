@@ -224,12 +224,12 @@ class _ChatList extends State<ChatList> {
     }
     var data;
     try {
-      data = jsonDecode(response.body);
-      for (var item in data)
+      data = jsonDecode(response.body)['rooms'];
+      print(data);
+      for (var item in data) {
         _Rooms.add(new _roomData(item));
-      setState(() {
-
-      });
+      }
+      setState(() {});
 
     } catch (e) {
       print(e.toString());
@@ -264,7 +264,6 @@ class _roomData{
     }
     else {
       var data = jsonObj;
-      print(data);
       roomNumber = data[ServerData.KeyList['room']];
       var usersList = data[ServerData.KeyList['user']] as List;
       var chats = data[ServerData.KeyList['chat']] as List;

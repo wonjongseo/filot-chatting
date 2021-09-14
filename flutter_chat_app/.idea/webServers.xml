@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="19a9e6a5-f2d2-4db2-9b8c-ce85473a46d2" name="filot">
+        <fileTransfer accessType="SFTP" host="3.36.33.222" port="22" sshConfigId="41fbb542-c5e0-41e0-b42d-32f567e07c41" sshConfig="ec2-user@3.36.33.222:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
