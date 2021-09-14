@@ -20,6 +20,7 @@ userRouter.put(
     isAuth,
     changePassword
 );
+
 userRouter
     .route("/myprofile")
     .all(isAuth)

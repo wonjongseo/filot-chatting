@@ -1,7 +1,7 @@
 import SocketIO from "socket.io";
 import {addUser} from "../../src/controller/chatController";
 import {
-    TESTcreateChat,
+    createChat,
     createChattingRoom,
     importChatting,
 } from "../../src/controller/chatController";
@@ -47,7 +47,7 @@ export const pugTest = (server) => {
         });
 
         socket.on("message", (messageInfo) => {
-            TESTcreateChat(messageInfo);
+            createChat(messageInfo);
             socket.to(messageInfo.roomNum).emit("message", messageInfo);
         });
 

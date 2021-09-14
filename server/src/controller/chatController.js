@@ -7,10 +7,12 @@ export const addUser = async (data) => {
     const {roomNum, user: name} = data;
 
     const room = await ChatsRoom.findOne({roomNum});
+
     if (!room) {
         console.log(`${roomNum} room Not found `);
         return;
     }
+
     const user = await User.findOne({name}).select("_id rooms");
     if (!user) {
         console.log(`${name} User Not found `);
@@ -79,12 +81,10 @@ export const parsingChats = (chat) => {
     return data;
 };
 
-export const TESTcreateChat = async (data) => {
-    console.log(data);
+export const createChat = async (data) => {
     const {name: user, message, roomNum} = data;
     const room = await ChatsRoom.findOne({roomNum});
 
-    // // 채팅 데베에 저장
     const dbChat = await Chat.create({
         chatRoom: room._id,
         message,
@@ -95,10 +95,18 @@ export const TESTcreateChat = async (data) => {
 };
 
 export const getChatsRommList = async (req, res, next) => {
-    const roomList = await ChatsRoom.find({}).select("-_id").populate({
-        path: "user",
-        select: "-id -password -rooms",
-    });
+    const {id} = req;
 
-    return res.json(roomList);
+    const roomList1 = await User.findOne({id})
+        .select("name -_id")
+        .populate({
+            path: "rooms",
+            select: "roomNum -_id createdAt",
+            populate: {
+                path: "user",
+                select: "name -_id",
+            },
+        });
+
+    return res.json(roomList1);
 };

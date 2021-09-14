@@ -1,19 +1,40 @@
 import express from "express";
 import {getChatsRommList} from "../controller/chatController";
 import {isAuth} from "../middleware/auth";
+import ChatsRoom from "../models/ChatingRoom";
+import User from "../models/User";
 
 const chatRouter = express.Router();
 
 chatRouter.get("/", (req, res, next) => {
     res.render("chat");
 });
+
 chatRouter.get("/rooms", isAuth, getChatsRommList);
 
-chatRouter.get("/a", (req, res, next) => {
-    const {userList} = req.body;
+chatRouter.get("/a", async (req, res, next) => {
+    try {
+        const {userList, roomNum} = req.body;
+        let createRoom = await ChatsRoom.findOne({roomNum});
+        if (createRoom) {
+            return res.json({message: "existing roomNum"});
+        }
+        createRoom = await ChatsRoom.create({roomNum});
+        userList.map(async ({name}, index) => {
+            const user = await User.findOne({name});
+            user.rooms.push(createRoom._id);
+            createRoom.user.push(user._id);
 
-    userList.map(({name}) => console.log(name));
-    return res.end;
+            await user.save();
+
+            if (index === userList.length - 1) {
+                await createRoom.save();
+            }
+        });
+        return res.json({message: "success"});
+    } catch (error) {
+        return res.json({message: error});
+    }
 });
 
 export default chatRouter;

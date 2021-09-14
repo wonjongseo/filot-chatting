@@ -8,6 +8,7 @@ export const home = async (req, res) => {
     const users = await User.find({});
     res.status(200).json(users);
 };
+
 export const postJoin = async (req, res) => {
     const {username, password, confirmpassword, name, phone_number} = req.body;
     // 입력한 두 비밀번호가 다르면 사용자 에러
@@ -176,7 +177,6 @@ export const postMyProfile = async (req, res, next) => {
 export const getFriendsList = async (req, res, next) => {
     const {id} = req;
 
-    //{ ‘name’, ‘state’, ‘phone_number’, ’role’, ‘github’, ’email’ }] to front
     const users = await User.find({
         id: {
             $ne: id,

@@ -40,12 +40,11 @@ app.use((req, res, next) => {
 //마지노선 에러 처리
 app.use((error, req, res, next) => {
     console.error(error);
-    res.status(500).json({massage: "Sorry try later :("});
+    res.status(500).json({massage: "Sorry try later"});
 });
 
 const httpServer = http.createServer(app);
 pugTest(httpServer);
-// chatting(httpServer);
 
 httpServer.listen(config.host.port, () => {
     console.log(`Server is Listening on http://localhost:${config.host.port}`);
