@@ -191,6 +191,7 @@ class _Chatting extends State<Chatting>{
         title: Text(friendObj.getName()),
         primary: true,
         actions: <Widget>[
+          IconButton(onPressed: (){Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);}, icon: Icon(Icons.view_headline_sharp,size: 30,)),
           IconButton(onPressed: (){Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);}, icon: Icon(Icons.home,size: 30,))
         ],
       ),
