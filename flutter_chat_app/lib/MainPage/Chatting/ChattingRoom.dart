@@ -276,6 +276,7 @@ class _Chatting extends State<Chatting>{
   void dispose(){
     socket.emit("room_num", "room out!!!");
     socket.dispose();
+    super.dispose();
   }
 /*--------------------------------------------------*/
 }
