@@ -15,7 +15,7 @@ class ServerData {
   static bool JHtest = false;
   static final Map<String,String> ApiList = /// <My Use Key, value of api key>
   {
-    '/chat' : (JHtest ? '' : '/'),
+    '/chat' : (JHtest ? '' : '/chat'),
     '/rooms' : (JHtest ? '' : '/chat/rooms'),
     '/login' : (JHtest ? '' : '/users/login'),
     '/join': (JHtest ? '' : '/users/join'),

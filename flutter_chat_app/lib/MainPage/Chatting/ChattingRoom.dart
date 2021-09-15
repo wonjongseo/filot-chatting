@@ -19,7 +19,7 @@ class _Chatting extends State<Chatting>{
 
   /*------------------ 변수 선언 구문 ------------------*/
   /// 소켓 접속을 위한 api
-  final _socket_api = ServerData.api + (ServerData.ApiList['/chat'] as String); //ServerData.api + '/see'; //10.0.2.2
+  final _socket_api = ServerData.api + "/"; //ServerData.api + '/see'; //10.0.2.2
 
   /// socket 변수 생성
   late IO.Socket socket;
