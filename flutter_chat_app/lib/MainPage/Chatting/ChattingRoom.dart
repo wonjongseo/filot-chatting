@@ -190,10 +190,7 @@ class _Chatting extends State<Chatting>{
       appBar: AppBar(
         title: Text(friendObj.getName()),
         primary: true,
-        actions: <Widget>[
-          IconButton(onPressed: (){Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);}, icon: Icon(Icons.view_headline_sharp,size: 30,)),
-          IconButton(onPressed: (){Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);}, icon: Icon(Icons.home,size: 30,))
-        ],
+        leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back,size: 30,)),
       ),
       backgroundColor: Colors.white,
       body: Column(
@@ -210,6 +207,37 @@ class _Chatting extends State<Chatting>{
           ),
           _SendTextForm(),
         ],
+      ),
+      endDrawer: Drawer(
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Wrap(
+                children: [
+                  IconButton(onPressed: (){Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);}, icon: Icon(Icons.home,size: 30,))
+                ],
+              ),
+            ),
+            ListTile(
+              title: const Text('Item 1'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Item 2'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+
       ),
     );
   }
