@@ -272,5 +272,10 @@ class _Chatting extends State<Chatting>{
       _messageList.clear();
     });
   }
+  @override
+  void dispose(){
+    socket.emit("room_num", "room out!!!");
+    socket.dispose();
+  }
 /*--------------------------------------------------*/
 }
