@@ -232,8 +232,7 @@ class _ChatList extends State<ChatList> {
     }
     var data;
     try {
-      data = jsonDecode(response.body)['rooms'];
-      print(data);
+      data = jsonDecode(response.body);
       for (var item in data) {
         _Rooms.add(new _roomData(item));
       }
@@ -272,10 +271,14 @@ class _roomData{
     }
     else {
       var data = jsonObj;
+      print(0);
+      print(data);
       roomNumber = data[ServerData.KeyList['room']];
       var usersList = data[ServerData.KeyList['user']] as List;
       var chats = data[ServerData.KeyList['chat']] as List;
       //lastChat = chats.last[ServerData.KeyList['msg']] as String;
+      print(1);
+      print(usersList);
       for(var item in usersList){
         print(item);
         FrinedsData temp = new FrinedsData(item);
