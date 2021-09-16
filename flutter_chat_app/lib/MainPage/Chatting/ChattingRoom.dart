@@ -58,7 +58,7 @@ class _Chatting extends State<Chatting>{
   ScrollController _scrollController = new ScrollController();
 
   String _sendText = '';
-
+  String title = 'Hello';
   /// 기기 사이즈를 받고, 비율을 지정
   var _rateHeight,_rateWidth;
   var deviceHeight, deviceWidth;
@@ -247,7 +247,7 @@ class _Chatting extends State<Chatting>{
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text(friendObj.getName()),
+        title: Text(title),
         primary: true,
         leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back,size: 30,)),
       ),
@@ -492,7 +492,13 @@ class _Chatting extends State<Chatting>{
     // 'username'
     var item;
     List<String> _tempList = [_myData.getName()];
-    _frinedsList.forEach((element) {_tempList.add(element.getName());});
+    title = '';
+    bool flag = _frinedsList.length == 1;
+    _frinedsList.forEach((element) {
+      String name = element.getName();
+      _tempList.add(name);
+      title = flag ? name : title + ', ' + name;
+    });
 
     _tempList.sort();
     roomNum = '';
