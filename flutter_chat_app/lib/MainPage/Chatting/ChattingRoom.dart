@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/MainPage/MyProfile/MyProfile.dart';
+import 'package:flutter_chat_app/MainPage/PopUps/AddUserInChat.dart';
 import 'package:flutter_chat_app/data/FrinedsData.dart';
 import 'package:flutter_chat_app/data/MyData.dart';
 import 'package:flutter_chat_app/data/ProfileData.dart';
@@ -314,6 +315,7 @@ class _Chatting extends State<Chatting>{
                       /// [여기에 있는 친구 obj-> null일 수 있음, 추가할 친구 명]
                       /// 받은 곳에서는 먼저 친구 리스트에 친구 데이터를 추가한다. ( not null)
                       /// 서버에 친구 객체를 요청 및 생성 후 방 생성
+                      AddUserInChat(context: context, invite_friends: _frinedsList).popUp();
                     },
                   ),
                   Divider(),

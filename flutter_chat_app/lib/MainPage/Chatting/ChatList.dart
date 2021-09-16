@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_chat_app/MainPage/Chatting/ChattingRoom.dart';
+import 'package:flutter_chat_app/MainPage/PopUps/AddUserInChat.dart';
 import 'package:flutter_chat_app/data/FrinedsData.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_chat_app/data/ServerData.dart';
@@ -189,6 +190,13 @@ class _ChatList extends State<ChatList> {
             ),
           )
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          AddUserInChat(context: context).popUp();
+        },
+        child: const Icon(Icons.add),
+        backgroundColor: Colors.blueAccent,
       ),
     );
   }
