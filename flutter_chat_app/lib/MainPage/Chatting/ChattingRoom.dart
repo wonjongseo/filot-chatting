@@ -338,7 +338,6 @@ class _Chatting extends State<Chatting>{
                           Divider(),
                           Row(
                             children: [
-                              //IconButton(onPressed: (){Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);}, icon: Icon(Icons.add_circle_outline_outlined,size: 25,color: Colors.blue,)),
                               IconButton(onPressed: (){Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);}, icon: Icon(Icons.home,size: 25,color: Colors.blue,))
                             ],
                             mainAxisAlignment: MainAxisAlignment.end,
