@@ -79,7 +79,6 @@ class AddUserInChat {
     );
   }
   void popUp(){
-    bool flag = true;
     showDialog(
       context: context,
       barrierDismissible: true,
