@@ -2,10 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/MainPage/MyProfile/MyProfile.dart';
 import 'package:flutter_chat_app/data/FrinedsData.dart';
 import 'package:flutter_chat_app/data/MyData.dart';
+import 'package:flutter_chat_app/data/ProfileData.dart';
 import 'package:flutter_chat_app/data/ServerData.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:url_launcher/url_launcher.dart';
 
 class Chatting extends StatefulWidget{
 
@@ -15,6 +18,11 @@ class Chatting extends StatefulWidget{
   @override
   State<StatefulWidget> createState() => _Chatting(friendsObjs);
 }
+
+String icon_path = 'image/teamIcon.png';
+String github_outline_path = 'image/github_outline.png';
+String github_path = 'image/github_outline.png';
+
 class _Chatting extends State<Chatting>{
 
   /*------------------ 변수 선언 구문 ------------------*/
@@ -36,6 +44,14 @@ class _Chatting extends State<Chatting>{
   /// 메시지에 대한 리스트, 이 순서대로 레이아웃이 펼쳐진다.
   List _messageList = [];
 
+  /// UI용 Icon List
+  Map<String,Widget> _IconList = {
+    "Github":FittedBox(child: Image.asset(github_path,fit: BoxFit.fitHeight,color: Colors.white,),fit: BoxFit.fill,),
+    "Email":Icon(Icons.mail,color: Colors.white,),
+    "Phone":Icon(Icons.smartphone,color: Colors.white,),
+    "Chat":Icon(Icons.chat_bubble,color: Colors.white,),
+  };
+
   /// 텍스트 controller와 화면을 scroll 할 수 있는 controller
   TextEditingController _textController = new TextEditingController();
   ScrollController _scrollController = new ScrollController();
@@ -44,6 +60,7 @@ class _Chatting extends State<Chatting>{
 
   /// 기기 사이즈를 받고, 비율을 지정
   var _rateHeight,_rateWidth;
+  var deviceHeight, deviceWidth;
   /*--------------------------------------------------*/
 
   /*------------------ 위젯 생성 메서드 구문 ------------------*/
@@ -112,6 +129,45 @@ class _Chatting extends State<Chatting>{
         padding: EdgeInsets.fromLTRB(3, 4, 2, 3),
       );
     }
+  }
+
+  Widget _addUser(UserData item){
+    var userObj = item;
+    var _rateHeight = this._rateHeight + 3;
+    return Container(
+      width: double.infinity,
+      alignment: Alignment.centerLeft,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            width: _rateHeight * 5,
+            height: _rateHeight * 5,
+            child: Image.asset(userObj.getImage(), fit: BoxFit.fill,),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(
+                color: Colors.black12,
+                width: 1,
+              ),
+              borderRadius: const BorderRadius.all(
+                  const Radius.circular(100)),
+            ),
+            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+          ),
+          Padding(padding: EdgeInsets.fromLTRB(0, 0, 5, 0),),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(const Radius.circular(5)),
+            ),
+            child: Text(
+              item.getName(), style: TextStyle(color: Colors.black87, fontSize: 15,fontWeight: FontWeight.bold),),
+            padding: EdgeInsets.all(8),
+          )
+        ],
+      ),
+      padding: EdgeInsets.fromLTRB(3, 4, 2, 3),
+    );
   }
 
   /// 하단 텍스트 입력 란을 만드는 메서드
@@ -183,8 +239,10 @@ class _Chatting extends State<Chatting>{
 
   @override /// 실제 화면을 build하는 메소드
   Widget build(BuildContext context) {
-    _rateHeight = MediaQuery.of(context).size.height / 100;
-    _rateWidth = MediaQuery.of(context).size.width / 100;
+    deviceHeight = MediaQuery.of(context).size.height;
+    deviceWidth = MediaQuery.of(context).size.width;
+    _rateHeight = deviceHeight/ 100;
+    _rateWidth = deviceWidth / 100;
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
@@ -209,36 +267,211 @@ class _Chatting extends State<Chatting>{
         ],
       ),
       endDrawer: Drawer(
-        child: ListView(
+        child: Container(
           // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
+          child: Column(
+            children: [
+              UserAccountsDrawerHeader(
+                decoration: BoxDecoration(
+                    color: Colors.blue[300],
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(40),
+                      bottomRight: Radius.circular(40),
+                    )),
+                margin: EdgeInsets.zero,
+                accountEmail: Text(_myData.getEmail()),
+                accountName: Text(_myData.getName()),
+                currentAccountPicture: Container(
+                    width: _rateWidth*30,
+                    height: _rateWidth*30,
+                    child: Image.asset(_myData.getImage(), fit: BoxFit.fill,),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        color: Colors.black12,
+                        width: 1,
+                      ),
+                      borderRadius: const BorderRadius.all(const Radius.circular(100)),
+                    )
+                ),
               ),
-              child: Wrap(
+              Expanded(child: Column(
                 children: [
-                  IconButton(onPressed: (){Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);}, icon: Icon(Icons.home,size: 30,))
+                  ListTile(
+                    title: Center(
+                      child: Row(
+                        children: [
+                          Icon(Icons.add_circle_outline_outlined,size: 25,color: Colors.blue,),
+                          Padding(padding: EdgeInsets.all(3)),
+                          Text("대화 상대 추가하기"),
+                        ],
+                      ),
+                    ),
+                    onTap: () {
+                      /// 여기에 따로 클래스 만들어
+                      /// 팝업 만들거,> 대화상대 추가하는 기능
+                      /// 이 때, 필요한 것은 친구 데이터를 같이 넘기는 것이 중요!
+                      /// [여기에 있는 친구 obj-> null일 수 있음, 추가할 친구 명]
+                      /// 받은 곳에서는 먼저 친구 리스트에 친구 데이터를 추가한다. ( not null)
+                      /// 서버에 친구 객체를 요청 및 생성 후 방 생성
+                    },
+                  ),
+                  Divider(),
+                  ListTile(
+                    title: _addUser(_myData),
+                  ),
+                  Divider(),
+                  for(var item in _frinedsList)
+                    ListTile(
+                      title: _addUser(item),
+                      onTap: () {
+                        _frinedPopup(item);
+                      },
+                    ),
                 ],
-              ),
-            ),
-            ListTile(
-              title: const Text('Item 1'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Item 2'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
+              )),
+              Container(
+                  child: Align(
+                      alignment: FractionalOffset.bottomRight,
+                      child: Column(
+                        children: <Widget>[
+                          Divider(),
+                          Row(
+                            children: [
+                              //IconButton(onPressed: (){Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);}, icon: Icon(Icons.add_circle_outline_outlined,size: 25,color: Colors.blue,)),
+                              IconButton(onPressed: (){Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);}, icon: Icon(Icons.home,size: 25,color: Colors.blue,))
+                            ],
+                            mainAxisAlignment: MainAxisAlignment.end,
+                          )
+                        ],
+                      ))),
+            ],
+          )
+
         ),
 
       ),
+    );
+  }
+  void _frinedPopup(FrinedsData UserObj){
+    double _nameSize;
+    double _paddingSize,_iconSize;
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Container(child: IconButton(icon: Icon(Icons.clear), onPressed: () { Navigator.of(context).pop(); },color: Colors.white,), alignment: Alignment.topLeft,),
+          content: Container(
+            width: deviceWidth,
+            height: _rateHeight*90,
+            alignment: Alignment.topCenter,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Container(
+                    width: _rateWidth*30,
+                    height: _rateWidth*30,
+                    child: Image.asset(icon_path, fit: BoxFit.fill,),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        color: Colors.black12,
+                        width: 1,
+                      ),
+                      borderRadius: const BorderRadius.all(const Radius.circular(100)),
+                    )
+                ),
+                Padding(padding: EdgeInsets.all(8),),
+                Container(
+                  child: Center(child: Text(UserObj.getName(),style: TextStyle(color: Colors.white,fontSize: (_nameSize = 17),fontWeight: FontWeight.bold),),),
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  height: _nameSize*2,
+                  width: _nameSize*5,
+                ),
+                Padding(padding: EdgeInsets.all(5),),
+                Text(UserObj.getRole(),style: TextStyle(color: Colors.white,fontSize: (_nameSize = 15),),),
+                Divider(color: Colors.white.withOpacity(1),thickness: 1,height: 50,),
+                Container(
+                  width: double.infinity,
+                  height: 70,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Container(
+                        height: 70,
+                        child: GestureDetector(
+                          child: Center(child: Column(
+                            children: [
+                              Container(child: _IconList["Github"], height: (_iconSize=50),),
+                              Text("Github",style: TextStyle(color: Colors.white),),
+                            ],
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                          ),),
+                          onTap: (){_launchURL(UserObj.getGithub());},
+                        ),
+                      ),
+                      Padding(padding: EdgeInsets.all((_paddingSize=_rateWidth*5)),),
+                      Container(
+                        height: 70,
+                        child: GestureDetector(
+                          child: Center(child: Column(
+                            children: [
+                              Container(child: _IconList["Email"], height: _iconSize,),
+                              Text("Email",style: TextStyle(color: Colors.white),),
+                            ],
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                          ),),
+                          onTap: (){_launchMail(UserObj.getEmail());},
+                        ),
+                      ),
+                      Padding(padding: EdgeInsets.all(_paddingSize),),
+                      Container(
+                        height: 70,
+                        child: GestureDetector(
+                          child: Center(child: Column(
+                            children: [
+                              Container(child: _IconList["Phone"], height: _iconSize,),
+                              Text("Phone",style: TextStyle(color: Colors.white),),
+                            ],
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                          ),),
+                          onTap: (){_launchPhone(UserObj.getPhone());},
+                        ),
+                      ),
+                      Padding(padding: EdgeInsets.all(_paddingSize),),
+                      Container(
+                        height: 70,
+                        child: GestureDetector(
+                          child: Center(child: Column(
+                            children: [
+                              Container(child: _IconList["Chat"], height: _iconSize,),
+                              Text("Talk",style: TextStyle(color: Colors.white),),
+                            ],
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                          ),),
+                          onTap: (){Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>Chatting(friendsObjs: [UserObj])));},
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(padding: EdgeInsets.all(10),),
+              ],
+            ),
+          ),
+          backgroundColor: Colors.transparent.withOpacity(0),
+
+        );
+      },
     );
   }
   /*--------------------------------------------------*/
@@ -305,6 +538,29 @@ class _Chatting extends State<Chatting>{
     socket.emit("room_num", "room out!!!");
     socket.dispose();
     super.dispose();
+  }
+
+  /** 각각의 정보 (github, mail, phone)을 실제 브라우저, 메일, 전화로 연결해줌 **/
+  _launchURL(url) async {
+    try {
+      await launch(url, forceSafariVC: true, forceWebView: true);
+    }catch(e){
+      print(e.toString());
+    }
+  }
+  _launchMail(mail) async{
+    try {
+      await launch("mailto:$mail");
+    }catch(e){
+      print(e.toString());
+    }
+  }
+  _launchPhone(phoneNum) async{
+    try {
+      await launch("tel:$phoneNum");
+    }catch(e){
+      print(e.toString());
+    }
   }
 /*--------------------------------------------------*/
 }
