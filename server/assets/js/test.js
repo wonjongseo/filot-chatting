@@ -1,4 +1,6 @@
 import SocketIO from "socket.io";
+import ChatsRoom from "../../src/models/ChatingRoom";
+import User from "../../src/models/User";
 import {addUser} from "../../src/controller/chatController";
 import {
     createChat,
@@ -11,11 +13,11 @@ export const pugTest = (server) => {
         cors: {
             origin: "*",
         },
-        // allowEIO3: true,
-        // requestCert: true,
-        // secure: true,
-        // rejectUnauthorized: false,
-        // transports: ["websocket"],
+        allowEIO3: true,
+        requestCert: true,
+        secure: true,
+        rejectUnauthorized: false,
+        transports: ["websocket"],
     });
 
     function countRoom(roomName) {
@@ -29,14 +31,26 @@ export const pugTest = (server) => {
         socket.onAny((event) => console.log(`Socket Event: ${event}`));
 
         socket.on("enter_room", async (roomInfo) => {
-            const {roomNum, createRoom} = await createChattingRoom(roomInfo);
-            socket["roomNum"] = roomNum;
+            const objData = JSON.parse(roomInfo);
+            const {createRoom, roomNum} = await createChattingRoom(objData);
+
             socket.join(roomNum);
+
             var {chats} = await importChatting(createRoom);
             chats = JSON.stringify(chats);
+            console.log(chats);
             io.sockets.to(roomNum).emit("load-message", chats);
             // done();
             socket.to(roomNum).emit("del");
+
+            // const {roomNum, createRoom} = await createChattingRoom(roomInfo);
+            // socket["roomNum"] = roomNum;
+            // socket.join(roomNum);
+            // // var {chats} = await importChatting(createRoom);
+            // chats = JSON.stringify(chats);
+            // io.sockets.to(roomNum).emit("load-message", chats);
+            // // done();
+            // socket.to(roomNum).emit("del");
         });
 
         socket.on("add_user", async (data) => {
@@ -47,6 +61,7 @@ export const pugTest = (server) => {
         });
 
         socket.on("message", (messageInfo) => {
+            console.log(socket.adapter.rooms);
             createChat(messageInfo);
             socket.to(messageInfo.roomNum).emit("message", messageInfo);
         });

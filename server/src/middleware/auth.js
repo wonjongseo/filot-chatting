@@ -9,7 +9,6 @@ export const isAuth = async (req, res, next) => {
     if (!token) {
         return res.status(401).json(AUTH_ERROR);
     }
-    console.log(`token in middleware ${token}`);
     jwt.verify(token, config.jwt.secretKey, async (error, decoded) => {
         if (error) {
             return res.status(401).json(AUTH_ERROR);
@@ -20,7 +19,6 @@ export const isAuth = async (req, res, next) => {
             return res.status(401).json(AUTH_ERROR);
         }
         req.id = user.id;
-        // req.headers.token = token;
         next();
     });
 };

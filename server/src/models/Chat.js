@@ -1,3 +1,4 @@
+// ㅇㅋ
 import mongoose from "mongoose";
 
 //데이터 형식을 지정해준다.

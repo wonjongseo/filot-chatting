@@ -4,30 +4,25 @@ import jwt from "jsonwebtoken";
 import {config} from "../config";
 
 export const home = async (req, res) => {
-    // db에서 모든 유저 가져옴
     const users = await User.find({});
     res.status(200).json(users);
 };
 
 export const postJoin = async (req, res) => {
     const {username, password, confirmpassword, name, phone_number} = req.body;
-    // 입력한 두 비밀번호가 다르면 사용자 에러
-    // console.log(username, password, confirmpassword, name, phone_number);
-    console.log(username, password, confirmpassword, name, phone_number);
 
     if (password != confirmpassword) {
         return res.status(409).json({message: "비밀번호가 틀립니다"});
     }
-    const existUser = await User.exists({id: username});
-    // 이미 존재하는 id라면 사용자 에러
-    if (existUser) {
+    const existingUser = await User.exists({id: username});
+
+    if (existingUser) {
         return res
             .status(409)
             .json({message: "아이디 혹은 닉넴이이 이미 사용중입니다."});
     }
     const newPassword = await bcrypt.hash(password, config.bcrypt.salt);
     try {
-        // db안에 유저 생성
         const user = await User.create({
             id: username,
             password: newPassword,
@@ -40,7 +35,6 @@ export const postJoin = async (req, res) => {
         return res.status(200).json(token);
     } catch (error) {
         console.error(error);
-        // db에러 잡음
         res.json({message: error});
     }
 };
@@ -50,13 +44,13 @@ export const postLogin = async (req, res, next) => {
     const user = await User.findOne({id: username});
     // 없으면 사용자 에러
     if (!user) {
-        return res.status(401).json({errorMessage: "없는 아이디입니다."});
+        return res.status(401).json({message: "없는 아이디입니다."});
     }
     // 비밀번호 확인
     const match = await bcrypt.compare(password, user.password);
 
     if (!match) {
-        return res.status(401).json({errorMessage: "비밀번호가 틀려요."});
+        return res.status(401).json({message: "비밀번호가 틀려요."});
     }
     const token = createJwt(user.id);
     req.headers.token = token;
@@ -65,9 +59,11 @@ export const postLogin = async (req, res, next) => {
 
 export const changePassword = async (req, res, next) => {
     const {
-        user: {user},
+        id,
         body: {password, new_password, new_password_confirmation},
     } = req;
+
+    const user = await User.findById({id});
     // const user = await User.findOne({id: loggedIn});
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
@@ -187,6 +183,7 @@ export const getFriendsList = async (req, res, next) => {
     return res.status(200).json(users);
 };
 
+//OK
 const createJwt = (id) => {
     return jwt.sign({id}, config.jwt.secretKey, {
         expiresIn: config.jwt.expireInSec,

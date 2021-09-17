@@ -38,33 +38,37 @@ export const addUser = async (data) => {
 // 서버쪽에서 유저와 방 정보에 대해 받음
 export const createChattingRoom = async (data) => {
     // json파일 java object로 변경
-    const objData = JSON.parse(data);
+    const {userList, roomNum} = data;
 
-    const {user1, user2, roomNum} = objData;
-    // 데이터 베이스에서 이미 있는 방인지 확인
     let createRoom = await ChatsRoom.findOne({roomNum});
 
-    const ChatUser1 = await User.findOne({name: user1});
-    const ChatUser2 = await User.findOne({name: user2});
+    if (createRoom) {
+        return {
+            createRoom,
+            roomNum,
+        };
+    }
+    createRoom = await ChatsRoom.create({roomNum});
+
+    userList.map(async (name, index) => {
+        const user = await User.findOne({name});
+        user.rooms.push(createRoom._id);
+        createRoom.user.push(user._id);
+        user.save();
+        if (index === userList.length - 1) {
+            await createRoom.save();
+        }
+    });
 
     if (createRoom) {
-        return {roomNum, ChatUser1, ChatUser2, createRoom};
+        return {
+            createRoom,
+            roomNum,
+        };
     }
-
-    // 새로 만들어진 방이라면, 방과 유저 결합
-    createRoom = await ChatsRoom.create({roomNum, user: ChatUser1._id});
-
-    createRoom.user.push(ChatUser2._id);
-    createRoom.save();
-
-    ChatUser1.rooms.push(createRoom._id);
-    ChatUser2.rooms.push(createRoom._id);
-    ChatUser1.save();
-    ChatUser2.save();
-
-    return {roomNum, ChatUser1, ChatUser2, createRoom};
 };
 export const importChatting = async (createRoom) => {
+    console.log(`createRoom : ${createRoom}`);
     return ChatsRoom.findOne({roomNum: createRoom.roomNum})
         .select("-_id")
         .populate({
@@ -82,14 +86,17 @@ export const parsingChats = (chat) => {
 };
 
 export const createChat = async (data) => {
-    const {name: user, message, roomNum} = data;
-    const room = await ChatsRoom.findOne({roomNum});
+    const objData = JSON.parse(data);
 
+    const {user, message, roomNum} = objData;
+    const room = await ChatsRoom.findOne({roomNum});
+    console.log(room);
     const dbChat = await Chat.create({
         chatRoom: room._id,
         message,
         user,
     });
+    console.log(dbChat);
     room.chats.push(dbChat._id);
     room.save();
 };
@@ -104,9 +111,12 @@ export const getChatsRommList = async (req, res, next) => {
             select: "roomNum -_id createdAt",
             populate: {
                 path: "user",
-                select: "name -_id",
+                select: "-password -_id",
             },
         });
-
-    return res.json(roomList1);
+    const roomList = await ChatsRoom.find({}).select("-_id").populate({
+        path: "user",
+        select: "-id -password -rooms",
+    });
+    return res.json(roomList);
 };

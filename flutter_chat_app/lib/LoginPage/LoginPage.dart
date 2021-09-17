@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+//import 'package:client_cookie/client_cookie.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/LoginPage/FindClientInfo.dart';
@@ -80,7 +81,7 @@ class _LoginPage extends State<LoginPage>{
 
   /// 서버와 api 통신을 위한 메소드, 로그인을 수행함
   void _login(id, pwd) async{
-    if(id == "admin" && pwd == "admin") {
+    /*if(id == "admin" && pwd == "admin") {
       // check Login Administrator
       try {
         myData.setToken("admin");
@@ -90,7 +91,7 @@ class _LoginPage extends State<LoginPage>{
       }
       Navigator.of(context).pushReplacementNamed('/main');
       return;
-    }
+    }*/
     final response = await http.post(
       Uri.parse(_Login_api),
       body: jsonEncode(
@@ -106,6 +107,7 @@ class _LoginPage extends State<LoginPage>{
       // check Login Success and return
       try {
         var token = jsonDecode(response.body)[ServerData.KeyList['token']] as String;
+        /*var cookie = new ClientCookie("token", token, new DateTime.now());*/
         myData.setToken(token);
       }
       catch(e){

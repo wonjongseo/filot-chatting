@@ -1,3 +1,5 @@
+// OK
+
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
@@ -11,8 +13,6 @@ const userSchema = new mongoose.Schema({
     github: {type: String, default: "null"},
     email: {type: String, default: "null"},
 });
-
-// 회원가입하기 전 해쉬화
 
 const User = mongoose.model("User", userSchema);
 
