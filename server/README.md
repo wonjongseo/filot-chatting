@@ -1,5 +1,6 @@
 # FILOT
 
+<<<<<<< HEAD
 # TODO
 
 1.  status code
@@ -9,6 +10,13 @@
 ## join
 
 -   hash[x]
+=======
+### 7/29
+
+## 회원가입 구현
+
+-   해쉬화[x]
+>>>>>>> 755b9de241b3015781b8351b48219a83f07d6d87
 
 ## 로그인 구현
 
@@ -19,7 +27,11 @@
 -   Users [x]
 -   Chats []
 
+<<<<<<< HEAD
 ## find user
+=======
+## 유저 찾기 구현
+>>>>>>> 755b9de241b3015781b8351b48219a83f07d6d87
 
 ### 7/30
 
@@ -32,6 +44,7 @@
 ## user-change-profile [x]
 
 ## user-change-password [x]
+<<<<<<< HEAD
 
 ## jwt id -> user [x]
 
@@ -40,3 +53,5 @@
 ### 7/31
 
 ## socket.io []
+=======
+>>>>>>> 755b9de241b3015781b8351b48219a83f07d6d87

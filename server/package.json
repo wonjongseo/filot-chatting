@@ -5,14 +5,21 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
+<<<<<<< HEAD
         "start": "nodemon --exec babel-node src/init.js --delay 1s",
         "port": "lsof -i :3002"
+=======
+        "start": "nodemon --exec babel-node src/init.js"
+>>>>>>> 755b9de241b3015781b8351b48219a83f07d6d87
     },
     "author": "jongseo",
     "license": "ISC",
     "dependencies": {
+<<<<<<< HEAD
         "@socket.io/admin-ui": "^0.2.0",
         "axios": "^0.21.1",
+=======
+>>>>>>> 755b9de241b3015781b8351b48219a83f07d6d87
         "bcrypt": "^5.0.1",
         "cors": "^2.8.5",
         "dotenv": "^10.0.0",
@@ -23,9 +30,13 @@
         "helmet": "^4.6.0",
         "jsonwebtoken": "^8.5.1",
         "mongoose": "^5.13.3",
+<<<<<<< HEAD
         "pug": "^3.0.2",
         "socket.io": "^4.1.3",
         "socket.io-client": "^4.1.3"
+=======
+        "pug": "^3.0.2"
+>>>>>>> 755b9de241b3015781b8351b48219a83f07d6d87
     },
     "devDependencies": {
         "@babel/core": "^7.14.8",

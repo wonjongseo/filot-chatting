@@ -12,10 +12,11 @@ import 'package:http/http.dart' as http;
 
 String icon_path = 'image/teamIcon.png';
 
-class LoginPage extends StatefulWidget{
+class LoginPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _LoginPage();
 }
+<<<<<<< HEAD:flutter_chat_app/lib/LoginPage/LoginPage.dart
 class _LoginPage extends State<LoginPage>{
 
   /// 로그인 api
@@ -35,21 +36,36 @@ class _LoginPage extends State<LoginPage>{
 
   /// 버튼을 생성하는 메소드, 위 _buttonList에서 텍스트를 받아와서 버튼을 생성한다.
   TextButton _makeTextButton(int index){
+=======
+
+class _LoginPage extends State<LoginPage> {
+  String _Login_api = "http://localhost:9999/login";
+  TextEditingController value1 = TextEditingController();
+  TextEditingController value2 = TextEditingController();
+  String ID = '', Password = '';
+  var sum = '0';
+
+  List _buttonList = ['아이디 또는 비밀번호 찾기', '회원가입하기', '회원 정보 조회'];
+  List _TextFormList = ['아이디', '비밀번호'];
+
+  TextButton _makeTextButton(int index) {
+>>>>>>> 755b9de241b3015781b8351b48219a83f07d6d87:flutter_chat_app/lib/LoginPage.dart
     return TextButton(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(_buttonList[index],
+          Text(
+            _buttonList[index],
             style: TextStyle(
                 fontFamily: 'bmjua',
                 fontSize: 16,
                 fontWeight: FontWeight.normal,
-                color: Colors.black87
-            ),
+                color: Colors.black87),
           ),
         ],
       ),
       onPressed: () {
+<<<<<<< HEAD:flutter_chat_app/lib/LoginPage/LoginPage.dart
         if(index == 0)
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => FindClientInfo()));
@@ -59,12 +75,24 @@ class _LoginPage extends State<LoginPage>{
         else if(index == 2)
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => InfoCheck()));
+=======
+        if (index == 0)
+          Navigator.of(context).pushReplacementNamed('/findclientinfo');
+        else if (index == 1)
+          Navigator.of(context).pushReplacementNamed('/join');
+        else if (index == 2)
+          Navigator.of(context).pushReplacementNamed('/checkinfo');
+>>>>>>> 755b9de241b3015781b8351b48219a83f07d6d87:flutter_chat_app/lib/LoginPage.dart
       },
     );
   }
 
+<<<<<<< HEAD:flutter_chat_app/lib/LoginPage/LoginPage.dart
   /// 입력필드를 생성하는 메소드, 위 _TextFormList의 요소를 받아와서 입력 form을 생성한다.
   TextFormField _makeTextFormField(int index, bool obscure){
+=======
+  TextFormField _makeTextFormField(int index, bool obscure) {
+>>>>>>> 755b9de241b3015781b8351b48219a83f07d6d87:flutter_chat_app/lib/LoginPage.dart
     return TextFormField(
       controller: index.isEven ? value1 : value2,
       keyboardType: TextInputType.text,
@@ -74,8 +102,7 @@ class _LoginPage extends State<LoginPage>{
           labelStyle: TextStyle(
             fontFamily: 'bmjua',
             fontSize: 14,
-          )
-      ),
+          )),
     );
   }
 
@@ -151,12 +178,11 @@ class _LoginPage extends State<LoginPage>{
       appBar: AppBar(
         title: Text("Login Page"),
       ),
-
       body: Center(
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget> [
+            children: <Widget>[
               Text("FILOT",
                   style: TextStyle(
                     fontFamily: 'bmjua',
@@ -168,21 +194,19 @@ class _LoginPage extends State<LoginPage>{
                 padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
                 child: Column(
                   children: <Widget>[
-                    _makeTextFormField(0,false),
-                    _makeTextFormField(1,true),
+                    _makeTextFormField(0, false),
+                    _makeTextFormField(1, true),
                   ],
                 ),
               ),
               ElevatedButton(
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Text("Login")
-                    ],
+                    children: <Widget>[Text("Login")],
                   ),
                   style: ElevatedButton.styleFrom(
                     onPrimary: Colors.white60,
-                    padding: EdgeInsets.fromLTRB(80,0,80,0),
+                    padding: EdgeInsets.fromLTRB(80, 0, 80, 0),
                   ),
                   onPressed: () {
                     print('pressed');
@@ -200,8 +224,6 @@ class _LoginPage extends State<LoginPage>{
               _makeTextButton(0),
               _makeTextButton(1),
               _makeTextButton(2),
-
-
             ],
           ),
         ),
@@ -209,4 +231,49 @@ class _LoginPage extends State<LoginPage>{
     );
   }
 
+<<<<<<< HEAD:flutter_chat_app/lib/LoginPage/LoginPage.dart
+=======
+  void _login(id, pwd) async {
+    final response = await http.post(
+      Uri.parse(_Login_api),
+      body: jsonEncode(
+        {
+          'id': id,
+          'pwd': pwd,
+        },
+      ),
+      headers: {'Content-Type': "application/json"},
+    );
+
+    if (response.statusCode == 200) {
+      // check Login Success and return
+      Navigator.of(context).pushReplacementNamed('/main');
+      return;
+    }
+
+    // login failed, and popup Failed
+    _errorPopup("아이디 또는 비밀번호를 확인해 주세요", "로그인 실패!");
+  }
+
+  void _errorPopup(String text, [String? title]) {
+    if (title == null) title = "Error!";
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text(title!),
+          content: new Text(text),
+          actions: <Widget>[
+            ElevatedButton(
+                child: Text("확인"),
+                onPressed: () {
+                  Navigator.pop(context);
+                }),
+          ],
+        );
+      },
+    );
+  }
+>>>>>>> 755b9de241b3015781b8351b48219a83f07d6d87:flutter_chat_app/lib/LoginPage.dart
 }
