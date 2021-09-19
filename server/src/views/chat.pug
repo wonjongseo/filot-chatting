@@ -1,0 +1,56 @@
+
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        //- link(rel="stylesheet" href="https://unpkg.com/mvp.css")
+        link(rel='stylesheet', href='/static/js/index.css')
+        link(rel='stylesheet', href='/static/js/reset.css')
+        
+        title Document
+    body
+        div  
+            h3#username Test Chat Page  
+            form#addUser
+                input(value="duck" placeholder="username" required, type="text")
+                button Enter Room
+
+
+        main
+            
+            div#welcome
+                form
+                    input#roomName(value="ABC" placeholder="room name" required, type="text")
+                    input#user1( placeholder="user1 name"  required, type="text" value="won")
+                    input#user2( placeholder="user2 name"  required, type="text" value="chan")
+                    button Enter Room
+                //- test
+                //- div#_msgContainer.my_name.user2_chat
+                //-     span#_readMe.readMe 1
+                //-     span#_msgSpan.my_message
+                //-         | Hi
+                //- div#__Container.container
+                //-     img(src="/static/js/anon.png").avatar#avatar
+                //-     div.user1_chat
+                //-         div#__userContainer.your_name
+                //-             span#__userSpan.user2__name
+                //-                 | 오호준
+                //-         div#__msgContainer
+                //-             span#__msgSpan.your_message
+                //-                 | 메세지
+                    
+            div#hello
+            div#room
+                h1 
+                h3
+                ul 
+                form#msg
+                    input(placeholder="message" required, type="text")
+                    button 전송
+            div#chat
+              
+            
+        script(src="/socket.io/socket.io.js") 
+        script(src="/static/js/chat.js") 
