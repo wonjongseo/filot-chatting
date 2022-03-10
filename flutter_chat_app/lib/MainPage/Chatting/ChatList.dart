@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_chat_app/MainPage/Chatting/ChattingRoom.dart';
+import 'package:flutter_chat_app/MainPage/PopUps/AddUserInChat.dart';
 import 'package:flutter_chat_app/data/FrinedsData.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_chat_app/data/ServerData.dart';
@@ -190,6 +191,13 @@ class _ChatList extends State<ChatList> {
           )
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          AddUserInChat(context: context).popUp();
+        },
+        child: const Icon(Icons.add),
+        backgroundColor: Colors.blueAccent,
+      ),
     );
   }
   /*--------------------------------------------------*/
@@ -225,11 +233,10 @@ class _ChatList extends State<ChatList> {
     var data;
     try {
       data = jsonDecode(response.body);
-      for (var item in data)
+      for (var item in data) {
         _Rooms.add(new _roomData(item));
-      setState(() {
-
-      });
+      }
+      setState(() {});
 
     } catch (e) {
       print(e.toString());
@@ -264,11 +271,14 @@ class _roomData{
     }
     else {
       var data = jsonObj;
+      print(0);
       print(data);
       roomNumber = data[ServerData.KeyList['room']];
       var usersList = data[ServerData.KeyList['user']] as List;
       var chats = data[ServerData.KeyList['chat']] as List;
       //lastChat = chats.last[ServerData.KeyList['msg']] as String;
+      print(1);
+      print(usersList);
       for(var item in usersList){
         print(item);
         FrinedsData temp = new FrinedsData(item);

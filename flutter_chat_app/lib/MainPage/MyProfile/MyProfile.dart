@@ -521,7 +521,8 @@ class _MyProfile extends State<MyProfile> {
   void _updateState(int index) async {
     myData.setState(index);
     print(socket.connected);
-    if(socket.connected) {
+    //if(socket.connected)
+    {
       var item = jsonEncode({
         'name': myData.getName(), // name 전송 string
         'state': myData.getState(),

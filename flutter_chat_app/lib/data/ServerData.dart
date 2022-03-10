@@ -48,8 +48,9 @@ class ServerData {
     'enter_room' : 'enter_room',
     'load-message' : 'load-message',
   };
-  // static final api = (JHtest ? 'http://localhost:3000' : 'http://3.36.33.222:3000');
-static final api = (JHtest ? 'http://3.36.33.222:3000' : 'http://localhost:3000');
+  // static final api = (JHtest ? 'https//localhost:3000' : 'http://3.36.33.222:3000');
+  static final api = (JHtest ? 'http://localhost:3000' : 'http://localhost:3000');
+
   /// test용 json 객체
   static var adminItem = jsonEncode({
     ServerData.KeyList['name'] : "admin",

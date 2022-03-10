@@ -24,29 +24,4 @@ chatRouter.get("/all-chatroom", async (req, res, next) => {
     return res.json(allChatroom);
 });
 
-// chatRouter.get("/a", async (req, res, next) => {
-//     try {
-//         const {userList, roomNum} = req.body;
-//         let createRoom = await ChatsRoom.findOne({roomNum});
-//         if (createRoom) {
-//             return res.json({message: "existing roomNum"});
-//         }
-//         createRoom = await ChatsRoom.create({roomNum});
-//         userList.map(async ({name}, index) => {
-//             const user = await User.findOne({name});
-//             user.rooms.push(createRoom._id);
-//             createRoom.user.push(user._id);
-
-//             await user.save();
-
-//             if (index === userList.length - 1) {
-//                 await createRoom.save();
-//             }
-//         });
-//         return res.json({message: "success"});
-//     } catch (error) {
-//         return res.json({message: error});
-//     }
-// });
-
 export default chatRouter;

@@ -43,7 +43,7 @@ class _FriendsList extends State<FriendsList> {
   ScrollController _scrollController = new ScrollController();
 
   /// frineds list를 받아와 요소를 추가 & 현재 내 데이터를 로드
-  List<FrinedsData> _friends = [new FrinedsData(ServerData.adminItem)];
+  List<FrinedsData> _friends = [];
   MyData _mydata = myData;
 
   /// 친구의 현재 상태를 알리는 Color List, 각각 [ 연락 가능, 연락 불가, 연락 임시 가능 ]을 의미함

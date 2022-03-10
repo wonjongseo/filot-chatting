@@ -14,6 +14,7 @@ export const addUser = async (data) => {
     }
 
     const user = await User.findOne({name}).select("_id rooms");
+
     if (!user) {
         console.log(`${name} User Not found `);
         return;
@@ -35,13 +36,9 @@ export const addUser = async (data) => {
     await user.save();
 };
 
-// 서버쪽에서 유저와 방 정보에 대해 받음
 export const createChattingRoom = async (data) => {
-    // json파일 java object로 변경
     const {userList, roomNum} = data;
-
     let createRoom = await ChatsRoom.findOne({roomNum});
-
     if (createRoom) {
         return {
             createRoom,
@@ -49,12 +46,16 @@ export const createChattingRoom = async (data) => {
         };
     }
     createRoom = await ChatsRoom.create({roomNum});
-
     userList.map(async (name, index) => {
         const user = await User.findOne({name});
+        if (!user) {
+            console.log("not found user");
+            return;
+        }
         user.rooms.push(createRoom._id);
         createRoom.user.push(user._id);
         user.save();
+
         if (index === userList.length - 1) {
             await createRoom.save();
         }
@@ -103,7 +104,6 @@ export const createChat = async (data) => {
 
 export const getChatsRommList = async (req, res, next) => {
     const {id} = req;
-
     const roomList1 = await User.findOne({id})
         .select("name -_id")
         .populate({
@@ -114,9 +114,11 @@ export const getChatsRommList = async (req, res, next) => {
                 select: "-password -_id",
             },
         });
+    console.log(roomList);
     const roomList = await ChatsRoom.find({}).select("-_id").populate({
         path: "user",
         select: "-id -password -rooms",
     });
+
     return res.json(roomList);
 };

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig host="3.36.33.222" id="41fbb542-c5e0-41e0-b42d-32f567e07c41" keyPath="C:\wonjongseo1-filot-aws.cer" port="22" nameFormat="DESCRIPTIVE" username="ec2-user" />
+    </configs>
+  </component>
+</project>

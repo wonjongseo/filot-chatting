@@ -20,37 +20,24 @@ export const pugTest = (server) => {
         transports: ["websocket"],
     });
 
-    function countRoom(roomName) {
-        return io.sockets.adapter.rooms.get(roomName)?.size;
-    }
-
-    const chat = io.of("/chat");
+    const chat = io.of("/");
 
     chat.on("connection", (socket) => {
         console.log(`connectioned`);
         socket.onAny((event) => console.log(`Socket Event: ${event}`));
 
+        // socket.on("create-room")
         socket.on("enter_room", async (roomInfo) => {
             const objData = JSON.parse(roomInfo);
             const {createRoom, roomNum} = await createChattingRoom(objData);
-
+            socket["roomNum"] = roomNum;
             socket.join(roomNum);
 
             var {chats} = await importChatting(createRoom);
             chats = JSON.stringify(chats);
             console.log(chats);
-            io.sockets.to(roomNum).emit("load-message", chats);
-            // done();
-            socket.to(roomNum).emit("del");
 
-            // const {roomNum, createRoom} = await createChattingRoom(roomInfo);
-            // socket["roomNum"] = roomNum;
-            // socket.join(roomNum);
-            // // var {chats} = await importChatting(createRoom);
-            // chats = JSON.stringify(chats);
-            // io.sockets.to(roomNum).emit("load-message", chats);
-            // // done();
-            // socket.to(roomNum).emit("del");
+            io.sockets.to(roomNum).emit("load-message", chats);
         });
 
         socket.on("add_user", async (data) => {
@@ -61,27 +48,9 @@ export const pugTest = (server) => {
         });
 
         socket.on("message", (messageInfo) => {
-            console.log(socket.adapter.rooms);
             createChat(messageInfo);
-            socket.to(messageInfo.roomNum).emit("message", messageInfo);
+            const {roomNum} = socket;
+            socket.to(roomNum).emit("message", messageInfo);
         });
-
-        socket.on("name", (name) => {
-            socket["name"] = name;
-        });
-        socket.on("success", (data) => {
-            console.log(data);
-        });
-        // socket.on("load-message", (data, name) => {
-        //     console.log(data, name);
-        //     data.map((item) => {
-        //         console.log(item);
-        //         if (item.user != name) {
-        //             myChat(item.message);
-        //         } else {
-        //             youChat(item.message);
-        //         }
-        //     });
-        // });
     });
 };
