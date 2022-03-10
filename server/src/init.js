@@ -12,7 +12,6 @@ import userRouter from "./router/userRouter";
 import {config} from "./config";
 import {auth} from "./controller/userController";
 import {isAuth} from "./middleware/auth";
-import chatting from "../connection/chatting";
 import {pugTest} from "../assets/js/test";
 import chatRouter from "./router/chatRouter";
 
